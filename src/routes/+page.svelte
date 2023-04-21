@@ -27,6 +27,18 @@
 
   let selectedChat: number = 0;
 
+  function formatBytes(bytes: number, decimals = 2) {
+    if (!+bytes) return '0 Bytes'
+
+    const k = 1000
+    const dm = decimals < 0 ? 0 : decimals
+    const sizes = ['Bytes', 'KB', 'MB']
+
+    const i = Math.floor(Math.log(bytes) / Math.log(k))
+
+    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
+}
+
   async function submitPrompt(regenerate: boolean = false) {
     if (
       lastPrompt !== null &&
@@ -154,11 +166,11 @@
         on:click={() => {
           const emptyChat = $chats.findIndex((e) => e.messages.length === 0);
 
-          if (emptyChat >= 0) {
-            selectedChat = emptyChat;
+          // if (emptyChat >= 0) {
+          //   selectedChat = emptyChat;
 
-            return;
-          }
+          //   return;
+          // }
 
           $chats = $chats.concat({
             messages: [],
@@ -257,6 +269,8 @@
           }}
         >
           Undo delete
+          <div style="width: 1ch;"></div>
+          <i>"{lastDeleted.title}"</i>
         </button>
       {/if}
     </nav>
@@ -264,18 +278,14 @@
     <footer>
       <progress
         id="storage"
-        max="5000000"
-        value={new TextEncoder().encode(JSON.stringify($chats)).length}
+        max="100"
+        value={new TextEncoder().encode(JSON.stringify($chats)).length / 50000}
       >
-        {new TextEncoder().encode(JSON.stringify($chats)).length / 5000000}%
+        {new TextEncoder().encode(JSON.stringify($chats)).length / 50000}%
       </progress>
 
       <span class="storage-text">
-        {Math.round(
-          (new TextEncoder().encode(JSON.stringify($chats)).length / 5000000 +
-            Number.EPSILON) *
-            100
-        ) / 100}%
+        {formatBytes((new TextEncoder()).encode(JSON.stringify($chats)).length, 2)} of 5 MB
         <a
           target="_blank"
           href="https://developer.mozilla.org/en-US/docs/Web/API/Storage_API/Storage_quotas_and_eviction_criteria"
@@ -781,14 +791,15 @@
     stroke: rgb(255, 98, 98);
   }
 
-  progress {
-    background-color: rgba(255, 255, 255, 0.4);
-    border-radius: 1ch;
-    height: 0.7ch;
-    border: none;
-    width: clamp(18ch, 32ch, 46ch);
-    margin-bottom: 1ch;
-  }
+  // progress {
+  //   background-color: rgba(255, 255, 255, 0.4);
+  //   border-radius: 1ch;
+  //   height: 0.7ch;
+  //   border: none;
+  //   width: clamp(18ch, 32ch, 46ch);
+  //   margin-bottom: 1ch;
+
+  // }
 
   .storage-text {
     font-size: x-small;
@@ -817,5 +828,12 @@
     padding: 0.3ch;
     border-radius: 3px;
     border-bottom-width: 3px;
+  }
+
+  nav {
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: 90vh;
+    padding-right: 2ch;
   }
 </style>
