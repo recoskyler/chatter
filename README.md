@@ -1,22 +1,21 @@
-# create-svelte
+# Chatter
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
+An OpenAI ChatGPT client.
 
-## Creating a project
+## Status
 
-If you're seeing this, you've probably already done this step. Congrats!
+**Currently in MVP stage.** This project will receive updates if it proves itself to be useful.
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
+## Setup
 
-# create a new project in my-app
-npm create svelte@latest my-app
-```
+1. Clone the repository `git clone https://github.com/recoskyler/chatter`
+2. Go into the repository directory `cd chatter`
+3. Create your `.env` file `cp sample.env .env`
+4. Open the `.env` file and set your [API KEY](https://platform.openai.com/account/api-keys)
+5. Save the `.env` file
+6. Install the dependencies `npm i`
 
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+## Running
 
 ```bash
 npm run dev
@@ -35,4 +34,6 @@ npm run build
 
 You can preview the production build with `npm run preview`.
 
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+## About
+
+By [recoskyler](https://github.com/recoskyler) - 2023
