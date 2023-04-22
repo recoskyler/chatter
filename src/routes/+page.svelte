@@ -157,7 +157,7 @@
 <div class="app">
   <Header />
 
-  <navbar>
+  <div class="navbar">
     <nav>
       <Logo />
 
@@ -305,10 +305,10 @@
 
         <span> — </span>
 
-        <a target="_blank" href="github.com/recoskyler/chatter"> GitHub </a>
+        <a target="_blank" href="https://github.com/recoskyler/chatter"> GitHub </a>
       </p>
     </footer>
-  </navbar>
+  </div>
 
   <main>
     <div class="main-cont">
@@ -570,7 +570,7 @@
     border: none;
     padding: 1.5ch;
     border-radius: 6px;
-    width: clamp(20ch, 50ch, 70ch);
+    width: clamp(15ch, 50ch, 70ch);
     color: rgba(255, 255, 255, 0.8);
     resize: vertical;
     margin-bottom: 0.5rem;
@@ -587,7 +587,7 @@
     padding: 0;
     margin: 0;
     margin-left: 1rem;
-    width: clamp(20ch, 50ch, calc($content-width - 2ch));
+    width: clamp(15ch, 50ch, calc($content-width - 2ch));
   }
 
   .assistant {
@@ -636,7 +636,7 @@
     min-height: 100vh;
   }
 
-  navbar {
+  .navbar {
     width: clamp(20ch, 35ch, 50ch);
     position: fixed;
     display: flex;
@@ -718,8 +718,8 @@
     padding: 1rem;
     width: $content-width;
     max-width: 64rem;
-    margin: 0;
-    margin-left: auto;
+    margin: 0 auto;
+    padding-left: clamp(20ch, 35ch, 50ch);
     box-sizing: border-box;
   }
 

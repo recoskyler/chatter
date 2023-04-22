@@ -1,8 +1,6 @@
 <script>
-	import { page } from '$app/stores';
-	import logo from '$lib/images/svelte-logo.svg';
 	import github from '$lib/images/github_light.svg';
-    import Logo from './Logo.svelte';
+  import Logo from './Logo.svelte';
 </script>
 
 <header>
@@ -16,12 +14,6 @@
 </header>
 
 <style>
-    .logo {
-        margin: 1ch 1.5ch;
-        font-size: 2rem;
-        font-weight: 600;
-    }
-
 	header {
 		display: flex;
 		justify-content: space-between;
