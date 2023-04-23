@@ -5,7 +5,7 @@ import "./styles.scss";
 </script>
 
 <div class="app">
-  <Header />
+  <!-- <Header /> -->
 
   <NavBar />
 
