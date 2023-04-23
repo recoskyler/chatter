@@ -6,16 +6,18 @@ const kChatsKey = "__chatter_chats__";
 export type Role = "assistant" | "user" | "system";
 
 export type Prompt = {
-  timestamp: String;
-  content: String;
+  uuid: string;
+  timestamp: string;
+  content: string;
   role: Role;
   isBusy: boolean;
   isSuccessful: boolean;
+  isDeleted: boolean;
 };
 
 export type Chat = {
-  title: String;
-  timestamp: String;
+  title: string;
+  timestamp: string;
   messages: Prompt[];
 };
 
