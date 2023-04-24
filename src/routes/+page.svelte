@@ -364,7 +364,7 @@
               aria-label="Prompt"
               on:input={(e) => (prompt = e.currentTarget.value.trim())}
               on:keyup={(e) => {
-                if (e.key === "Enter" && e.shiftKey) {
+                if (e.key === "Enter" && e.ctrlKey) {
                   submitPrompt();
 
                   e.currentTarget.value = "";
@@ -394,7 +394,7 @@
           </div>
         </div>
         <span class="input-hint">
-          Press <kbd>Shift</kbd> + <kbd>Enter</kbd> to submit.
+          Press <kbd>Ctrl</kbd> + <kbd>Enter</kbd> to submit.
         </span>
       </div>
     </div>
