@@ -505,6 +505,7 @@
   .toggle {
     width: 3ch;
     margin-right: 1ch;
+    cursor: pointer;
   }
 
   .remembering {
