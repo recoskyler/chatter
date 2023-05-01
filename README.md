@@ -1,10 +1,32 @@
 # Chatter
 
-An OpenAI ChatGPT client.
+A (locally) self-hosted OpenAI ChatGPT client.
+
+![Chatter screenshot](screenshot.webp)
 
 ## Status
 
-**Currently in MVP stage.** This project will receive updates if it proves itself to be useful.
+**Currently in Usable stage.** This project will receive updates if it proves itself to be useful.
+
+- [X] Multi chat
+- [X] Delete/Restore chat
+- [X] Import/Export chat
+- [X] Delete/Restore prompt
+- [X] Remember toggle (remember previous prompts/send only the last prompt)
+- [X] Local storage
+- [X] Dockerization
+- [ ] Database storage
+- [ ] Mobile layout
+- [ ] I18N (maybe)
+- [ ] Themes (maybe)
+
+## Requirements
+
+- [Docker](https://docs.docker.com/get-docker/)
+- [Docker Compose](https://docs.docker.com/compose/install/linux/)
+- Node ^19.1
+- NPM/PNPM
+- Vite
 
 ## Setup
 
@@ -12,15 +34,25 @@ An OpenAI ChatGPT client.
 2. Go into the repository directory `cd chatter`
 3. Create your `.env` file `cp sample.env .env`
 4. Open the `.env` file and set your [API KEY](https://platform.openai.com/account/api-keys)
+
+    ```env
+    VITE_API_KEY=YOUR_API_KEY
+    VITE_MODEL=gpt-3.5-turbo
+    VITE_APP_VERSION=0.0.2
+    ```
+
 5. Save the `.env` file
 6. Install the dependencies `npm i`
 
 ## Running
 
 ```bash
-npm run dev
+docker compose up -d
+```
 
-# or start the server and open the app in a new browser tab
+or
+
+```bash
 npm run dev -- --open
 ```
 
