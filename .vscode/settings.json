@@ -19,7 +19,12 @@
         ".vscode": true
     },
     "explorerExclude.backup": {},
-    "cSpell.words": [
-        "regen"
-    ]
+    "cSpell.words": ["regen"],
+    "editor.codeActionsOnSave": {
+        "source.fixAll": true
+    },
+    "eslint.validate": ["javascript", "typescript"],
+    "svelte.plugin.svelte.defaultScriptLanguage": "ts",
+    "svelte.trace.server": "messages",
+    "editor.formatOnSave": true
 }
