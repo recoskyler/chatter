@@ -39,8 +39,6 @@
         prompt.trim() === "" ? "New chat" : trimToLength(prompt, 255);
     }
 
-    console.log(prompt);
-
     if (!regenerate) {
       $chats[$selectedChat].messages = $chats[$selectedChat].messages.concat(
         {
