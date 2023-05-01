@@ -4,9 +4,12 @@
   import Header from "./Header.svelte";
   import { v4 as uuidv4 } from "uuid";
   import { selectedChat } from "./selectedChat";
+  import Titlebar from "./Titlebar.svelte";
+  import { trimToLength } from "../helper";
 
-  let prompt: String = "";
-  let lastPrompt: Date | null = null;
+  let prompt: string = "";
+  let lastPrompt: number | null = null;
+  let remember: boolean = false;
 
   if ($chats.length === 0) {
     $chats = [
@@ -19,10 +22,7 @@
   }
 
   async function submitPrompt(regenerate: boolean = false) {
-    if (
-      lastPrompt !== null &&
-      Math.abs((Date.now() - lastPrompt.getTime()) / 1000) < 3
-    ) {
+    if (lastPrompt !== null && Math.abs((Date.now() - lastPrompt) / 1000) < 3) {
       console.warn("Timed out");
 
       return;
@@ -36,7 +36,7 @@
       currentRole = "system";
 
       $chats[$selectedChat].title =
-        prompt.trim() === "" ? "New chat" : prompt.trim();
+        prompt.trim() === "" ? "New chat" : trimToLength(prompt, 255);
     }
 
     console.log(prompt);
@@ -87,12 +87,17 @@
 
     const body = {
       model: import.meta.env.VITE_MODEL,
-      messages: $chats[$selectedChat].messages
-        .filter((e) => !e.isDeleted)
-        .map((e: Prompt) => ({
-          role: e.role,
-          content: e.content,
-        })),
+      messages: remember
+        ? $chats[$selectedChat].messages
+            .filter((e) => !e.isDeleted)
+            .map((e: Prompt) => ({
+              role: e.role,
+              content: e.content,
+            }))
+        : $chats[$selectedChat].messages.slice(-1).map((e: Prompt) => ({
+            role: e.role,
+            content: e.content,
+          })),
     };
 
     const key = import.meta.env.VITE_API_KEY;
@@ -118,6 +123,8 @@
           },
         }
       );
+
+      lastPrompt = Date.now();
 
       if (res.status !== 200) console.error(res);
 
@@ -168,6 +175,8 @@
 </svelte:head>
 
 <main>
+  <Titlebar />
+
   <div class="main-cont">
     <div class="chat-parent">
       <div class="chat-cont" id="chat-cont">
@@ -182,7 +191,7 @@
           </button>
         {:else}
           <p class="prompt empty-prompt-hint">
-            <span> This place is emptier than my bed... </span>
+            <span> This place is emptier than my head... </span>
             <br />
             <br />
             <span>Enter a new prompt such as; </span>
@@ -298,7 +307,52 @@
               class:deleted-prompt={isDeleted}
               aria-multiline="true">{content}</pre>
 
-              <div class="prompt-actions">
+            <div class="prompt-actions">
+              <button
+                class="prompt-action"
+                class:delete={!isDeleted}
+                on:click={() => {
+                  const promptIndex = $chats[$selectedChat].messages.findIndex(
+                    (e) => e.uuid === uuid
+                  );
+
+                  if (promptIndex < 0) {
+                    console.error("Could not find prompt with UUID");
+
+                    return;
+                  }
+
+                  $chats[$selectedChat].messages[promptIndex].isDeleted =
+                    !$chats[$selectedChat].messages[promptIndex].isDeleted;
+
+                  $chats = $chats;
+                }}
+              >
+                {#if isDeleted}
+                  <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M0 0h48v48H0z" fill="none" />
+                    <path
+                      d="M28 24c0-2.21-1.79-4-4-4s-4 1.79-4 4 1.79 4 4 4 4-1.79 4-4zM24 6C14.06 6 6 14.06 6 24H0l8 8 8-8h-6c0-7.73 6.27-14 14-14s14 6.27 14 14-6.27 14-14 14c-3.03 0-5.82-.97-8.12-2.61l-2.83 2.87C16.09 40.6 19.88 42 24 42c9.94 0 18-8.06 18-18S33.94 6 24 6z"
+                      fill="#ffffff"
+                      class="fill-000000"
+                    />
+                  </svg>
+                {:else}
+                  <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                      d="M7 7h18v22H7zM3 7h26M13 3h6M13 12v10M19 12v10"
+                      fill="none"
+                      stroke="#ffffff"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2px"
+                      class="stroke-000000"
+                    />
+                  </svg>
+                {/if}
+              </button>
+
+              {#if isDeleted}
                 <button
                   class="prompt-action"
                   class:delete={!isDeleted}
@@ -313,42 +367,25 @@
                       return;
                     }
 
-                    $chats[$selectedChat].messages[promptIndex].isDeleted =
-                      !$chats[$selectedChat].messages[promptIndex].isDeleted;
+                    $chats[$selectedChat].messages.splice(promptIndex, 1);
 
                     $chats = $chats;
                   }}
                 >
-                  {#if isDeleted}
-                    <svg
-                      viewBox="0 0 48 48"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path d="M0 0h48v48H0z" fill="none" />
-                      <path
-                        d="M28 24c0-2.21-1.79-4-4-4s-4 1.79-4 4 1.79 4 4 4 4-1.79 4-4zM24 6C14.06 6 6 14.06 6 24H0l8 8 8-8h-6c0-7.73 6.27-14 14-14s14 6.27 14 14-6.27 14-14 14c-3.03 0-5.82-.97-8.12-2.61l-2.83 2.87C16.09 40.6 19.88 42 24 42c9.94 0 18-8.06 18-18S33.94 6 24 6z"
-                        fill="#ffffff"
-                        class="fill-000000"
-                      />
-                    </svg>
-                  {:else}
-                    <svg
-                      viewBox="0 0 32 32"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M7 7h18v22H7zM3 7h26M13 3h6M13 12v10M19 12v10"
-                        fill="none"
-                        stroke="#ffffff"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2px"
-                        class="stroke-000000"
-                      />
-                    </svg>
-                  {/if}
+                  <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                      d="M7 7h18v22H7zM3 7h26M13 3h6M13 12v10M19 12v10"
+                      fill="none"
+                      stroke="#ffffff"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2px"
+                      class="stroke-000000"
+                    />
+                  </svg>
                 </button>
-              </div>
+              {/if}
+            </div>
           </div>
         {/each}
       </div>
@@ -362,6 +399,7 @@
               id="prompt-input"
               aria-multiline="true"
               aria-label="Prompt"
+              class:remembering={remember}
               on:input={(e) => (prompt = e.currentTarget.value.trim())}
               on:keyup={(e) => {
                 if (e.key === "Enter" && e.ctrlKey) {
@@ -393,9 +431,50 @@
             </button>
           </div>
         </div>
-        <span class="input-hint">
-          Press <kbd>Ctrl</kbd> + <kbd>Enter</kbd> to submit.
-        </span>
+        <div class="hintbar">
+          <div class="remember-toggle-box">
+            {#if remember}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 576 512"
+                class="toggle"
+                fill="rgb(57, 118, 169)"
+                on:click={() => {
+                  remember = !remember;
+                }}
+                on:keyup={() => {}}
+              >
+                <!--! Font Awesome Pro 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                <path
+                  d="M192 64C86 64 0 150 0 256S86 448 192 448H384c106 0 192-86 192-192s-86-192-192-192H192zm192 96a96 96 0 1 1 0 192 96 96 0 1 1 0-192z"
+                />
+              </svg>
+
+              <span>Previous prompts will be remembered</span>
+            {:else}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 576 512"
+                class="toggle"
+                on:click={() => {
+                  remember = !remember;
+                }}
+                on:keyup={() => {}}
+              >
+                <!--! Font Awesome Pro 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                <path
+                  d="M384 128c70.7 0 128 57.3 128 128s-57.3 128-128 128H192c-70.7 0-128-57.3-128-128s57.3-128 128-128H384zM576 256c0-106-86-192-192-192H192C86 64 0 150 0 256S86 448 192 448H384c106 0 192-86 192-192zM192 352a96 96 0 1 0 0-192 96 96 0 1 0 0 192z"
+                />
+              </svg>
+
+              <span>Only the last prompt will be submitted</span>
+            {/if}
+          </div>
+
+          <span class="input-hint">
+            Press <kbd>Ctrl</kbd> + <kbd>Enter</kbd> to submit.
+          </span>
+        </div>
       </div>
     </div>
   </div>
@@ -408,14 +487,38 @@
     calc(100vw - 24ch)
   );
 
+  .hintbar {
+    display: flex;
+    flex-direction: column;
+    color: rgba(255, 255, 255, 0.5);
+    fill: rgba(255, 255, 255, 0.5);
+  }
+
+  .remember-toggle-box {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-left: 2.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .toggle {
+    width: 3ch;
+    margin-right: 1ch;
+  }
+
+  .remembering {
+    border: 2px solid rgb(57, 118, 169);
+  }
+
   .main-cont {
     display: flex;
     position: relative;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    flex: 1;
-    height: 100vh;
+    padding-top: 4rem;
+    max-height: calc(100vh - 10rem);
   }
 
   .submit {
@@ -526,12 +629,15 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-    padding: 1rem;
+    padding: 2rem;
     width: $content-width;
     max-width: 64rem;
     margin: 0 auto;
     padding-left: clamp(20ch, 35ch, 50ch);
     box-sizing: border-box;
+    max-height: 100vh;
+    align-items: center;
+    justify-content: center;
   }
 
   .regen {
@@ -617,5 +723,11 @@
   .chat-input-cont {
     grid-area: 2 / 1 / 3 / 2;
     padding-top: 1ch;
+  }
+
+  .prompt-actions {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
   }
 </style>
