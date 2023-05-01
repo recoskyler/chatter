@@ -140,6 +140,8 @@
       </button>
     </div>
 
+    <div style="width: 100%; height: 2px; background-color: rgb(255, 255, 255, 0.1); margin: 2ch 0;"></div>
+
     {#each $chats as { title }, index}
       <div class="chat-button-cont">
         <button
