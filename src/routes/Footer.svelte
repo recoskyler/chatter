@@ -1,5 +1,4 @@
 <script lang="ts">
-
   import { chats } from "./chat";
 
   function formatBytes(bytes: number, decimals = 2) {
@@ -51,6 +50,10 @@
     <a target="_blank" href="https://github.com/recoskyler/chatter">
       GitHub
     </a>
+
+    <br />
+
+    <span id="version">v{import.meta.env.VITE_APP_VERSION}</span>
   </p>
 </footer>
 
@@ -62,6 +65,10 @@
     align-items: center;
     padding: 12px;
     color: rgba(255, 255, 255, 0.7);
+
+    p {
+      text-align: center;
+    }
   }
 
   footer a {
@@ -76,5 +83,9 @@
   .storage-text > a {
     $color-theme-1: var(--color-theme-1);
     color: rgba($color-theme-1, 0.4);
+  }
+
+  #version {
+    color:rgba(255, 255, 255, 0.4);
   }
 </style>
