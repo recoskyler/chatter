@@ -4,8 +4,11 @@
     </a>
 </div>
 
-<style>
-    .logo > a {
+<style lang="scss">
+  .logo {
+    margin-bottom: 2rem;
+
+    >a {
         color: var(--color-theme-2) !important;
         font-size: 2rem;
         font-weight: 600;
@@ -13,9 +16,10 @@
         transition: all 200ms ease-in-out;
     }
 
-    .logo > a:hover {
+    >a:hover {
         letter-spacing: 0.3ch;
         font-weight: 600;
         text-decoration: none;
     }
+  }
 </style>
