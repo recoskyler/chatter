@@ -1,4 +1,4 @@
-version: "3"
+version: "3.7"
 
 services:
   chatter-app:
@@ -7,3 +7,23 @@ services:
 
     ports:
       - "3000:3000"
+
+  mariadb:
+    image: mariadb:10.11
+    restart: always
+
+    volumes:
+      - mariadb-data:/var/lib/mysql
+      - ./dev/mariadb:/docker-entrypoint-initdb.d
+
+    ports:
+      - "3308:3306"
+
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MARIADB_USER: ${MARIADB_USER}
+      MARIADB_PASSWORD: ${MARIADB_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+
+volumes:
+  mariadb-data:
