@@ -53,7 +53,8 @@
 
     <br />
 
-    <span id="version">v{import.meta.env.VITE_APP_VERSION}</span>
+    <!-- svelte-ignore missing-declaration -->
+    <span id="version">v{__APP_VERSION__}</span>
   </p>
 </footer>
 
