@@ -1,10 +1,10 @@
 <script lang="ts">
   import axios from "axios";
-  import { chats, type Chat, type Prompt, type Role } from "./chat";
-  import Header from "./Header.svelte";
+  import { chats, type Chat, type Prompt, type Role } from "writables/chat";
+  import Header from "components/Header.svelte";
   import { v4 as uuidv4 } from "uuid";
-  import { selectedChat } from "./selectedChat";
-  import Titlebar from "./Titlebar.svelte";
+  import { selectedChat } from "writables/selectedChat";
+  import Titlebar from "components/Titlebar.svelte";
   import { trimToLength } from "../helper";
 
   let prompt: string = "";
@@ -441,6 +441,9 @@
                   remember = !remember;
                 }}
                 on:keyup={() => {}}
+                role="checkbox"
+                tabindex={4}
+                aria-checked={true}
               >
                 <!--! Font Awesome Pro 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
                 <path
@@ -458,6 +461,9 @@
                   remember = !remember;
                 }}
                 on:keyup={() => {}}
+                role="checkbox"
+                tabindex={4}
+                aria-checked={false}
               >
                 <!--! Font Awesome Pro 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
                 <path

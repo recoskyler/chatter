@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { chats } from "./chat";
+  import { chats } from "writables/chat";
 
   function formatBytes(bytes: number, decimals = 2) {
     if (!+bytes) return "0 Bytes";

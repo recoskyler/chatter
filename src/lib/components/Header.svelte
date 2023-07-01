@@ -1,6 +1,6 @@
 <script>
 	import github from '$lib/images/github_light.svg';
-  import Logo from './Logo.svelte';
+  import Logo from 'components/Logo.svelte';
 </script>
 
 <header>

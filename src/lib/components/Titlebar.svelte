@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { chats } from "./chat";
-  import { selectedChat } from "./selectedChat";
+  import { chats } from "writables/chat";
+  import { selectedChat } from "writables/selectedChat";
 
   let titleEditing: boolean = false;
 </script>
@@ -23,6 +23,9 @@
           titleEditing = !titleEditing;
         }}
         class="title-action"
+        role="checkbox"
+        tabindex={3}
+        aria-checked={true}
       >
         <!--! Font Awesome Pro 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
         <path
@@ -42,6 +45,9 @@
           titleEditing = !titleEditing;
         }}
         class="title-action"
+        role="checkbox"
+        tabindex={3}
+        aria-checked={false}
       >
         <!--! Font Awesome Pro 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
         <path

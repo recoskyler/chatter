@@ -1,11 +1,11 @@
 <script lang="ts">
 
-  import Logo from "./Logo.svelte";
-  import { chats, type Chat } from "./chat";
-  import { selectedChat } from "./selectedChat";
-  import exportIcon from "../lib/images/export.svg";
-  import importIcon from "../lib/images/import.svg";
-  import Footer from "./Footer.svelte";
+  import Logo from "components/Logo.svelte";
+  import { chats, type Chat } from "writables/chat";
+  import { selectedChat } from "writables/selectedChat";
+  import exportIcon from "images/export.svg";
+  import importIcon from "images/import.svg";
+  import Footer from "components/Footer.svelte";
 
   let lastDeleted: Chat | null = null;
 

@@ -1,7 +1,7 @@
 <script>
-  import Header from "./Header.svelte";
-  import NavBar from "./NavBar.svelte";
-import "./styles.scss";
+  // import Header from "components/Header.svelte";
+  import NavBar from "components/NavBar.svelte";
+  import "styles/styles.scss";
 </script>
 
 <div class="app">

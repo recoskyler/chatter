@@ -19,7 +19,10 @@
         ".vscode": true
     },
     "explorerExclude.backup": {},
-    "cSpell.words": ["regen"],
+    "cSpell.words": [
+        "regen",
+        "writables"
+    ],
     "editor.codeActionsOnSave": {
         "source.fixAll": true
     },
