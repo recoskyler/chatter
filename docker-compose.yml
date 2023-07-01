@@ -6,7 +6,7 @@ services:
       dockerfile: Dockerfile
 
     ports:
-      - "3000:3000"
+      - "${APP_PORT:-3000}:3000"
 
   mariadb:
     image: mariadb:10.11
@@ -17,13 +17,13 @@ services:
       - ./dev/mariadb:/docker-entrypoint-initdb.d
 
     ports:
-      - "3308:3306"
+      - "${MYSQL_FORWARD_PORT:-3306}:3306"
 
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MARIADB_USER: ${MARIADB_USER}
+      MARIADB_USER: ${MARIADB_USER:-chatter}
       MARIADB_PASSWORD: ${MARIADB_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-chatter}
 
 volumes:
   mariadb-data:
