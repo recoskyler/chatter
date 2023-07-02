@@ -30,9 +30,11 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@lucia-auth/adapter-prisma": "^2.0.0",
 		"@prisma/client": "^4.16.2",
 		"axios": "^1.4.0",
 		"dotenv": "^16.3.1",
-		"eslint": "^8.44.0"
+		"eslint": "^8.44.0",
+		"lucia-auth": "^1.8.0"
 	}
 }
