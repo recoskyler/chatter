@@ -14,7 +14,6 @@ services:
 
     volumes:
       - mariadb-data:/var/lib/mysql
-      - ./dev/mariadb:/docker-entrypoint-initdb.d
 
     ports:
       - "${MYSQL_FORWARD_PORT:-3306}:3306"
