@@ -8,7 +8,7 @@ A self-hosted OpenAI ChatGPT client.
 
 ## Status
 
-**Currently in Usable stage.** This project will receive updates if it proves itself to be useful.
+**Currently in Usable stage.** This project will receive updates if it proves itself to be useful. Use the [main](/recoskyler/chatter/tree/main) branch.
 
 - [X] Multi chat
 - [X] Delete/Restore chat
@@ -26,39 +26,44 @@ A self-hosted OpenAI ChatGPT client.
 
 - [Docker](https://docs.docker.com/get-docker/)
 - [Docker Compose](https://docs.docker.com/compose/install/linux/)
-- Node ^19.1
+- Node ^18
 - NPM/PNPM
 - Vite
 
-## Setup
+## Development
+
+### Setup
 
 1. Clone the repository `git clone https://github.com/recoskyler/chatter`
 2. Go into the repository directory `cd chatter`
 3. Create your `.env` file `cp sample.env .env`
-4. Open the `.env` file and set your [API KEY](https://platform.openai.com/account/api-keys)
+4. Open the `.env` file and set your [API KEY](https://platform.openai.com/account/api-keys), and other database related environment variables.
 
     ```env
     VITE_API_KEY=YOUR_API_KEY
-    VITE_MODEL=gpt-3.5-turbo
-    VITE_APP_VERSION=0.0.2
     ```
 
 5. Save the `.env` file
 6. Install the dependencies `npm i`
+7. Run the migrations using `npx prisma migrate dev`
 
-## Running
+### Running
+
+The following command will run the app and the database as a Docker container. Your changes will not effect the app.
 
 ```bash
-docker compose up -d
+$ docker compose up -d
+
+$ npx prisma migrate dev
 ```
 
-or
+or if you have a database set up already, and you would like the hot-reload to work:
 
 ```bash
 npm run dev -- --open
 ```
 
-## Building
+### Building
 
 To create a production version of your app:
 
