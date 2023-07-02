@@ -35,3 +35,37 @@ model Prompt {
 
   @@index([chatUUID], map: "chatUUID")
 }
+
+model AuthUser {
+  id           String        @id @unique
+  auth_session AuthSession[]
+  auth_key     AuthKey[]
+  username     String        @unique @db.VarChar(64)
+  email        String        @unique @db.VarChar(255)
+  name         String        @db.VarChar(255)
+
+  @@map("auth_user")
+}
+
+model AuthSession {
+  id             String   @id @unique
+  user_id        String
+  active_expires BigInt
+  idle_expires   BigInt
+  auth_user      AuthUser @relation(references: [id], fields: [user_id], onDelete: Cascade)
+
+  @@index([user_id])
+  @@map("auth_session")
+}
+
+model AuthKey {
+  id              String   @id @unique
+  hashed_password String?
+  user_id         String
+  primary_key     Boolean
+  expires         BigInt?
+  auth_user       AuthUser @relation(references: [id], fields: [user_id], onDelete: Cascade)
+
+  @@index([user_id])
+  @@map("auth_key")
+}
