@@ -1,0 +1,37 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Chat {
+  uuid         String   @id @default(uuid())
+  remember     Boolean  @default(false)
+  createdAt    DateTime @default(now()) @db.Timestamp(0)
+  updatedAt    DateTime @updatedAt
+  version      String?  @db.VarChar(32)
+  name         String   @db.VarChar(255)
+  systemPrompt String?  @db.Text
+  Prompt       Prompt[]
+}
+
+model Prompt {
+  uuid         String   @id @default(uuid())
+  createdAt    DateTime @default(now()) @db.Timestamp(0)
+  updatedAt    DateTime @updatedAt
+  isEnabled    Boolean  @default(true)
+  isBusy       Boolean  @default(false)
+  isSuccessful Boolean  @default(false)
+  role         String?  @db.VarChar(16)
+  prompt       String?  @db.Text
+  chatUUID     String
+  Chat         Chat     @relation(fields: [chatUUID], references: [uuid], onDelete: NoAction, onUpdate: NoAction, map: "Prompt_ibfk_1")
+
+  @@index([chatUUID], map: "chatUUID")
+}
