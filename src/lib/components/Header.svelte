@@ -1,6 +1,6 @@
 <script>
-	import github from '$lib/images/github_light.svg';
-  import Logo from 'components/Logo.svelte';
+	import github from "$lib/images/github_light.svg";
+  import Logo from "components/Logo.svelte";
 </script>
 
 <header>
@@ -13,7 +13,7 @@
 	</div>
 </header>
 
-<style>
+<style lang="scss">
 	header {
 		display: flex;
 		justify-content: space-between;
