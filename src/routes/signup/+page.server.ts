@@ -13,6 +13,10 @@ export const actions: Actions = {
       return fail(400);
     }
 
+    if (password.length < 8 || name.length < 2 || email.length < 5) {
+      return fail(400);
+    }
+
     try {
       const user = await auth.createUser({
         primaryKey: {
