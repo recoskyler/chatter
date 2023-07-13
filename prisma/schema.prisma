@@ -40,7 +40,6 @@ model AuthUser {
   id           String        @id @unique
   auth_session AuthSession[]
   auth_key     AuthKey[]
-  username     String        @unique @db.VarChar(64)
   email        String        @unique @db.VarChar(255)
   name         String        @db.VarChar(255)
 

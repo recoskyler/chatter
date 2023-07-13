@@ -30,12 +30,10 @@ CREATE TABLE `Prompt` (
 -- CreateTable
 CREATE TABLE `auth_user` (
     `id` VARCHAR(191) NOT NULL,
-    `username` VARCHAR(64) NOT NULL,
     `email` VARCHAR(255) NOT NULL,
     `name` VARCHAR(255) NOT NULL,
 
     UNIQUE INDEX `auth_user_id_key`(`id`),
-    UNIQUE INDEX `auth_user_username_key`(`username`),
     UNIQUE INDEX `auth_user_email_key`(`email`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

@@ -29,5 +29,6 @@
     "eslint.validate": ["javascript", "typescript"],
     "svelte.plugin.svelte.defaultScriptLanguage": "ts",
     "svelte.trace.server": "messages",
-    "editor.formatOnSave": true
+    "editor.formatOnSave": true,
+    "typescript.tsdk": "node_modules/typescript/lib"
 }
