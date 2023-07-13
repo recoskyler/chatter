@@ -14,7 +14,13 @@ export const actions: Actions = {
     const password = form.get("password");
 
     // check for empty values
-    if (typeof email !== "string" || typeof password !== "string") { return fail(400); }
+    if (typeof email !== "string" || typeof password !== "string") {
+      return fail(400);
+    }
+
+    if (password.length < 8 || email.length < 5) {
+      return fail(400);
+    }
 
     try {
       const key = await auth.useKey("email", email, password);
