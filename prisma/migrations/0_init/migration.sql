@@ -7,6 +7,7 @@ CREATE TABLE `Chat` (
     `version` VARCHAR(32) NULL,
     `name` VARCHAR(255) NOT NULL,
     `systemPrompt` TEXT NULL,
+    `authUserId` VARCHAR(191) NOT NULL,
 
     PRIMARY KEY (`uuid`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -32,6 +33,7 @@ CREATE TABLE `auth_user` (
     `id` VARCHAR(191) NOT NULL,
     `email` VARCHAR(255) NOT NULL,
     `name` VARCHAR(255) NOT NULL,
+    `emailVerified` BOOLEAN NOT NULL DEFAULT false,
 
     UNIQUE INDEX `auth_user_id_key`(`id`),
     UNIQUE INDEX `auth_user_email_key`(`email`),
@@ -62,6 +64,9 @@ CREATE TABLE `auth_key` (
     INDEX `auth_key_user_id_idx`(`user_id`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- AddForeignKey
+ALTER TABLE `Chat` ADD CONSTRAINT `Chat_ibfk_1` FOREIGN KEY (`authUserId`) REFERENCES `auth_user`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
 ALTER TABLE `Prompt` ADD CONSTRAINT `Prompt_ibfk_1` FOREIGN KEY (`chatUUID`) REFERENCES `Chat`(`uuid`) ON DELETE NO ACTION ON UPDATE NO ACTION;
