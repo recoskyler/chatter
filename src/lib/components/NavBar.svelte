@@ -10,9 +10,9 @@
     console.log("Downloading...");
 
     const file = new Blob([ data ], { type: type });
-    const finalName = `chatter__${ truncate(filename, 15)
+    const finalName = `chatter__${truncate(filename, 15)
       .replace(/[^a-z0-9]/gi, "_")
-      .toLowerCase() }`;
+      .toLowerCase()}`;
 
     const a = document.createElement("a");
     const url = URL.createObjectURL(file);

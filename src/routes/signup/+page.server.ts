@@ -1,6 +1,7 @@
 import { fail, redirect } from "@sveltejs/kit";
 import { auth } from "$lib/server/lucia";
 import type { PageServerLoad, Actions } from "./$types";
+import { EMAIL_VERIFICATION } from "$env/static/private";
 
 export const actions: Actions = {
   default: async ({ request, locals }) => {
@@ -10,10 +11,14 @@ export const actions: Actions = {
     const password = form.get("password");
 
     if (typeof password !== "string" || typeof name !== "string" || typeof email !== "string") {
+      console.error("Invalid types");
+
       return fail(400);
     }
 
     if (password.length < 8 || name.length < 2 || email.length < 5) {
+      console.error("Invalid input");
+
       return fail(400);
     }
 
@@ -27,16 +32,30 @@ export const actions: Actions = {
         attributes: {
           name: name,
           email: email,
+          emailVerified: false,
         },
       });
 
+      console.log("User created");
+
       const session = await auth.createSession(user.userId);
 
+      console.log("Session created");
+
       locals.auth.setSession(session);
-    } catch {
-      // username taken
+
+      console.log("Set session");
+    } catch (e) {
+      console.error("Email taken: ", e);
+
       return fail(400);
     }
+
+    if (EMAIL_VERIFICATION as string === "true") {
+      throw redirect(302, "/email-verification");
+    }
+
+    throw redirect(302, "/login");
   },
 };
 

@@ -23,7 +23,3 @@
     <input type="submit" value="Sign out" />
   </form>
 </main>
-
-<style lang="scss">
-
-</style>

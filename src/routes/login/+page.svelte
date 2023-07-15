@@ -35,6 +35,11 @@
       min="8"
     /><br />
 
+    <p class="text-center">
+      <span class="text-slate-400">Forgot your password? </span>
+      <a class="anchor" href="/password-reset">Reset password</a>
+    </p>
+
     <input
       type="submit"
       value="Continue"
