@@ -10,15 +10,17 @@
   <title>Chatter | Profile</title>
 </svelte:head>
 
-<main>
-  <h1>Profile</h1>
+<main class="container sm mx-auto my-auto p-5 text-center">
+  <h1 class="h1">Profile</h1>
+
+  <br />
 
   <div>
-    <p>User ID: {data.user.userId}</p>
-    <p>Email: {data.user.email}</p>
+    <h2 class="h2">{data.user.fullName}</h2>
+    <p>{data.user.email}</p>
   </div>
 
   <form use:enhance method="post">
-    <input type="submit" value="Sign out" />
+    <input type="submit" value="Sign out" class="btn variant-filled-primary mt-5" />
   </form>
 </main>
