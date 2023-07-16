@@ -1,5 +1,7 @@
 <script lang="ts">
   import { enhance } from "$app/forms";
+
+  export let form;
 </script>
 
 <svelte:head>
@@ -34,6 +36,10 @@
       placeholder="password"
       min="8"
     /><br />
+
+    {#if form?.error}
+      <p class="text-center text-red-500 my-5 break-words max-w-xs">{form.error}</p>
+    {/if}
 
     <p class="text-center">
       <span class="text-slate-400">Forgot your password? </span>
