@@ -13,13 +13,25 @@ export const actions: Actions = {
     if (typeof password !== "string" || typeof name !== "string" || typeof email !== "string") {
       console.error("Invalid types");
 
-      return fail(400);
+      return fail(400, { error: "Invalid input" });
     }
 
-    if (password.length < 8 || name.length < 2 || email.length < 5) {
-      console.error("Invalid input");
+    if (name.trim().length < 2) {
+      console.error("Invalid name");
 
-      return fail(400);
+      return fail(400, { error: "Invalid name. Name must be 2 characters or more" });
+    }
+
+    if (email.length < 5) {
+      console.error("Invalid email");
+
+      return fail(400, { error: "Invalid email" });
+    }
+
+    if (password.length < 8) {
+      console.error("Invalid password");
+
+      return fail(400, { error: "Invalid password. Must contain at least 1 lowercase, 1 uppercase letter, 1 number, 1 special character, and be 8-64 characters long." });
     }
 
     try {
@@ -48,7 +60,7 @@ export const actions: Actions = {
     } catch (e) {
       console.error("Email taken: ", e);
 
-      return fail(400);
+      return fail(400, { error: "Email taken" });
     }
 
     if (EMAIL_VERIFICATION === "true") {

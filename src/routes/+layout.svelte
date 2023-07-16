@@ -3,10 +3,10 @@
   import "@skeletonlabs/skeleton/styles/skeleton.css";
   import "../app.postcss";
   import "styles/styles.scss";
-	import { Toaster } from 'svelte-french-toast';
+	import { Toast } from '@skeletonlabs/skeleton';
 </script>
 
-<Toaster />
+<Toast />
 
 <div class="app">
   <slot />

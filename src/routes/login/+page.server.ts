@@ -4,6 +4,7 @@ import type { PageServerLoad, Actions } from "./$types";
 
 export const load: PageServerLoad = async ({ locals }) => {
   const { session } = await locals.auth.validateUser();
+
   if (session) throw redirect(302, "/");
 };
 
@@ -13,13 +14,12 @@ export const actions: Actions = {
     const email = form.get("email");
     const password = form.get("password");
 
-    // check for empty values
     if (typeof email !== "string" || typeof password !== "string") {
-      return fail(400);
+      return fail(400, { error: "Invalid password or email" });
     }
 
     if (password.length < 8 || email.length < 5) {
-      return fail(400);
+      return fail(400, { error: "Invalid password or email" });
     }
 
     try {
@@ -28,8 +28,7 @@ export const actions: Actions = {
 
       locals.auth.setSession(session);
     } catch {
-      // invalid email/password
-      return fail(400);
+      return fail(400, { error: "Invalid password or email" });
     }
   },
 };
