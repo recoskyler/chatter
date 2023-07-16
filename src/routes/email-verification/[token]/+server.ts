@@ -10,7 +10,7 @@ import type { RequestHandler } from "./$types";
 import { EMAIL_VERIFICATION } from "$env/static/private";
 
 export const GET: RequestHandler = async ({ params, locals }) => {
-  if (EMAIL_VERIFICATION as string !== "true") {
+  if (EMAIL_VERIFICATION !== "true") {
     return json({
       status: 405,
       body: "Email verification disabled",

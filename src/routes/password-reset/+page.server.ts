@@ -9,7 +9,7 @@ import { EMAIL_VERIFICATION } from "$env/static/private";
 
 export const load: PageServerLoad = async ({ locals }) => {
   const { user } = await locals.auth.validateUser();
-  const emailVerificationEnabled = EMAIL_VERIFICATION as string === "true";
+  const emailVerificationEnabled = EMAIL_VERIFICATION === "true";
 
   if (user && emailVerificationEnabled && !user.emailVerified) {
     throw redirect(302, "/email-verification");

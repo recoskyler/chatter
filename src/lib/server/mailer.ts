@@ -19,10 +19,10 @@ export const mailer = new SMTPClient({
 
 export const sendEmailVerificationEmail = async (to: string, token: string) => {
   try {
-    const link = `${dev ? "http://localhost:5173" : `https://${VITE_HOSTNAME as string}`}/email-verification/${token}`;
+    const link = `${dev ? "http://localhost:5173" : `https://${VITE_HOSTNAME}`}/email-verification/${token}`;
 
     // eslint-disable-next-line max-len
-    const content = `Welcome to Chatter!\n\nTo finalize creating your account, please verify your email by clicking the link below within ${EMAIL_VERIFICATION_EXPIRATION as string} minutes:\n\n${link}`;
+    const content = `Welcome to Chatter!\n\nTo finalize creating your account, please verify your email by clicking the link below within ${EMAIL_VERIFICATION_EXPIRATION} minutes:\n\n${link}`;
 
     const message = await mailer.sendAsync({
       text: content,
@@ -43,10 +43,10 @@ export const sendEmailVerificationEmail = async (to: string, token: string) => {
 
 export const sendPasswordResetEmail = async (to: string, token: string) => {
   try {
-    const link = `${dev ? "http://localhost:5173" : `https://${VITE_HOSTNAME as string}`}/password-reset/${token}`;
+    const link = `${dev ? "http://localhost:5173" : `https://${VITE_HOSTNAME}`}/password-reset/${token}`;
 
     // eslint-disable-next-line max-len
-    const content = `Reset your password by clicking the link below within ${EMAIL_VERIFICATION_EXPIRATION as string} minutes. If you have not requested a password reset, then you can safely ignore this email.\n\n${link}`;
+    const content = `Reset your password by clicking the link below within ${EMAIL_VERIFICATION_EXPIRATION} minutes. If you have not requested a password reset, then you can safely ignore this email.\n\n${link}`;
 
     const message = await mailer.sendAsync({
       text: content,

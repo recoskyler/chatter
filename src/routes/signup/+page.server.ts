@@ -51,7 +51,7 @@ export const actions: Actions = {
       return fail(400);
     }
 
-    if (EMAIL_VERIFICATION as string === "true") {
+    if (EMAIL_VERIFICATION === "true") {
       throw redirect(302, "/email-verification");
     }
 

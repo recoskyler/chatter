@@ -12,7 +12,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 
   if (!user || !session) throw redirect(302, "/login");
 
-  const emailVerificationEnabled = EMAIL_VERIFICATION as string === "true";
+  const emailVerificationEnabled = EMAIL_VERIFICATION === "true";
 
   if (user && emailVerificationEnabled && user.emailVerified) {
     throw redirect(302, "/profile");

@@ -3,11 +3,10 @@
 	import type { PageData } from "./$types";
 
 	export let data: PageData;
-
-  console.log(data.user);
 </script>
 
 <svelte:head>
+  <meta name="robots" content="noindex">
   <title>Chatter | Profile</title>
 </svelte:head>
 
