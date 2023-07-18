@@ -14,7 +14,8 @@ export const actions: Actions = {
 
       if (typeof password !== "string" || password.length < 8) {
         console.error("Invalid password");
-        return fail(400);
+
+        return fail(400, { error: "Invalid password" });
       }
 
       await auth.invalidateAllUserSessions(user.userId);

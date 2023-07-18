@@ -1,5 +1,6 @@
 <script lang="ts">
   import { enhance } from "$app/forms";
+  import FormError from "components/FormError.svelte";
 
   export let form;
 </script>
@@ -23,6 +24,7 @@
       placeholder="john@example.com"
       autocomplete="email"
       min="5"
+      required
     /><br />
 
     <label for="password" class="label mb-2">Password</label>
@@ -35,11 +37,10 @@
       title="Password"
       placeholder="password"
       min="8"
+      required
     /><br />
 
-    {#if form?.error}
-      <p class="text-center text-red-500 my-5 break-words max-w-xs">{form.error}</p>
-    {/if}
+    <FormError error={form?.error} />
 
     <p class="text-center">
       <span class="text-slate-400">Forgot your password? </span>

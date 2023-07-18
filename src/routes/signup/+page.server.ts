@@ -2,6 +2,9 @@ import { fail, redirect } from "@sveltejs/kit";
 import { auth } from "$lib/server/lucia";
 import type { PageServerLoad, Actions } from "./$types";
 import { EMAIL_VERIFICATION } from "$env/static/private";
+import {
+  isEmailValid, isNameValid, isPasswordValid,
+} from "$lib/functions/validators";
 
 export const actions: Actions = {
   default: async ({ request, locals }) => {
@@ -16,19 +19,19 @@ export const actions: Actions = {
       return fail(400, { error: "Invalid input" });
     }
 
-    if (name.trim().length < 2) {
+    if (isNameValid(name)) {
       console.error("Invalid name");
 
-      return fail(400, { error: "Invalid name. Name must be 2 characters or more" });
+      return fail(400, { error: "Invalid name. Name must be 2-255 characters long" });
     }
 
-    if (email.length < 5) {
+    if (isEmailValid(email)) {
       console.error("Invalid email");
 
       return fail(400, { error: "Invalid email" });
     }
 
-    if (password.length < 8) {
+    if (isPasswordValid(password)) {
       console.error("Invalid password");
 
       return fail(400, { error: "Invalid password. Must contain at least 1 lowercase, 1 uppercase letter, 1 number, 1 special character, and be 8-64 characters long." });

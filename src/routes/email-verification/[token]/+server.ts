@@ -2,7 +2,6 @@ import { auth, emailVerificationToken } from "$lib/server/lucia";
 import { LuciaTokenError } from "@lucia-auth/tokens";
 import {
   error,
-  json,
   redirect,
 } from "@sveltejs/kit";
 
@@ -11,10 +10,7 @@ import { EMAIL_VERIFICATION } from "$env/static/private";
 
 export const GET: RequestHandler = async ({ params, locals }) => {
   if (EMAIL_VERIFICATION !== "true") {
-    return json({
-      status: 405,
-      body: "Email verification disabled",
-    });
+    throw error(405, "Email verification disabled");
   }
 
   const tokenParams = params.token;

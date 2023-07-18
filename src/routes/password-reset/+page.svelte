@@ -1,5 +1,15 @@
 <script lang="ts">
   import { enhance } from "$app/forms";
+  import { MAX_EMAIL_LENGTH, MIN_EMAIL_LENGTH } from "$lib/constants";
+  import isEmail from "validator/lib/isEmail";
+  import { toastStore } from '@skeletonlabs/skeleton';
+  import FormError from "components/FormError.svelte";
+
+  const isValid = (email: string) => (isEmail(email) && email.trim().length >= MIN_EMAIL_LENGTH && email.trim().length <= MAX_EMAIL_LENGTH);
+
+  let email = "";
+
+  export let form;
 </script>
 
 <svelte:head>
@@ -9,24 +19,36 @@
 <div class="login-cont mx-auto flex-col my-auto">
   <h1 class="h2 text-center mb-5 p-5">Password reset</h1>
 
-  <form method="POST" use:enhance>
-    <label for="email" class="label mb-2">Email</label>
+  {#if form?.success}
+    <p class="text-center my-5 break-words max-w-xs text-slate-400">A password reset email has been sent if an account with that email exists.</p>
 
-    <input
-      id="email"
-      name="email"
-      type="email"
-      class="input mb-5"
-      title="Email"
-      placeholder="john@example.com"
-      autocomplete="email"
-      min="5"
-    /><br />
+    <a href="/login" class="btn variant-filled-primary mt-5 w-full">Back to login</a>
+  {:else}
+    <form method="POST" use:enhance>
+      <label for="email" class="label mb-2">Email</label>
 
-    <input
-      type="submit"
-      value="Continue"
-      class="btn variant-filled-primary mt-5 w-full"
-    />
-  </form>
+      <input
+        id="email"
+        name="email"
+        type="email"
+        class="input mb-5"
+        title="Email"
+        placeholder="john@example.com"
+        autocomplete="email"
+        minlength={MIN_EMAIL_LENGTH}
+        maxlength={MAX_EMAIL_LENGTH}
+        required
+        bind:value={email}
+      /><br />
+
+      <FormError error={form?.error} />
+
+      <input
+        type="submit"
+        value="Continue"
+        class={`btn mt-5 w-full ${isValid(email) ? "variant-filled-primary" : "variant-ghost-error"}`}
+        disabled={!isValid(email)}
+      />
+    </form>
+  {/if}
 </div>

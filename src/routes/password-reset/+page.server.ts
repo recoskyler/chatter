@@ -6,6 +6,7 @@ import {
 } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types";
 import { EMAIL_VERIFICATION } from "$env/static/private";
+import { isEmailValid } from "$lib/functions/validators";
 
 export const load: PageServerLoad = async ({ locals }) => {
   const { user } = await locals.auth.validateUser();
@@ -26,9 +27,9 @@ export const actions: Actions = {
       const form = await request.formData();
       const email = form.get("email");
 
-      if (typeof email !== "string" || email.length < 5) {
+      if (typeof email !== "string" || !isEmailValid(email)) {
         console.error("Invalid email");
-        return fail(400);
+        return fail(400, { error: "Invalid email}" });
       }
 
       const databaseUser = await prisma.authUser.findFirst(
@@ -36,8 +37,7 @@ export const actions: Actions = {
       );
 
       if (!databaseUser) {
-        console.error(`No user found with email: ${email}`);
-        return fail(400);
+        return { success: true };
       }
 
       const user = auth.transformDatabaseUser(databaseUser);
@@ -55,5 +55,7 @@ export const actions: Actions = {
     } catch {
       throw error(500, "Failed to send password reset email");
     }
+
+    return { success: true };
   },
 };

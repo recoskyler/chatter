@@ -1,6 +1,7 @@
 import { fail, redirect } from "@sveltejs/kit";
 import { auth } from "$lib/server/lucia";
 import type { PageServerLoad, Actions } from "./$types";
+import { isEmailValid, isPasswordValid } from "$lib/functions/validators";
 
 export const load: PageServerLoad = async ({ locals }) => {
   const { session } = await locals.auth.validateUser();
@@ -18,7 +19,7 @@ export const actions: Actions = {
       return fail(400, { error: "Invalid password or email" });
     }
 
-    if (password.length < 8 || email.length < 5) {
+    if (!isEmailValid(email) || !isPasswordValid(password)) {
       return fail(400, { error: "Invalid password or email" });
     }
 
