@@ -21,7 +21,8 @@
     "explorerExclude.backup": {},
     "cSpell.words": [
         "regen",
-        "writables"
+        "writables",
+        "zxcvbn"
     ],
     "editor.codeActionsOnSave": {
         "source.fixAll": true
