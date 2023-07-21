@@ -1,14 +1,8 @@
 <script lang="ts">
   import { enhance } from "$app/forms";
   import { MAX_EMAIL_LENGTH, MIN_EMAIL_LENGTH } from "$lib/constants";
-  import isEmail from "validator/lib/isEmail";
   import FormError from "components/FormError.svelte";
-
-  const isValid = (email: string) => (
-    isEmail(email)
-    && email.trim().length >= MIN_EMAIL_LENGTH
-    && email.trim().length <= MAX_EMAIL_LENGTH
-  );
+  import { isEmailValid } from "$lib/functions/validators.js";
 
   let email = "";
 
@@ -51,8 +45,8 @@
       <input
         type="submit"
         value="Continue"
-        class={`btn mt-5 w-full ${isValid(email) ? "variant-filled-primary" : "variant-ghost-error"}`}
-        disabled={!isValid(email)}
+        class={`btn mt-5 w-full ${isEmailValid(email) ? "variant-filled-primary" : "variant-ghost-error"}`}
+        disabled={!isEmailValid(email)}
       />
     </form>
   {/if}

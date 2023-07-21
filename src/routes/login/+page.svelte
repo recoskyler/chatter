@@ -1,6 +1,13 @@
 <script lang="ts">
   import { enhance } from "$app/forms";
+  import { MAX_EMAIL_LENGTH, MAX_PASSWORD_LENGTH, MIN_EMAIL_LENGTH, MIN_PASSWORD_LENGTH } from "$lib/constants.js";
+  import { isEmailValid } from "$lib/functions/validators.js";
   import FormError from "components/FormError.svelte";
+
+  let email = "";
+  let password = "";
+
+  const isValid = (email: string, password: string) => isEmailValid(email) && password.length >= MIN_PASSWORD_LENGTH;
 
   export let form;
 </script>
@@ -23,8 +30,10 @@
       title="Email"
       placeholder="john@example.com"
       autocomplete="email"
-      min="5"
+      minlength={MIN_EMAIL_LENGTH}
+      maxlength={MAX_EMAIL_LENGTH}
       required
+      bind:value={email}
     /><br />
 
     <label for="password" class="label mb-2">Password</label>
@@ -36,8 +45,10 @@
       class="input mb-5"
       title="Password"
       placeholder="password"
-      min="8"
+      minlength={MIN_PASSWORD_LENGTH}
+      maxlength={MAX_PASSWORD_LENGTH}
       required
+      bind:value={password}
     /><br />
 
     <FormError error={form?.error} />
@@ -50,7 +61,8 @@
     <input
       type="submit"
       value="Continue"
-      class="btn variant-filled-primary mt-5 w-full"
+      class={`btn mt-5 w-full ${isValid(email, password) ? "variant-filled-primary" : "variant-ghost-error"}`}
+      disabled={!isValid(email, password)}
     />
   </form>
 
