@@ -1,11 +1,10 @@
 <script>
-  import "../theme.postcss";
+  import "styles/theme.postcss";
   import "@skeletonlabs/skeleton/styles/skeleton.css";
-  import "../app.postcss";
-  import "styles/styles.scss";
+  import "styles/app.postcss";
 	import { Toast, storePopup } from "@skeletonlabs/skeleton";
   import {
-    computePosition, autoUpdate, offset, shift, flip, arrow, 
+    computePosition, autoUpdate, offset, shift, flip, arrow,
   } from "@floating-ui/dom";
 
   storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
