@@ -1,41 +1,31 @@
 <script lang="ts">
   import { enhance } from "$app/forms";
   import PasswordPopup from "components/PasswordPopup.svelte";
-  import { zxcvbn, zxcvbnOptions } from "@zxcvbn-ts/core";
-  import * as zxcvbnCommonPackage from "@zxcvbn-ts/language-common";
-  import * as zxcvbnEnPackage from "@zxcvbn-ts/language-en";
   import { type PopupSettings, popup } from "@skeletonlabs/skeleton";
   import {
     MAX_PASSWORD_LENGTH,
     MIN_PASSWORD_LENGTH,
   } from "$lib/constants.js";
   import FormError from "components/FormError.svelte";
-
-  const options = {
-    translations: zxcvbnEnPackage.translations,
-    graphs: zxcvbnCommonPackage.adjacencyGraphs,
-    dictionary: {
-      ...zxcvbnCommonPackage.dictionary,
-      ...zxcvbnEnPackage.dictionary,
-    },
-  };
+  import { isPasswordValid } from "$lib/functions/validators.js";
+  import PasswordStrengthMeter from "components/PasswordStrengthMeter.svelte";
 
   const popupFocusBlur: PopupSettings = {
-    event: 'focus-blur',
-    target: 'popupFocusBlur',
-    placement: 'top',
+    event: "focus-blur",
+    target: "popupFocusBlur",
+    placement: "top",
   };
 
-  zxcvbnOptions.setOptions(options);
-
   export const levels = ["Super weak", "Very weak", "Weak", "Strong", "Very strong"];
-  export const colorLevels = ["text-red-600", "text-red-500", "text-orange-400", "text-green-300", "text-green-500"];
+  export const colorLevels = [
+    "text-red-600",
+    "text-red-500",
+    "text-orange-400",
+    "text-green-300",
+    "text-green-500",
+  ];
 
   let password = "";
-
-  const isValid = (password: string, score: number) => (score >= 3 && password.length >= MIN_PASSWORD_LENGTH && password.length <= MAX_PASSWORD_LENGTH);
-
-  $: score = zxcvbn(password).score;
 
   export let form;
 </script>
@@ -66,12 +56,15 @@
       use:popup={popupFocusBlur}
     /><br />
 
+    <PasswordStrengthMeter password={password} />
+
     <FormError error={form?.error} />
 
     <input
       type="submit"
       value="Reset password"
-      class="btn variant-filled-primary mt-5 w-full"
+      class={`btn mt-5 w-full ${isPasswordValid(password) ? "variant-filled-primary" : "variant-ghost-error"}`}
+      disabled={!isPasswordValid(password)}
     />
   </form>
 </div>
