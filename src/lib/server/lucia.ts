@@ -1,21 +1,21 @@
 import lucia from "lucia-auth";
 import { sveltekit } from "lucia-auth/middleware";
-import prisma from "@lucia-auth/adapter-prisma";
-import { PrismaClient } from "@prisma/client";
 import { dev } from "$app/environment";
 import { idToken } from "@lucia-auth/tokens";
 import { EMAIL_VERIFICATION_EXPIRATION, PASSWORD_RESET_EXPIRATION } from "$env/static/private";
+import { connectionPool } from "./drizzle";
+import { mysql2 } from "@lucia-auth/adapter-mysql";
 
 export const auth = lucia({
-  adapter: prisma((new PrismaClient)),
+  adapter: mysql2(connectionPool),
   env: dev ? "DEV" : "PROD",
   middleware: sveltekit(),
   transformDatabaseUser: userData => {
     return {
       userId: userData.id,
       email: userData.email,
-      fullName: userData.name,
-      emailVerified: userData.emailVerified,
+      name: userData.name,
+      verified: userData.verified,
     };
   },
 });

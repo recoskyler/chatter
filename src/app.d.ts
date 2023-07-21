@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 // See https://kit.svelte.dev/docs/types#app
+
 // for information about these interfaces
 declare global {
 	namespace App {
@@ -19,7 +20,7 @@ declare global {
     type UserAttributes = {
       email: string;
       name: string;
-      emailVerified: boolean;
+      verified: boolean;
     };
   }
 }

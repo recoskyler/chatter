@@ -14,7 +14,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 
   const emailVerificationEnabled = EMAIL_VERIFICATION === "true";
 
-  if (user && emailVerificationEnabled && user.emailVerified) {
+  if (user && emailVerificationEnabled && user.verified) {
     throw redirect(302, "/profile");
   }
 

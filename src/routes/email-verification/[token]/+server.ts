@@ -19,7 +19,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     const token = await emailVerificationToken.validate(tokenParams);
 
     await auth.invalidateAllUserSessions(token.userId);
-    await auth.updateUserAttributes(token.userId, { emailVerified: true });
+    await auth.updateUserAttributes(token.userId, { verified: true });
 
     const session = await auth.createSession(token.userId);
 

@@ -1,4 +1,3 @@
-import prisma from "$lib/prisma";
 import { auth, passwordResetToken } from "$lib/server/lucia";
 import { sendPasswordResetEmail } from "$lib/server/mailer";
 import {
@@ -7,12 +6,15 @@ import {
 import type { PageServerLoad } from "./$types";
 import { EMAIL_VERIFICATION } from "$env/static/private";
 import { isEmailValid } from "$lib/functions/validators";
+import { db } from "$lib/server/drizzle";
+import { eq } from "drizzle-orm";
+import { user } from "$lib/db/schema";
 
 export const load: PageServerLoad = async ({ locals }) => {
   const { user } = await locals.auth.validateUser();
   const emailVerificationEnabled = EMAIL_VERIFICATION === "true";
 
-  if (user && emailVerificationEnabled && !user.emailVerified) {
+  if (user && emailVerificationEnabled && !user.verified) {
     throw redirect(302, "/email-verification");
   }
 
@@ -32,20 +34,20 @@ export const actions: Actions = {
         return fail(400, { error: "Invalid email}" });
       }
 
-      const databaseUser = await prisma.authUser.findFirst(
-        { where: { email: email, emailVerified: true } },
-      );
+      const databaseUsers = await db.select().from(user).where(eq(user.email, email)).limit(1);
 
-      if (!databaseUser) {
+      if (databaseUsers.length === 0) {
         return { success: true };
       }
 
-      const user = auth.transformDatabaseUser(databaseUser);
-      const token = await passwordResetToken.issue(user.userId);
+      const [databaseUser] = databaseUsers;
+
+      const authUser = auth.transformDatabaseUser(databaseUser);
+      const token = await passwordResetToken.issue(authUser.userId);
 
       console.log("Issued new password reset token");
 
-      const passwordResetResult = await sendPasswordResetEmail(user.email, token.toString());
+      const passwordResetResult = await sendPasswordResetEmail(authUser.email, token.toString());
 
       if (!passwordResetResult) {
         return fail(500, { error: "Failed to send password reset email" });

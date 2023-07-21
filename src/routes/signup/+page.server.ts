@@ -19,19 +19,19 @@ export const actions: Actions = {
       return fail(400, { error: "Invalid input" });
     }
 
-    if (isNameValid(name)) {
+    if (!isNameValid(name)) {
       console.error("Invalid name");
 
       return fail(400, { error: "Invalid name. Name must be 2-255 characters long" });
     }
 
-    if (isEmailValid(email)) {
+    if (!isEmailValid(email)) {
       console.error("Invalid email");
 
       return fail(400, { error: "Invalid email" });
     }
 
-    if (isPasswordValid(password)) {
+    if (!isPasswordValid(password)) {
       console.error("Invalid password");
 
       return fail(400, { error: "Invalid password. Must contain at least 1 lowercase, 1 uppercase letter, 1 number, 1 special character, and be 8-64 characters long." });
@@ -45,9 +45,9 @@ export const actions: Actions = {
           password,
         },
         attributes: {
-          name: name,
           email: email,
-          emailVerified: false,
+          name: name,
+          verified: false,
         },
       });
 
