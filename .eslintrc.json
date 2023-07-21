@@ -74,7 +74,7 @@
     ],
     "array-bracket-spacing": [
       "error",
-      "always"
+      "never"
     ],
     "object-curly-spacing": [
       "error",

@@ -2,10 +2,13 @@
   import { enhance } from "$app/forms";
   import { MAX_EMAIL_LENGTH, MIN_EMAIL_LENGTH } from "$lib/constants";
   import isEmail from "validator/lib/isEmail";
-  import { toastStore } from '@skeletonlabs/skeleton';
   import FormError from "components/FormError.svelte";
 
-  const isValid = (email: string) => (isEmail(email) && email.trim().length >= MIN_EMAIL_LENGTH && email.trim().length <= MAX_EMAIL_LENGTH);
+  const isValid = (email: string) => (
+    isEmail(email)
+    && email.trim().length >= MIN_EMAIL_LENGTH
+    && email.trim().length <= MAX_EMAIL_LENGTH
+  );
 
   let email = "";
 
@@ -20,7 +23,9 @@
   <h1 class="h2 text-center mb-5 p-5">Password reset</h1>
 
   {#if form?.success}
-    <p class="text-center my-5 break-words max-w-xs text-slate-400">A password reset email has been sent if an account with that email exists.</p>
+    <p class="text-center my-5 break-words max-w-xs text-slate-400">
+      A password reset email has been sent if an account with that email exists.
+    </p>
 
     <a href="/login" class="btn variant-filled-primary mt-5 w-full">Back to login</a>
   {:else}

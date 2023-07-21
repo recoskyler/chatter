@@ -3,7 +3,9 @@
   import { zxcvbn, zxcvbnOptions } from "@zxcvbn-ts/core";
   import * as zxcvbnCommonPackage from "@zxcvbn-ts/language-common";
   import * as zxcvbnEnPackage from "@zxcvbn-ts/language-en";
-  import { ProgressBar, type PopupSettings, popup } from "@skeletonlabs/skeleton";
+  import {
+    ProgressBar, type PopupSettings, popup,
+  } from "@skeletonlabs/skeleton";
   import { fade } from "svelte/transition";
   import {
     MAX_EMAIL_LENGTH,
@@ -16,7 +18,6 @@
   import PasswordPopup from "components/PasswordPopup.svelte";
   import { isValid } from "$lib/functions/validators.js";
   import FormError from "components/FormError.svelte";
-  import { error } from "@sveltejs/kit";
 
   const options = {
     translations: zxcvbnEnPackage.translations,
@@ -28,20 +29,27 @@
   };
 
   const popupFocusBlur: PopupSettings = {
-    event: 'focus-blur',
-    target: 'popupFocusBlur',
-    placement: 'top',
+    event: "focus-blur",
+    target: "popupFocusBlur",
+    placement: "top",
   };
 
   zxcvbnOptions.setOptions(options);
 
   export const levels = ["Super weak", "Very weak", "Weak", "Strong", "Very strong"];
-  export const colorLevels = ["text-red-600", "text-red-500", "text-orange-400", "text-green-300", "text-green-500"];
+  export const colorLevels = [
+    "text-red-600",
+    "text-red-500",
+    "text-orange-400",
+    "text-green-300",
+    "text-green-500",
+  ];
 
   let email = "";
   let name = "";
   let password = "";
 
+  /* eslint-disable-next-line prefer-destructuring */
   $: score = zxcvbn(password).score;
 
   export let form;
@@ -70,8 +78,11 @@
       bind:value={name}
     /><br />
 
-    {#if name.trim() !== "" && (name.trim().length < MIN_NAME_LENGTH || name.trim().length > MAX_NAME_LENGTH)}
-      <p class="text-red-400 mt-2 break-words max-w-xs" transition:fade>Name must be between 2-255 characters long</p>
+    {#if name.trim() !== "" &&
+      (name.trim().length < MIN_NAME_LENGTH || name.trim().length > MAX_NAME_LENGTH)}
+      <p class="text-red-400 mt-2 break-words max-w-xs" transition:fade>
+        Name must be between 2-255 characters long
+      </p>
     {/if}
 
     <label for="email" class="label mb-2 mt-5">Email</label>
@@ -90,8 +101,11 @@
       bind:value={email}
     /><br />
 
-    {#if email.trim() !== "" && (email.trim().length < MIN_EMAIL_LENGTH || email.trim().length > MAX_EMAIL_LENGTH)}
-      <p class="text-red-400 mt-2 break-words max-w-xs" transition:fade>Email must be valid and between 5-255 characters long</p>
+    {#if email.trim() !== "" &&
+      (email.trim().length < MIN_EMAIL_LENGTH || email.trim().length > MAX_EMAIL_LENGTH)}
+      <p class="text-red-400 mt-2 break-words max-w-xs" transition:fade>
+        Email must be valid and between 5-255 characters long
+      </p>
     {/if}
 
     <label for="password" class="label mb-2 mt-5">Password</label>
@@ -113,7 +127,8 @@
     /><br />
 
     <label for="strength" class="label mb-2 mt-3 text-slate-500">
-      Password strength: <strong><span class={`label ${colorLevels[score]}`}>{levels[score]}</span></strong>
+      Password strength:
+      <strong><span class={`label ${colorLevels[score]}`}> {levels[score]}</span></strong>
     </label>
 
     <ProgressBar id="strength" label="Password strength" value={score} max={4} /><br />

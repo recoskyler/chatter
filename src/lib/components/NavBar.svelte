@@ -9,7 +9,7 @@
   function download(data: BlobPart, filename: string, type?: string) {
     console.log("Downloading...");
 
-    const file = new Blob([ data ], { type: type });
+    const file = new Blob([data], { type: type });
     const finalName = `chatter__${truncate(filename, 15)
       .replace(/[^a-z0-9]/gi, "_")
       .toLowerCase()}`;
