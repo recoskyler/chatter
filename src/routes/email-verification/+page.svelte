@@ -1,12 +1,14 @@
 <script lang="ts">
   import { enhance } from "$app/forms";
+  import mailbox from "images/undraw_mailbox_re_dvds.svg";
 </script>
 
 <svelte:head>
   <title>Chatter | Email verification</title>
 </svelte:head>
 
-<div class="container text-center mx-auto my-auto">
+<div class="flex text-center mx-auto my-auto flex-col items-center justify-center gap-2">
+  <img class="max-w-xs mb-5" src={mailbox} alt="Mailbox">
   <h1 class="h1">Email verification</h1>
   <br />
   <p>Please check your email for a verification link</p>
