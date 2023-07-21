@@ -16,13 +16,13 @@ services:
       - mariadb-data:/var/lib/mysql
 
     ports:
-      - "${MYSQL_FORWARD_PORT:-3306}:3306"
+      - "${VITE_DB_FORWARD_PORT:-3306}:3306"
 
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MARIADB_USER: ${MARIADB_USER:-chatter}
-      MARIADB_PASSWORD: ${MARIADB_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE:-chatter}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MARIADB_USER: ${VITE_DB_USER:-chatter}
+      MARIADB_PASSWORD: ${VITE_DB_PASSWORD}
+      MYSQL_DATABASE: ${VITE_DB_DATABASE:-chatter}
 
 volumes:
   mariadb-data:
