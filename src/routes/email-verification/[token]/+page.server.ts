@@ -1,14 +1,10 @@
 import { auth, emailVerificationToken } from "$lib/server/lucia";
 import { LuciaTokenError } from "@lucia-auth/tokens";
-import {
-  error,
-  redirect,
-} from "@sveltejs/kit";
-
-import type { RequestHandler } from "./$types";
+import { error } from "@sveltejs/kit";
 import { EMAIL_VERIFICATION } from "$env/static/private";
+import type { PageServerLoad } from "./$types";
 
-export const GET: RequestHandler = async ({ params, locals }) => {
+export const load: PageServerLoad = async ({ locals, params }) => {
   if (EMAIL_VERIFICATION !== "true") {
     throw error(405, "Email verification disabled");
   }
@@ -37,6 +33,4 @@ export const GET: RequestHandler = async ({ params, locals }) => {
 
     throw error(500, "An error occurred");
   }
-
-  throw redirect(302, "/profile");
 };

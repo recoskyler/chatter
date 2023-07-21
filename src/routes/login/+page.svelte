@@ -61,7 +61,7 @@
     <input
       type="submit"
       value="Continue"
-      class={`btn mt-5 w-full ${isValid(email, password) ? "variant-filled-primary" : "variant-ghost-error"}`}
+      class={`btn mt-5 w-full ${isValid(email, password) ? "variant-filled-primary" : "variant-filled-surface"}`}
       disabled={!isValid(email, password)}
     />
   </form>

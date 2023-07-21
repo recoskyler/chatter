@@ -49,7 +49,7 @@
     <input
       type="submit"
       value="Reset password"
-      class={`btn mt-5 w-full ${isPasswordValid(password) ? "variant-filled-primary" : "variant-ghost-error"}`}
+      class={`btn mt-5 w-full ${isPasswordValid(password) ? "variant-filled-primary" : "variant-filled-surface"}`}
       disabled={!isPasswordValid(password)}
     />
   </form>

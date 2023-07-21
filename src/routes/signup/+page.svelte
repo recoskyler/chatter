@@ -110,7 +110,7 @@
       class={`btn mt-5 w-full ${
         isValid(name, email, password)
           ? "variant-filled-primary"
-          : "variant-ghost-error"
+          : "variant-filled-surface"
       }`}
       disabled={!isValid(name, email, password)}
     />

@@ -16,7 +16,7 @@
   <br />
 
   <div>
-    <h2 class="h2">{data.user.fullName}</h2>
+    <h2 class="h2">{data.user.name}</h2>
     <p>{data.user.email}</p>
   </div>
 
