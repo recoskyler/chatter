@@ -8,7 +8,7 @@ A self-hosted OpenAI ChatGPT client.
 
 ## Status
 
-**Currently in Usable stage.** This project will receive updates if it proves itself to be useful. Use the [main](/recoskyler/chatter/tree/main) branch.
+**Currently in Usable stage.** This project will receive updates if it proves itself to be useful. Please use the [main](/recoskyler/chatter/tree/main) branch for the stable version.
 
 - [X] Multi chat
 - [X] Delete/Restore chat
@@ -17,10 +17,17 @@ A self-hosted OpenAI ChatGPT client.
 - [X] Remember toggle (remember previous prompts/send only the last prompt)
 - [X] Local storage
 - [X] Dockerization
-- [ ] Database storage
-- [ ] Mobile layout
+- [ ] Database storage (*In-progress*)
+- [ ] Mobile layout (*In-progress*)
 - [ ] I18N (maybe)
 - [ ] Themes (maybe)
+
+## Tech Stack
+
+- [SvelteKit 4](https://kit.svelte.dev/)
+- [Drizzle ORM](https://orm.drizzle.team/)
+- [Lucia Auth](https://lucia-auth.com/)
+- [Skeleton](https://www.skeleton.dev/)/[Tailwind CSS](https://tailwindcss.com/)
 
 ## Requirements
 
@@ -37,15 +44,9 @@ A self-hosted OpenAI ChatGPT client.
 1. Clone the repository `git clone https://github.com/recoskyler/chatter`
 2. Go into the repository directory `cd chatter`
 3. Create your `.env` file `cp sample.env .env`
-4. Open the `.env` file and set your [API KEY](https://platform.openai.com/account/api-keys), and other database related environment variables.
-
-    ```env
-    VITE_API_KEY=YOUR_API_KEY
-    ```
-
-5. Save the `.env` file
-6. Install the dependencies `npm i`
-7. Run the migrations using `npx prisma migrate dev`
+4. Open the `.env` file and set your environment variables. Save when you are done editing.
+5. Install the dependencies `npm i`
+6. Generate migrations `npm run generate`. Migrations will automatically run when you start the app
 
 ### Running
 
@@ -53,8 +54,6 @@ The following command will run the app and the database as a Docker container. Y
 
 ```bash
 $ docker compose up -d
-
-$ npx prisma migrate dev
 ```
 
 or if you have a database set up already, and you would like the hot-reload to work:
