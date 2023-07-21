@@ -1,13 +1,7 @@
 <script lang="ts">
-  import PasswordStrengthMeter from '../../lib/components/PasswordStrengthMeter.svelte';
-
-	import { enhance } from "$app/forms";
-  import { zxcvbn, zxcvbnOptions } from "@zxcvbn-ts/core";
-  import * as zxcvbnCommonPackage from "@zxcvbn-ts/language-common";
-  import * as zxcvbnEnPackage from "@zxcvbn-ts/language-en";
-  import {
-    ProgressBar, type PopupSettings, popup,
-  } from "@skeletonlabs/skeleton";
+  import PasswordStrengthMeter from "../../lib/components/PasswordStrengthMeter/PasswordStrengthMeter.svelte";
+  import { enhance } from "$app/forms";
+  import { popup } from "@skeletonlabs/skeleton";
   import { fade } from "svelte/transition";
   import {
     MAX_EMAIL_LENGTH,
@@ -20,32 +14,7 @@
   import PasswordPopup from "components/PasswordPopup.svelte";
   import { isValid } from "$lib/functions/validators.js";
   import FormError from "components/FormError.svelte";
-
-  const options = {
-    translations: zxcvbnEnPackage.translations,
-    graphs: zxcvbnCommonPackage.adjacencyGraphs,
-    dictionary: {
-      ...zxcvbnCommonPackage.dictionary,
-      ...zxcvbnEnPackage.dictionary,
-    },
-  };
-
-  const popupFocusBlur: PopupSettings = {
-    event: "focus-blur",
-    target: "popupFocusBlur",
-    placement: "top",
-  };
-
-  zxcvbnOptions.setOptions(options);
-
-  export const levels = ["Super weak", "Very weak", "Weak", "Strong", "Very strong"];
-  export const colorLevels = [
-    "text-red-600",
-    "text-red-500",
-    "text-orange-400",
-    "text-green-300",
-    "text-green-500",
-  ];
+  import { passwordPopupFocusBlur } from "components/PasswordStrengthMeter/helpers";
 
   let email = "";
   let name = "";
@@ -61,7 +30,7 @@
 <div class="login-cont mx-auto flex-col my-auto">
   <h1 class="h2 text-center mb-5 p-5">Create an account</h1>
 
-	<form method="POST" use:enhance>
+  <form method="POST" use:enhance>
     <label for="name" class="label mb-2">Name</label>
 
     <input
@@ -77,8 +46,7 @@
       bind:value={name}
     /><br />
 
-    {#if name.trim() !== "" &&
-      (name.trim().length < MIN_NAME_LENGTH || name.trim().length > MAX_NAME_LENGTH)}
+    {#if name.trim() !== "" && (name.trim().length < MIN_NAME_LENGTH || name.trim().length > MAX_NAME_LENGTH)}
       <p class="text-red-400 mt-2 break-words max-w-xs" transition:fade>
         Name must be between 2-255 characters long
       </p>
@@ -100,8 +68,7 @@
       bind:value={email}
     /><br />
 
-    {#if email.trim() !== "" &&
-      (email.trim().length < MIN_EMAIL_LENGTH || email.trim().length > MAX_EMAIL_LENGTH)}
+    {#if email.trim() !== "" && (email.trim().length < MIN_EMAIL_LENGTH || email.trim().length > MAX_EMAIL_LENGTH)}
       <p class="text-red-400 mt-2 break-words max-w-xs" transition:fade>
         Email must be valid and between 5-255 characters long
       </p>
@@ -109,7 +76,7 @@
 
     <label for="password" class="label mb-2 mt-5">Password</label>
 
-    <PasswordPopup password={password} />
+    <PasswordPopup {password} />
 
     <input
       type="password"
@@ -122,10 +89,10 @@
       maxlength={MAX_PASSWORD_LENGTH}
       required
       bind:value={password}
-      use:popup={popupFocusBlur}
+      use:popup={passwordPopupFocusBlur}
     /><br />
 
-    <PasswordStrengthMeter password={password} />
+    <PasswordStrengthMeter {password} />
 
     <FormError error={form?.error} />
 
@@ -140,10 +107,14 @@
     <input
       type="submit"
       value="Continue"
-      class={`btn mt-5 w-full ${isValid(name, email, password) ? "variant-filled-primary" : "variant-ghost-error"}`}
+      class={`btn mt-5 w-full ${
+        isValid(name, email, password)
+          ? "variant-filled-primary"
+          : "variant-ghost-error"
+      }`}
       disabled={!isValid(name, email, password)}
     />
-	</form>
+  </form>
 
   <hr class="!border-t-2 my-5" />
 

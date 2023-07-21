@@ -3,6 +3,7 @@
   import * as zxcvbnCommonPackage from "@zxcvbn-ts/language-common";
   import * as zxcvbnEnPackage from "@zxcvbn-ts/language-en";
   import { ProgressBar } from "@skeletonlabs/skeleton";
+  import { passwordStrengthColorLevels, passwordStrengthLevels } from "./helpers";
 
   const options = {
     translations: zxcvbnEnPackage.translations,
@@ -15,22 +16,6 @@
 
   zxcvbnOptions.setOptions(options);
 
-  export const levels = [
-    "Super weak",
-    "Very weak",
-    "Weak",
-    "Strong",
-    "Very strong",
-  ];
-
-  export const colorLevels = [
-    "text-red-600",
-    "text-red-500",
-    "text-orange-400",
-    "text-green-300",
-    "text-green-500",
-  ];
-
   export let password = "";
 
   /* eslint-disable-next-line prefer-destructuring */
@@ -40,7 +25,7 @@
 <label for="strength" class="label mb-2 mt-3 text-slate-500">
   Password strength:
   <strong>
-    <span class={`label ${colorLevels[score]}`}> {levels[score]}</span>
+    <span class={`label ${passwordStrengthColorLevels[score]}`}> {passwordStrengthLevels[score]}</span>
   </strong>
 </label>
 

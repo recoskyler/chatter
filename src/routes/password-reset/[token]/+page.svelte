@@ -1,29 +1,15 @@
 <script lang="ts">
   import { enhance } from "$app/forms";
   import PasswordPopup from "components/PasswordPopup.svelte";
-  import { type PopupSettings, popup } from "@skeletonlabs/skeleton";
+  import { popup } from "@skeletonlabs/skeleton";
   import {
     MAX_PASSWORD_LENGTH,
     MIN_PASSWORD_LENGTH,
   } from "$lib/constants.js";
   import FormError from "components/FormError.svelte";
   import { isPasswordValid } from "$lib/functions/validators.js";
-  import PasswordStrengthMeter from "components/PasswordStrengthMeter.svelte";
-
-  const popupFocusBlur: PopupSettings = {
-    event: "focus-blur",
-    target: "popupFocusBlur",
-    placement: "top",
-  };
-
-  export const levels = ["Super weak", "Very weak", "Weak", "Strong", "Very strong"];
-  export const colorLevels = [
-    "text-red-600",
-    "text-red-500",
-    "text-orange-400",
-    "text-green-300",
-    "text-green-500",
-  ];
+  import PasswordStrengthMeter from "components/PasswordStrengthMeter/PasswordStrengthMeter.svelte";
+  import { passwordPopupFocusBlur } from "components/PasswordStrengthMeter/helpers.js";
 
   let password = "";
 
@@ -53,7 +39,7 @@
       maxlength={MAX_PASSWORD_LENGTH}
       required
       bind:value={password}
-      use:popup={popupFocusBlur}
+      use:popup={passwordPopupFocusBlur}
     /><br />
 
     <PasswordStrengthMeter password={password} />
