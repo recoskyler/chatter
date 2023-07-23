@@ -2,9 +2,9 @@ import { redirect, type Actions } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types";
 import { fail } from "@sveltejs/kit";
 import { auth, emailVerificationToken } from "$lib/server/lucia";
-import { EMAIL_VERIFICATION } from "$env/static/private";
 import { LuciaTokenError } from "@lucia-auth/tokens";
 import { sendEmailVerificationEmail } from "$lib/server/mailer";
+import { EMAIL_VERIFICATION } from "$lib/constants";
 
 export const load: PageServerLoad = async ({ locals }) => {
   const { user } = await locals.auth.validateUser();
@@ -12,9 +12,11 @@ export const load: PageServerLoad = async ({ locals }) => {
 
   if (!user || !session) throw redirect(302, "/login");
 
-  const emailVerificationEnabled = EMAIL_VERIFICATION === "true";
+  if (!EMAIL_VERIFICATION) {
+    throw redirect(302, "/login");
+  }
 
-  if (user && emailVerificationEnabled && user.verified) {
+  if (user && user.verified) {
     throw redirect(302, "/profile");
   }
 
