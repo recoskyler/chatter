@@ -55,6 +55,7 @@
     "drizzle-orm": "^0.27.2",
     "emailjs": "^4.0.2",
     "lucia-auth": "^1.8.0",
+    "minidenticons": "^4.2.0",
     "mysql2": "^3.5.2",
     "validator": "^13.9.0"
   }
