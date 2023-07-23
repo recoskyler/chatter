@@ -1,4 +1,4 @@
-import type { InferModel } from "drizzle-orm";
+import { relations, type InferModel } from "drizzle-orm";
 import {
   mysqlTable, bigint, varchar, boolean, timestamp, text, mysqlEnum, index,
 } from "drizzle-orm/mysql-core";
@@ -96,6 +96,53 @@ export const prompt = mysqlTable("prompt", {
   content: text("content").notNull(),
   deletedAt: timestamp("deleted_at"),
 }, table => ({ enabledIndex: index("prompt_enabled_index").on(table.enabled) }));
+
+// Relations
+
+export const userRelations = relations(user, ({ many }) => ({
+  chats: many(chat),
+  accounts: many(account),
+}));
+
+export const chatRelations = relations(
+  chat,
+  ({ many, one }) => ({
+    prompts: many(prompt),
+    user: one(user, {
+      fields: [chat.userId],
+      references: [user.id],
+    }),
+  }),
+);
+
+export const chatApiRelations = relations(
+  chatApi,
+  ({ many }) => ({ accounts: many(account) }),
+);
+
+export const accountRelations = relations(
+  account,
+  ({ one }) => ({
+    chatApi: one(chatApi, {
+      fields: [account.chatApiId],
+      references: [chatApi.id],
+    }),
+    user: one(user, {
+      fields: [account.userId],
+      references: [user.id],
+    }),
+  }),
+);
+
+export const promptRelations = relations(
+  prompt,
+  ({ one }) => ({
+    chat: one(chat, {
+      fields: [prompt.chatId],
+      references: [chat.id],
+    }),
+  }),
+);
 
 // Types
 
