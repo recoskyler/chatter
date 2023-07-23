@@ -6,6 +6,7 @@
     toastStore,
   } from "@skeletonlabs/skeleton";
   import type { PageData } from "./$types";
+  import Minidenticon from "components/Minidenticon.svelte";
 
   export let data: PageData;
 
@@ -52,13 +53,14 @@
   <title>Chatter | Profile</title>
 </svelte:head>
 
-<main class="container sm mx-auto my-auto p-5 text-center" id="profile-cont">
-  <h1 class="h1">Profile</h1>
+<main class="flex items-center justify-center flex-col mx-auto my-auto p-5 text-center" id="profile-cont">
+  <Minidenticon email={data.user.email} imgClass="mb-5" size={4} />
 
   <br />
 
   <div>
     <h2 class="h2">{data.user.name}</h2>
+    <br />
     <p>{data.user.email}</p>
   </div>
 
