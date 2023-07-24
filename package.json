@@ -9,7 +9,7 @@
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "lint": "eslint --ext .js,.svelte,.ts src",
     "fix-lint": "eslint --fix --ext .js,.svelte,.ts src",
-    "generate": "drizzle-kit generate:mysql --config=drizzle.config.ts",
+    "generate": "drizzle-kit generate:pg --config=drizzle.config.ts",
     "studio": "drizzle-kit studio"
   },
   "devDependencies": {
@@ -22,6 +22,7 @@
     "@sveltejs/kit": "^1.22.3",
     "@tailwindcss/forms": "^0.5.3",
     "@types/cookie": "^0.5.1",
+    "@types/pg": "^8.10.2",
     "@types/uuid": "^9.0.2",
     "@typescript-eslint/eslint-plugin": "^5.62.0",
     "autoprefixer": "^10.4.14",
@@ -44,7 +45,7 @@
   "type": "module",
   "dependencies": {
     "@floating-ui/dom": "^1.4.5",
-    "@lucia-auth/adapter-mysql": "^1.1.1",
+    "@lucia-auth/adapter-postgresql": "^1.0.1",
     "@lucia-auth/tokens": "^1.0.2",
     "@types/validator": "^13.7.17",
     "@zxcvbn-ts/core": "^3.0.2",
@@ -56,7 +57,7 @@
     "emailjs": "^4.0.2",
     "lucia-auth": "^1.8.0",
     "minidenticons": "^4.2.0",
-    "mysql2": "^3.5.2",
+    "pg": "^8.11.1",
     "validator": "^13.9.0"
   }
 }

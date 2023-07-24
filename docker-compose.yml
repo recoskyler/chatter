@@ -1,4 +1,6 @@
-version: "3.7"
+version: "3.8"
+
+name: chatter
 
 services:
   chatter-app:
@@ -8,21 +10,35 @@ services:
     ports:
       - "${APP_PORT:-3000}:3000"
 
-  mariadb:
-    image: mariadb:10.11
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+
+    ports:
+      - "${PGADMIN_FORWARD_PORT:-8888}:80"
+
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${VITE_DB_PASSWORD:-chatter}
+
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+
+  postgres:
+    image: postgres
     restart: always
 
     volumes:
-      - mariadb-data:/var/lib/mysql
+      - postgres-data:/var/lib/postgresql/data
 
     ports:
-      - "${VITE_DB_FORWARD_PORT:-3306}:3306"
+      - "${VITE_DB_FORWARD_PORT:-5432}:5432"
 
     environment:
-      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
-      MARIADB_USER: ${VITE_DB_USER:-chatter}
-      MARIADB_PASSWORD: ${VITE_DB_PASSWORD}
-      MYSQL_DATABASE: ${VITE_DB_DATABASE:-chatter}
+      POSTGRES_USER: ${VITE_DB_USER:-chatter}
+      POSTGRES_PASSWORD: ${VITE_DB_PASSWORD:-chatter}
+      POSTGRES_DB: ${VITE_DB_DATABASE:-chatter}
 
 volumes:
-  mariadb-data:
+  postgres-data:
+  pgadmin-data:

@@ -1,18 +1,18 @@
 import { relations, type InferModel } from "drizzle-orm";
 import {
-  mysqlTable, bigint, varchar, boolean, timestamp, text, mysqlEnum, index,
-} from "drizzle-orm/mysql-core";
+  pgTable, bigint, varchar, boolean, timestamp, text, pgEnum, index, uuid,
+} from "drizzle-orm/pg-core";
 
 // Lucia Auth
 
-export const user = mysqlTable("auth_user", {
+export const user = pgTable("auth_user", {
   id: varchar("id", { length: 15 }).primaryKey(),
   email: varchar("email", { length: 255 }).unique().notNull(),
   name: varchar("name", { length: 255 }).notNull(),
   verified: boolean("verified").default(false).notNull(),
 });
 
-export const session = mysqlTable("auth_session", {
+export const session = pgTable("auth_session", {
   id: varchar("id", { length: 128 }).primaryKey(),
   userId: varchar("user_id", { length: 15 })
     .notNull()
@@ -21,7 +21,7 @@ export const session = mysqlTable("auth_session", {
   idleExpires: bigint("idle_expires", { mode: "number" }).notNull(),
 });
 
-export const key = mysqlTable("auth_key", {
+export const key = pgTable("auth_key", {
   id: varchar("id", { length: 255 }).primaryKey(),
   userId: varchar("user_id", { length: 15 })
     .notNull()
@@ -33,8 +33,8 @@ export const key = mysqlTable("auth_key", {
 
 // Chatter
 
-export const chatApi = mysqlTable("chat_api", {
-  id: varchar("id", { length: 36 }).primaryKey(),
+export const chatApi = pgTable("chat_api", {
+  id: uuid("id").defaultRandom().primaryKey(),
   name: varchar("name", { length: 32 })
     .notNull()
     .unique(),
@@ -44,12 +44,12 @@ export const chatApi = mysqlTable("chat_api", {
     .notNull(),
 }, table => ({ enabledIndex: index("api_enabled_index").on(table.enabled) }));
 
-export const account = mysqlTable("account", {
-  id: varchar("id", { length: 36 }).primaryKey(),
+export const account = pgTable("account", {
+  id: uuid("id").defaultRandom().primaryKey(),
   name: varchar("name", { length: 255 }).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   key: varchar("key", { length: 255 }).notNull(),
-  chatApiId: varchar("id", { length: 36 })
+  chatApiId: uuid("chat_api_id")
     .references(() => chatApi.id)
     .notNull(),
   userId: varchar("user_id", { length: 15 })
@@ -58,8 +58,8 @@ export const account = mysqlTable("account", {
   deletedAt: timestamp("deleted_at"),
 });
 
-export const chat = mysqlTable("chat", {
-  id: varchar("id", { length: 36 }).primaryKey(),
+export const chat = pgTable("chat", {
+  id: uuid("id").defaultRandom().primaryKey(),
   remember: boolean("remember")
     .default(true)
     .notNull(),
@@ -71,9 +71,18 @@ export const chat = mysqlTable("chat", {
   deletedAt: timestamp("deleted_at"),
 });
 
-export const prompt = mysqlTable("prompt", {
-  id: varchar("id", { length: 36 }).primaryKey(),
-  chatId: varchar("id", { length: 36 })
+export const roleEnum = pgEnum(
+  "role",
+  [
+    "system",
+    "user",
+    "assistant",
+  ],
+);
+
+export const prompt = pgTable("prompt", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  chatId: uuid("chat_id")
     .references(() => chat.id),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   enabled: boolean("enabled")
@@ -85,14 +94,7 @@ export const prompt = mysqlTable("prompt", {
   successful: boolean("successful")
     .default(false)
     .notNull(),
-  role: mysqlEnum(
-    "role",
-    [
-      "system",
-      "user",
-      "assistant",
-    ],
-  ).notNull(),
+  role: roleEnum("role").notNull(),
   content: text("content").notNull(),
   deletedAt: timestamp("deleted_at"),
 }, table => ({ enabledIndex: index("prompt_enabled_index").on(table.enabled) }));
