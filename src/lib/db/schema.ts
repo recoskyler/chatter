@@ -1,4 +1,4 @@
-import { relations, type InferModel } from "drizzle-orm";
+import { relations } from "drizzle-orm";
 import {
   pgTable, bigint, varchar, boolean, timestamp, text, pgEnum, index, uuid,
 } from "drizzle-orm/pg-core";
@@ -145,20 +145,3 @@ export const promptRelations = relations(
     }),
   }),
 );
-
-// Types
-
-export type User = InferModel<typeof user, "select">;
-export type NewUser = InferModel<typeof user, "insert">;
-
-export type Chat = InferModel<typeof chat, "select">;
-export type NewChat = InferModel<typeof chat, "insert">;
-
-export type Prompt = InferModel<typeof prompt, "select">;
-export type NewPrompt = InferModel<typeof prompt, "insert">;
-
-export type Account = InferModel<typeof account, "select">;
-export type NewAccount = InferModel<typeof account, "insert">;
-
-export type ChatModel = InferModel<typeof chatModel, "select">;
-export type NewChatModel = InferModel<typeof chatModel, "insert">;
