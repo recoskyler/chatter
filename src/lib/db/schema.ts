@@ -33,7 +33,7 @@ export const key = pgTable("auth_key", {
 
 // Chatter
 
-export const chatApi = pgTable("chat_api", {
+export const chatModel = pgTable("chat_model", {
   id: uuid("id").defaultRandom().primaryKey(),
   name: varchar("name", { length: 32 })
     .notNull()
@@ -49,8 +49,8 @@ export const account = pgTable("account", {
   name: varchar("name", { length: 255 }).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   key: varchar("key", { length: 255 }).notNull(),
-  chatApiId: uuid("chat_api_id")
-    .references(() => chatApi.id)
+  chatModelId: uuid("chat_model_id")
+    .references(() => chatModel.id)
     .notNull(),
   userId: varchar("user_id", { length: 15 })
     .notNull()
@@ -117,17 +117,17 @@ export const chatRelations = relations(
   }),
 );
 
-export const chatApiRelations = relations(
-  chatApi,
+export const chatModelRelations = relations(
+  chatModel,
   ({ many }) => ({ accounts: many(account) }),
 );
 
 export const accountRelations = relations(
   account,
   ({ one }) => ({
-    chatApi: one(chatApi, {
-      fields: [account.chatApiId],
-      references: [chatApi.id],
+    chatModel: one(chatModel, {
+      fields: [account.chatModelId],
+      references: [chatModel.id],
     }),
     user: one(user, {
       fields: [account.userId],
@@ -160,5 +160,5 @@ export type NewPrompt = InferModel<typeof prompt, "insert">;
 export type Account = InferModel<typeof account, "select">;
 export type NewAccount = InferModel<typeof account, "insert">;
 
-export type ChatApi = InferModel<typeof chatApi, "select">;
-export type NewChatApi = InferModel<typeof chatApi, "insert">;
+export type ChatModel = InferModel<typeof chatModel, "select">;
+export type NewChatModel = InferModel<typeof chatModel, "insert">;
