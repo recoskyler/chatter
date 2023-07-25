@@ -18,8 +18,11 @@ const config = {
       components: "src/lib/components",
       images: "src/lib/images",
       styles: "src/lib/styles",
-      types: "src/lib/types",
     },
+
+    version: {
+      name: process.env.npm_package_version,
+    }
   },
 };
 

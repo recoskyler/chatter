@@ -1,5 +1,5 @@
 <script lang="ts">
-
+  import { version } from '$app/environment';
 </script>
 
 <footer>
@@ -22,7 +22,7 @@
 
     <!-- svelte-ignore missing-declaration -->
     <!-- eslint-disable-next-line no-undef -->
-    <span id="version">v{__APP_VERSION__}</span>
+    <span id="version">v{version}</span>
   </p>
 </footer>
 
