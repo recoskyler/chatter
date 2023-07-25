@@ -3,15 +3,43 @@ import * as dotenv from "dotenv";
 
 dotenv.config();
 
+const DEFAULT_PORT = "5432";
+const DEFAULT_USER = "chatter";
+const DEFAULT_PASSWORD = "chatter";
+const DEFAULT_DATABASE = "chatter";
+const DEFAULT_HOSTNAME = "127.0.0.1";
+
+const user = process.env.VITE_DB_USER === ""
+  ? DEFAULT_USER
+  : (process.env.VITE_DB_USER ?? DEFAULT_USER);
+
+const password = process.env.VITE_DB_PASSWORD === ""
+  ? DEFAULT_PASSWORD
+  : (process.env.VITE_DB_PASSWORD ?? DEFAULT_PASSWORD);
+
+const database = process.env.VITE_DB_DATABASE === ""
+  ? DEFAULT_DATABASE
+  : (process.env.VITE_DB_DATABASE ?? DEFAULT_DATABASE);
+
+const host = process.env.VITE_DB_HOST === ""
+  ? DEFAULT_HOSTNAME
+  : (process.env.VITE_DB_HOST ?? DEFAULT_HOSTNAME);
+
+const port = Number.parseInt(
+  process.env.VITE_DB_FORWARD_PORT === ""
+    ? DEFAULT_PORT
+    : (process.env.VITE_DB_FORWARD_PORT ?? DEFAULT_PORT)
+);
+
 export default {
   schema: "./src/lib/db/schema.ts",
   out: "./drizzle",
-  driver: "mysql2",
+  driver: "pg",
   dbCredentials: {
-    user: process.env.VITE_DB_USER ?? "chatter",
-    password: process.env.VITE_DB_PASSWORD,
-    database: process.env.VITE_DB_DATABASE ?? "chatter",
-    host: process.env.VITE_DB_HOST ?? "127.0.0.1",
-    port: process.env.VITE_DB_FORWARD_PORT ?? "3306",
+    user: user,
+    password: password,
+    database: database,
+    host: host,
+    port: port,
   },
 } satisfies Config;
