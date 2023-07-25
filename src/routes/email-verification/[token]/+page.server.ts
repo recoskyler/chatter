@@ -1,11 +1,11 @@
 import { auth, emailVerificationToken } from "$lib/server/lucia";
 import { LuciaTokenError } from "@lucia-auth/tokens";
 import { error } from "@sveltejs/kit";
-import { EMAIL_VERIFICATION } from "$env/static/private";
 import type { PageServerLoad } from "./$types";
+import { EMAIL_VERIFICATION } from "$lib/constants";
 
 export const load: PageServerLoad = async ({ locals, params }) => {
-  if (EMAIL_VERIFICATION !== "true") {
+  if (!EMAIL_VERIFICATION) {
     throw error(405, "Email verification disabled");
   }
 

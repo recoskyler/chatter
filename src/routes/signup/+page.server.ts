@@ -1,10 +1,10 @@
 import { fail, redirect } from "@sveltejs/kit";
 import { auth } from "$lib/server/lucia";
 import type { PageServerLoad, Actions } from "./$types";
-import { EMAIL_VERIFICATION } from "$env/static/private";
 import {
   isEmailValid, isNameValid, isPasswordValid,
 } from "$lib/functions/validators";
+import { EMAIL_VERIFICATION } from "$lib/constants";
 
 export const actions: Actions = {
   default: async ({ request, locals }) => {
@@ -66,7 +66,7 @@ export const actions: Actions = {
       return fail(400, { error: "Email taken" });
     }
 
-    if (EMAIL_VERIFICATION === "true") {
+    if (EMAIL_VERIFICATION) {
       throw redirect(302, "/email-verification");
     }
 

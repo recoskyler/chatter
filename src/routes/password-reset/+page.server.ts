@@ -4,17 +4,16 @@ import {
   fail, type Actions, error, redirect,
 } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types";
-import { EMAIL_VERIFICATION } from "$env/static/private";
 import { isEmailValid } from "$lib/functions/validators";
 import { db } from "$lib/server/drizzle";
 import { eq } from "drizzle-orm";
 import { user } from "$lib/db/schema";
+import { EMAIL_VERIFICATION } from "$lib/constants";
 
 export const load: PageServerLoad = async ({ locals }) => {
   const { user } = await locals.auth.validateUser();
-  const emailVerificationEnabled = EMAIL_VERIFICATION === "true";
 
-  if (user && emailVerificationEnabled && !user.verified) {
+  if (user && EMAIL_VERIFICATION && !user.verified) {
     throw redirect(302, "/email-verification");
   }
 
