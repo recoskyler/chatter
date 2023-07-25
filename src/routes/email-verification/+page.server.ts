@@ -7,8 +7,7 @@ import { sendEmailVerificationEmail } from "$lib/server/mailer";
 import { EMAIL_VERIFICATION } from "$lib/constants";
 
 export const load: PageServerLoad = async ({ locals }) => {
-  const { user } = await locals.auth.validateUser();
-  const { session } = await locals.auth.validateUser();
+  const { user, session } = await locals.auth.validateUser();
 
   if (!user || !session) throw redirect(302, "/login");
 
