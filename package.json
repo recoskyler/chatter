@@ -49,6 +49,7 @@
   "type": "module",
   "dependencies": {
     "@floating-ui/dom": "^1.4.5",
+    "@fortawesome/free-solid-svg-icons": "^6.4.0",
     "@lucia-auth/adapter-postgresql": "^1.0.1",
     "@lucia-auth/tokens": "^1.0.2",
     "@types/validator": "^13.7.17",
@@ -62,6 +63,7 @@
     "lucia-auth": "^1.8.0",
     "minidenticons": "^4.2.0",
     "pg": "^8.11.1",
+    "svelte-fa": "^3.0.4",
     "validator": "^13.9.0"
   }
 }
