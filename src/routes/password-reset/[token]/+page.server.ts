@@ -3,9 +3,19 @@ import { auth, passwordResetToken } from "$lib/server/lucia";
 import {
   fail, type Actions, error, redirect,
 } from "@sveltejs/kit";
+import { passwordResetLimiter } from "$lib/server/limiter";
+import type { PageServerLoad } from "./$types";
+
+export const load: PageServerLoad = event => {
+  passwordResetLimiter.cookieLimiter?.preflight(event);
+};
 
 export const actions: Actions = {
-  default: async ({ request, locals, params }) => {
+  default: async event => {
+    if (await passwordResetLimiter.isLimited(event)) throw error(429, "Too many requests");
+
+    const { request, locals, params } = event;
+
     try {
       const form = await request.formData();
       const password = form.get("password");

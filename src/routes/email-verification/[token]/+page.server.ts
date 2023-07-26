@@ -3,8 +3,15 @@ import { LuciaTokenError } from "@lucia-auth/tokens";
 import { error } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types";
 import { EMAIL_VERIFICATION } from "$lib/constants";
+import { emailVerificationLimiter } from "$lib/server/limiter";
 
-export const load: PageServerLoad = async ({ locals, params }) => {
+export const load: PageServerLoad = async event => {
+  emailVerificationLimiter.cookieLimiter?.preflight(event);
+
+  if (await emailVerificationLimiter.isLimited(event)) throw error(429, "Too many requests");
+
+  const { locals, params } = event;
+
   if (!EMAIL_VERIFICATION) {
     throw error(405, "Email verification disabled");
   }

@@ -9,8 +9,12 @@ import { db } from "$lib/server/drizzle";
 import { eq } from "drizzle-orm";
 import { user } from "$lib/db/schema";
 import { EMAIL_VERIFICATION } from "$lib/constants";
+import { passwordResetLimiter } from "$lib/server/limiter";
 
-export const load: PageServerLoad = async ({ locals }) => {
+export const load: PageServerLoad = async event => {
+  passwordResetLimiter.cookieLimiter?.preflight(event);
+
+  const { locals } = event;
   const { user } = await locals.auth.validateUser();
 
   if (user && EMAIL_VERIFICATION && !user.verified) {
@@ -23,7 +27,11 @@ export const load: PageServerLoad = async ({ locals }) => {
 };
 
 export const actions: Actions = {
-  default: async ({ request }) => {
+  default: async event => {
+    if (await passwordResetLimiter.isLimited(event)) throw error(429, "Too many requests");
+
+    const { request } = event;
+
     try {
       const form = await request.formData();
       const email = form.get("email");

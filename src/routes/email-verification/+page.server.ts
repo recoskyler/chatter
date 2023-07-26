@@ -1,12 +1,18 @@
-import { redirect, type Actions } from "@sveltejs/kit";
+import {
+  redirect, type Actions, error,
+} from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types";
 import { fail } from "@sveltejs/kit";
 import { auth, emailVerificationToken } from "$lib/server/lucia";
 import { LuciaTokenError } from "@lucia-auth/tokens";
 import { sendEmailVerificationEmail } from "$lib/server/mailer";
 import { EMAIL_VERIFICATION } from "$lib/constants";
+import { emailVerificationLimiter } from "$lib/server/limiter";
 
-export const load: PageServerLoad = async ({ locals }) => {
+export const load: PageServerLoad = async event => {
+  emailVerificationLimiter.cookieLimiter?.preflight(event);
+
+  const { locals } = event;
   const { user, session } = await locals.auth.validateUser();
 
   if (!user || !session) throw redirect(302, "/login");
@@ -70,7 +76,11 @@ export const load: PageServerLoad = async ({ locals }) => {
 };
 
 export const actions: Actions = {
-  default: async ({ locals }) => {
+  default: async event => {
+    if (await emailVerificationLimiter.isLimited(event)) throw error(429, "Too many requests");
+
+    const { locals } = event;
+
     const { session } = await locals.auth.validateUser();
 
     if (!session) return fail(401);

@@ -1,4 +1,6 @@
-import { fail, redirect } from "@sveltejs/kit";
+import {
+  error, fail, redirect,
+} from "@sveltejs/kit";
 import { auth } from "$lib/server/lucia";
 import type { PageServerLoad, Actions } from "./$types";
 import {
@@ -8,13 +10,18 @@ import { setError, superValidate } from "sveltekit-superforms/server";
 import { insertUserSchema } from "$lib/db/types";
 import { z } from "zod";
 import { isPasswordValid } from "$lib/functions/validators";
+import { signUpLimiter } from "$lib/server/limiter";
 
 const insertAuthUserSchema = insertUserSchema.extend(
   { password: z.string().min(MIN_PASSWORD_LENGTH).max(MAX_PASSWORD_LENGTH) },
 );
 
 export const actions: Actions = {
-  default: async ({ request, locals }) => {
+  default: async event => {
+    if (await signUpLimiter.isLimited(event)) throw error(429, "Too many requests");
+
+    const { request, locals } = event;
+
     const form = await superValidate(request, insertAuthUserSchema);
 
     if (!form.valid) {
@@ -64,7 +71,10 @@ export const actions: Actions = {
   },
 };
 
-export const load: PageServerLoad = async ({ locals }) => {
+export const load: PageServerLoad = async event => {
+  signUpLimiter.cookieLimiter?.preflight(event);
+
+  const { locals } = event;
   const { session } = await locals.auth.validateUser();
 
   if (session) throw redirect(302, "/");
