@@ -124,6 +124,9 @@ devDependencies:
   svelte-preprocess:
     specifier: ^5.0.4
     version: 5.0.4(postcss-load-config@4.0.1)(postcss@8.4.25)(sass@1.63.6)(svelte@4.0.5)(typescript@5.0.4)
+  sveltekit-rate-limiter:
+    specifier: ^0.3.2
+    version: 0.3.2(@sveltejs/kit@1.22.3)
   sveltekit-superforms:
     specifier: ^1.5.0
     version: 1.5.0(@sveltejs/kit@1.22.3)(svelte@4.0.5)(zod@3.21.4)
@@ -649,6 +652,11 @@ packages:
 
   /@humanwhocodes/object-schema@1.2.1:
     resolution: {integrity: sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==}
+    dev: true
+
+  /@isaacs/ttlcache@1.4.1:
+    resolution: {integrity: sha512-RQgQ4uQ+pLbqXfOmieB91ejmLwvSgv9nLx6sT6sD83s7umBypgg+OIBOBbEUiJXrfpnp9j0mRhYYdzp9uqq3lA==}
+    engines: {node: '>=12'}
     dev: true
 
   /@jridgewell/gen-mapping@0.3.3:
@@ -3107,6 +3115,15 @@ packages:
       locate-character: 3.0.0
       magic-string: 0.30.1
       periscopic: 3.1.0
+    dev: true
+
+  /sveltekit-rate-limiter@0.3.2(@sveltejs/kit@1.22.3):
+    resolution: {integrity: sha512-v3NnzGOLCrzI+x7461DLhOyYgpVCYExKFWybSOCWJoYqAT2lBPYjNGGpkOw2YgQkuFyARUZiFYfGkWnAA91IIA==}
+    peerDependencies:
+      '@sveltejs/kit': 1.x
+    dependencies:
+      '@isaacs/ttlcache': 1.4.1
+      '@sveltejs/kit': 1.22.3(svelte@4.0.5)(vite@4.4.3)
     dev: true
 
   /sveltekit-superforms@1.5.0(@sveltejs/kit@1.22.3)(svelte@4.0.5)(zod@3.21.4):
