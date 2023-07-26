@@ -2,51 +2,41 @@ import { fail, redirect } from "@sveltejs/kit";
 import { auth } from "$lib/server/lucia";
 import type { PageServerLoad, Actions } from "./$types";
 import {
-  isEmailValid, isNameValid, isPasswordValid,
-} from "$lib/functions/validators";
-import { EMAIL_VERIFICATION } from "$lib/constants";
+  EMAIL_VERIFICATION, MAX_PASSWORD_LENGTH, MIN_PASSWORD_LENGTH,
+} from "$lib/constants";
+import { setError, superValidate } from "sveltekit-superforms/server";
+import { insertUserSchema } from "$lib/db/types";
+import { z } from "zod";
+import { isPasswordValid } from "$lib/functions/validators";
+
+const insertAuthUserSchema = insertUserSchema.extend(
+  { password: z.string().min(MIN_PASSWORD_LENGTH).max(MAX_PASSWORD_LENGTH) },
+);
 
 export const actions: Actions = {
   default: async ({ request, locals }) => {
-    const form = await request.formData();
-    const name = form.get("name");
-    const email = form.get("email");
-    const password = form.get("password");
+    const form = await superValidate(request, insertAuthUserSchema);
 
-    if (typeof password !== "string" || typeof name !== "string" || typeof email !== "string") {
-      console.error("Invalid types");
-
-      return fail(400, { error: "Invalid input" });
+    if (!form.valid) {
+      console.error("Form invalid");
+      console.error(form.errors);
+      return fail(400, { form });
     }
 
-    if (!isNameValid(name)) {
-      console.error("Invalid name");
-
-      return fail(400, { error: "Invalid name. Name must be 2-255 characters long" });
-    }
-
-    if (!isEmailValid(email)) {
-      console.error("Invalid email");
-
-      return fail(400, { error: "Invalid email" });
-    }
-
-    if (!isPasswordValid(password)) {
-      console.error("Invalid password");
-
-      return fail(400, { error: "Invalid password. Must contain at least 1 lowercase, 1 uppercase letter, 1 number, 1 special character, and be 8-64 characters long." });
+    if (!isPasswordValid(form.data.password)) {
+      return setError(form, "password", "Password does not meet the requirements or too weak.");
     }
 
     try {
       const user = await auth.createUser({
         primaryKey: {
           providerId: "email",
-          providerUserId: email,
-          password,
+          providerUserId: form.data.email,
+          password: form.data.password,
         },
         attributes: {
-          email: email,
-          name: name,
+          email: form.data.email,
+          name: form.data.name,
           verified: false,
         },
       });
@@ -63,7 +53,7 @@ export const actions: Actions = {
     } catch (e) {
       console.error("Email taken: ", e);
 
-      return fail(400, { error: "Email taken" });
+      return setError(form, "email", "Email already exists.");
     }
 
     if (EMAIL_VERIFICATION) {
@@ -79,5 +69,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 
   if (session) throw redirect(302, "/");
 
-  return {};
+  const form = await superValidate(insertAuthUserSchema);
+
+  return { form };
 };

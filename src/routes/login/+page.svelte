@@ -1,15 +1,12 @@
 <script lang="ts">
-  import { enhance } from "$app/forms";
-  import { MAX_EMAIL_LENGTH, MAX_PASSWORD_LENGTH, MIN_EMAIL_LENGTH, MIN_PASSWORD_LENGTH } from "$lib/constants.js";
-  import { isEmailValid } from "$lib/functions/validators.js";
   import FormError from "components/FormError.svelte";
+  import { superForm } from "sveltekit-superforms/client";
+  import type { PageData } from "./$types";
+  import { ProgressRadial } from "@skeletonlabs/skeleton";
 
-  let email = "";
-  let password = "";
+  export let data: PageData;
 
-  const isValid = (email: string, password: string) => isEmailValid(email) && password.length >= MIN_PASSWORD_LENGTH;
-
-  export let form;
+  const { form, errors, constraints, enhance, delayed } = superForm(data.form);
 </script>
 
 <svelte:head>
@@ -20,50 +17,59 @@
   <h1 class="h2 text-center mb-5 p-5">Sign in</h1>
 
   <form method="POST" use:enhance>
-    <label for="email" class="label mb-2">Email</label>
+    <label for="email" class="label mb-5">
+      <span>Email</span>
 
-    <input
-      id="email"
-      name="email"
-      type="email"
-      class="input mb-5"
-      title="Email"
-      placeholder="john@example.com"
-      autocomplete="email"
-      minlength={MIN_EMAIL_LENGTH}
-      maxlength={MAX_EMAIL_LENGTH}
-      required
-      bind:value={email}
-    /><br />
+      <input
+        id="email"
+        name="email"
+        type="email"
+        class="input mb-5"
+        title="Email"
+        placeholder="john@example.com"
+        autocomplete="email"
+        bind:value={$form.email}
+        {...$constraints.email}
+      /><br />
+    </label>
 
-    <label for="password" class="label mb-2">Password</label>
+    {#if $errors.email}<FormError error={$errors.email} />{/if}
 
-    <input
-      type="password"
-      id="password"
-      name="password"
-      class="input mb-5"
-      title="Password"
-      placeholder="password"
-      minlength={MIN_PASSWORD_LENGTH}
-      maxlength={MAX_PASSWORD_LENGTH}
-      required
-      bind:value={password}
-    /><br />
+    <label for="password" class="label mb-5">
+      <span>Password</span>
 
-    <FormError error={form?.error} />
+      <input
+        type="password"
+        id="password"
+        name="password"
+        class="input mb-5"
+        title="Password"
+        placeholder="password"
+        bind:value={$form.password}
+        {...$constraints.password}
+      /><br />
+    </label>
+
+    {#if $errors.password}<FormError error={$errors.password} />{/if}
+
+    {#if $errors?._errors}<FormError error={$errors._errors} />{/if}
 
     <p class="text-center">
       <span class="text-slate-400">Forgot your password? </span>
       <a class="anchor" href="/password-reset">Reset password</a>
     </p>
 
-    <input
-      type="submit"
-      value="Continue"
-      class={`btn mt-5 w-full ${isValid(email, password) ? "variant-filled-primary" : "variant-filled-surface"}`}
-      disabled={!isValid(email, password)}
-    />
+    <div class="flex flex-row gap-5">
+      <input
+        type="submit"
+        value="Continue"
+        class="btn mt-5 w-full variant-filled-primary"
+      />
+
+      {#if $delayed}
+        <ProgressRadial width="w-10" />
+      {/if}
+    </div>
   </form>
 
   <hr class="!border-t-2 my-5" />

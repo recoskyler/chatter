@@ -4,10 +4,12 @@ import {
 import type { Actions, PageServerLoad } from "./$types";
 import { db } from "$lib/server/drizzle";
 import {
-  account, chatModel, user, type NewAccount,
+  account, chatModel, user,
 } from "$lib/db/schema";
 import { eq } from "drizzle-orm";
 import { EMAIL_VERIFICATION } from "$lib/constants";
+import { setError, superValidate } from "sveltekit-superforms/server";
+import { insertAccountSchema } from "$lib/db/types";
 
 export const load: PageServerLoad = async ({ locals }) => {
   const { user: authUser, session } = await locals.auth.validateUser();
@@ -32,7 +34,12 @@ export const load: PageServerLoad = async ({ locals }) => {
 
   if (dbUser.accounts.length !== 0) throw redirect(302, "/app");
 
-  return { user: dbUser, chatModels: chatModels };
+  const form = await superValidate(insertAccountSchema);
+
+  form.data.chatModelId = chatModels[0].id;
+  form.data.userId = dbUser.id;
+
+  return { user: dbUser, chatModels, form };
 };
 
 export const actions: Actions = {
@@ -43,43 +50,36 @@ export const actions: Actions = {
       throw redirect(302, "/login");
     }
 
-    const form = await request.formData();
-    const name = form.get("name");
-    const key = form.get("key");
-    const model = form.get("model");
+    console.info("Creating first account...");
 
-    if (typeof name !== "string" || typeof key !== "string" || typeof model !== "string") {
-      return fail(400, { error: "Invalid input" });
-    }
+    const form = await superValidate(request, insertAccountSchema);
 
-    if (name.trim().length < 2 || name.trim().length > 255) {
-      return fail(400, { error: "Invalid input" });
-    }
-
-    if (key.trim().length < 2 || key.trim().length > 255) {
-      return fail(400, { error: "Invalid input" });
+    if (!form.valid) {
+      console.error("Form invalid");
+      console.error(form.errors);
+      return fail(400, { form });
     }
 
     const chatModels = await db.query.chatModel.findMany({ where: eq(chatModel.enabled, true) });
 
-    if (chatModels.length === 0) throw error(404, "No models found");
+    if (chatModels.length === 0) {
+      console.error("No models found. Did you seed the database?");
+      throw error(404, "No models found");
+    }
 
     const chatModelIds = chatModels.map(m => m.id);
 
-    if (!chatModelIds.includes(model)) {
-      return fail(400, { error: "Invalid model" });
+    if (!chatModelIds.includes(form.data.chatModelId)) {
+      console.error("Invalid model");
+      return setError(form, "chatModelId", "Invalid model");
     }
 
-    const record: NewAccount = {
-      chatApiId: model,
-      key: key,
-      name: name,
-      userId: authUser.userId,
-    };
-
     try {
-      await db.insert(account).values(record);
+      await db.insert(account).values(form.data);
+      console.info("Created first account");
     } catch (e) {
+      console.error("Failed to create account");
+      console.error(e);
       throw error(500, "Failed to create account");
     }
 

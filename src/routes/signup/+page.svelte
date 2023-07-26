@@ -1,26 +1,15 @@
 <script lang="ts">
   import PasswordStrengthMeter from "../../lib/components/PasswordStrengthMeter/PasswordStrengthMeter.svelte";
-  import { enhance } from "$app/forms";
-  import { popup } from "@skeletonlabs/skeleton";
-  import { fade } from "svelte/transition";
-  import {
-    MAX_EMAIL_LENGTH,
-    MAX_NAME_LENGTH,
-    MAX_PASSWORD_LENGTH,
-    MIN_EMAIL_LENGTH,
-    MIN_NAME_LENGTH,
-    MIN_PASSWORD_LENGTH,
-  } from "$lib/constants.js";
+  import { ProgressRadial, popup } from "@skeletonlabs/skeleton";
   import PasswordPopup from "components/PasswordPopup.svelte";
-  import { isValid } from "$lib/functions/validators.js";
   import FormError from "components/FormError.svelte";
   import { passwordPopupFocusBlur } from "components/PasswordStrengthMeter/helpers";
+  import { superForm } from "sveltekit-superforms/client";
+  import type { PageData } from "./$types";
 
-  let email = "";
-  let name = "";
-  let password = "";
+  export let data: PageData;
 
-  export let form;
+  const { form, errors, constraints, enhance, delayed } = superForm(data.form);
 </script>
 
 <svelte:head>
@@ -31,70 +20,63 @@
   <h1 class="h2 text-center mb-5 p-5">Create an account</h1>
 
   <form method="POST" use:enhance>
-    <label for="name" class="label mb-2">Name</label>
+    <label for="name" class="label mb-2">
+      <span>Name</span>
 
-    <input
-      id="name"
-      name="name"
-      type="text"
-      class="input"
-      title="Name"
-      placeholder="John Doe"
-      minlength={MIN_NAME_LENGTH}
-      maxlength={MAX_NAME_LENGTH}
-      required
-      bind:value={name}
-    /><br />
+      <input
+        id="name"
+        name="name"
+        type="text"
+        class="input"
+        title="Name"
+        placeholder="John Doe"
+        bind:value={$form.name}
+        {...$constraints.name}
+      /><br />
 
-    {#if name.trim() !== "" && (name.trim().length < MIN_NAME_LENGTH || name.trim().length > MAX_NAME_LENGTH)}
-      <p class="text-red-400 mt-2 break-words max-w-xs" transition:fade>
-        Name must be between 2-255 characters long
-      </p>
-    {/if}
+      {#if $errors.name}<FormError error={$errors.name} />{/if}
+    </label>
 
-    <label for="email" class="label mb-2 mt-5">Email</label>
 
-    <input
-      id="email"
-      name="email"
-      type="email"
-      class="input"
-      title="Email"
-      placeholder="john@example.com"
-      autocomplete="email"
-      minlength={MIN_EMAIL_LENGTH}
-      maxlength={MAX_EMAIL_LENGTH}
-      required
-      bind:value={email}
-    /><br />
+    <label for="email" class="label mb-2 mt-5">
+      <span>Email</span>
 
-    {#if email.trim() !== "" && (email.trim().length < MIN_EMAIL_LENGTH || email.trim().length > MAX_EMAIL_LENGTH)}
-      <p class="text-red-400 mt-2 break-words max-w-xs" transition:fade>
-        Email must be valid and between 5-255 characters long
-      </p>
-    {/if}
+      <input
+        id="email"
+        name="email"
+        type="email"
+        class="input"
+        title="Email"
+        placeholder="john@example.com"
+        autocomplete="email"
+        bind:value={$form.email}
+        {...$constraints.email}
+      /><br />
 
-    <label for="password" class="label mb-2 mt-5">Password</label>
+      {#if $errors.email}<FormError error={$errors.email} />{/if}
+    </label>
 
-    <PasswordPopup {password} />
+    <label for="password" class="label mb-2 mt-5">
+      <span>Password</span>
 
-    <input
-      type="password"
-      id="password"
-      name="password"
-      class="input"
-      title="Password"
-      placeholder="password"
-      minlength={MIN_PASSWORD_LENGTH}
-      maxlength={MAX_PASSWORD_LENGTH}
-      required
-      bind:value={password}
-      use:popup={passwordPopupFocusBlur}
-    /><br />
+      <PasswordPopup password={$form.password} />
 
-    <PasswordStrengthMeter {password} />
+      <input
+        type="password"
+        id="password"
+        name="password"
+        class="input mb-3"
+        title="Password"
+        placeholder="password"
+        bind:value={$form.password}
+        use:popup={passwordPopupFocusBlur}
+        {...$constraints.password}
+      /><br />
 
-    <FormError error={form?.error} />
+      {#if $errors.password}<FormError error={$errors.password} />{/if}
+    </label>
+
+    <PasswordStrengthMeter password={$form.password} />
 
     <p class="text-center text-slate-400">
       <span>By continuing you agree to</span>
@@ -104,16 +86,17 @@
       <a class="anchor" href="/privacy-policy">privacy policy</a>
     </p>
 
-    <input
-      type="submit"
-      value="Continue"
-      class={`btn mt-5 w-full ${
-        isValid(name, email, password)
-          ? "variant-filled-primary"
-          : "variant-filled-surface"
-      }`}
-      disabled={!isValid(name, email, password)}
-    />
+    <div class="flex flex-row gap-5">
+      <input
+        type="submit"
+        value="Continue"
+        class="btn mt-5 w-full variant-filled-primary"
+      />
+
+      {#if $delayed}
+        <ProgressRadial width="2rem" />
+      {/if}
+    </div>
   </form>
 
   <hr class="!border-t-2 my-5" />
