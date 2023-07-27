@@ -22,7 +22,7 @@ export const load: PageServerLoad = async event => {
   }
 
   if (user && user.verified) {
-    throw redirect(302, "/profile");
+    throw redirect(302, "/app/profile");
   }
 
   let allExpired = true;
@@ -66,7 +66,7 @@ export const load: PageServerLoad = async event => {
 
       locals.auth.setSession(null); // remove cookie
 
-      throw redirect(302, "/profile");
+      throw redirect(302, "/app/profile");
     }
 
     console.error(e);

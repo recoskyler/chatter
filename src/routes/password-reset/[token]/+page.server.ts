@@ -50,6 +50,6 @@ export const actions: Actions = {
       throw error(500, "Failed to reset password");
     }
 
-    throw redirect(302, "/profile");
+    throw redirect(302, "/app/profile");
   },
 };

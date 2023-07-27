@@ -22,7 +22,7 @@ export const load: PageServerLoad = async event => {
   }
 
   if (user) {
-    throw redirect(302, "/profile");
+    throw redirect(302, "/app/profile");
   }
 };
 
