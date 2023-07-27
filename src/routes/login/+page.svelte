@@ -59,7 +59,7 @@
       <a class="anchor" href="/password-reset">Reset password</a>
     </p>
 
-    <div class="flex flex-row gap-5">
+    <div class="flex flex-row gap-5 justify-center items-center">
       <input
         type="submit"
         value="Continue"
