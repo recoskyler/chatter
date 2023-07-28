@@ -17,9 +17,9 @@ export const load: PageServerLoad = async event => {
   signInLimiter.cookieLimiter?.preflight(event);
 
   const { locals } = event;
-  const { session } = await locals.auth.validateUser();
+  const session = await locals.auth.validate();
 
-  if (session) throw redirect(302, "/");
+  if (session) throw redirect(302, "/app");
 
   const form = await superValidate(loginSchema);
 
@@ -42,7 +42,7 @@ export const actions: Actions = {
 
     try {
       const key = await auth.useKey("email", form.data.email, form.data.password);
-      const session = await auth.createSession(key.userId);
+      const session = await auth.createSession({ userId: key.userId, attributes: {} });
 
       locals.auth.setSession(session);
     } catch {

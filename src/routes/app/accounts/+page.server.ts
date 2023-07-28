@@ -1,12 +1,11 @@
-
-import { db } from "$lib/server/drizzle";
 import { error, redirect } from "@sveltejs/kit";
-import type { LayoutServerLoad } from "./$types";
-import { EMAIL_VERIFICATION } from "$lib/constants";
-import { eq } from "drizzle-orm";
+import type { PageServerLoad } from "./$types";
+import { db } from "$lib/server/drizzle";
 import { user } from "$lib/db/schema";
+import { eq } from "drizzle-orm";
+import { EMAIL_VERIFICATION } from "$lib/constants";
 
-export const load: LayoutServerLoad = async ({ locals }) => {
+export const load: PageServerLoad = async ({ locals }) => {
   const session = await locals.auth.validate();
 
   if (!session || (EMAIL_VERIFICATION && !session.user.verified)) {
@@ -22,6 +21,8 @@ export const load: LayoutServerLoad = async ({ locals }) => {
   });
 
   if (!dbUser) throw error(404, "User not found");
+
+  if (dbUser.accounts.length === 0) throw redirect(302, "/app/setup");
 
   return { user: dbUser };
 };

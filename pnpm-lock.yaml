@@ -12,11 +12,8 @@ dependencies:
     specifier: ^6.4.0
     version: 6.4.0
   '@lucia-auth/adapter-postgresql':
-    specifier: ^1.0.1
-    version: 1.0.1(lucia-auth@1.8.0)(pg@8.11.1)
-  '@lucia-auth/tokens':
-    specifier: ^1.0.2
-    version: 1.0.2(lucia-auth@1.8.0)
+    specifier: ^2.0.0
+    version: 2.0.0(lucia@2.0.0)(pg@8.11.1)
   '@types/validator':
     specifier: ^13.7.17
     version: 13.7.17
@@ -41,6 +38,9 @@ dependencies:
   emailjs:
     specifier: ^4.0.2
     version: 4.0.2(typescript@5.0.4)
+  lucia:
+    specifier: ^2.0.0
+    version: 2.0.0
   lucia-auth:
     specifier: ^1.8.0
     version: 1.8.0
@@ -713,25 +713,20 @@ packages:
       '@jridgewell/sourcemap-codec': 1.4.14
     dev: true
 
-  /@lucia-auth/adapter-postgresql@1.0.1(lucia-auth@1.8.0)(pg@8.11.1):
-    resolution: {integrity: sha512-+5A5Yyl8itjHB2bqNQWIJAxNAMBkQsk/kad+WGBRkXmdDTwj+854fmC4nTYprsO2M0q92KfjNZhdCBh4UD2Sgg==}
+  /@lucia-auth/adapter-postgresql@2.0.0(lucia@2.0.0)(pg@8.11.1):
+    resolution: {integrity: sha512-1HUOjJPbCxvhFcHjjr6LypflBtGCS5fsXsK++SsyKn3bVj6Z6XwgxMhvLTJlvwXEQxGL1c9HJE81mIZHaHT4+w==}
     peerDependencies:
-      lucia-auth: ^1.4.0
-      pg: ^8.0.0
+      lucia: ^2.0.0
+      pg: ^8.8.0
+      postgres: ^3.3.0
     peerDependenciesMeta:
       pg:
         optional: true
+      postgres:
+        optional: true
     dependencies:
-      lucia-auth: 1.8.0
+      lucia: 2.0.0
       pg: 8.11.1
-    dev: false
-
-  /@lucia-auth/tokens@1.0.2(lucia-auth@1.8.0):
-    resolution: {integrity: sha512-gdhzw7CK+6V39+u/iGYauLblNoA+fhQzOUEkGJCrzA8Nth2VxOJQixTJxV6YATcy2PPYihJgIeU8GFhpkhYXig==}
-    peerDependencies:
-      lucia-auth: 1.x
-    dependencies:
-      lucia-auth: 1.8.0
     dev: false
 
   /@neoconfetti/svelte@1.0.0:
@@ -2298,6 +2293,10 @@ packages:
 
   /lucia-auth@1.8.0:
     resolution: {integrity: sha512-zI8gT2AOpxTPIxYzToEdgoht+GOflrduZiHPsOEmg4/2pThOyCW3o3lXh+Uwh20tJ9QoXwQe9/Omn6PlUG6efw==}
+    dev: false
+
+  /lucia@2.0.0:
+    resolution: {integrity: sha512-WRBMoZIgTHH6y2bAEHZWgWcMH6tDsQ+wf45juUgmn3ycjipn/e6OGpWki4XSjEuRm50WXghH+2EF9LCjCHUsUw==}
     dev: false
 
   /magic-string@0.27.0:

@@ -16,7 +16,7 @@ const changePasswordSchema = z.object({
 
 export const actions: Actions = {
   signOut: async ({ locals }) => {
-    const { session } = await locals.auth.validateUser();
+    const session = await locals.auth.validate();
 
     if (!session) return fail(401);
 
@@ -25,12 +25,12 @@ export const actions: Actions = {
     locals.auth.setSession(null); // remove cookie
   },
   delete: async ({ locals }) => {
-    const { session, user } = await locals.auth.validateUser();
+    const session = await locals.auth.validate();
 
-    if (!session || !user) return fail(401);
+    if (!session) return fail(401);
 
     try {
-      await auth.deleteUser(user.userId);
+      await auth.deleteUser(session.user.userId);
     } catch (error) {
       return fail(500, { error: "Failed to delete account" });
     }
@@ -40,9 +40,9 @@ export const actions: Actions = {
     locals.auth.setSession(null); // remove cookie
   },
   changePassword: async ({ locals, request }) => {
-    const { session, user } = await locals.auth.validateUser();
+    const session = await locals.auth.validate();
 
-    if (!session || !user) return fail(401);
+    if (!session) return fail(401);
 
     const form = await superValidate(request, changePasswordSchema);
 
@@ -57,9 +57,9 @@ export const actions: Actions = {
     }
 
     try {
-      await auth.useKey("email", user.email, form.data.currentPassword);
-      await auth.updateKeyPassword("email", user.email, form.data.password);
-      await auth.invalidateAllUserSessions(user.userId);
+      await auth.useKey("email", session.user.email, form.data.currentPassword);
+      await auth.updateKeyPassword("email", session.user.email, form.data.password);
+      await auth.invalidateAllUserSessions(session.user.userId);
 
       locals.auth.setSession(null);
     } catch (e) {
@@ -76,15 +76,15 @@ export const actions: Actions = {
 };
 
 export const load: PageServerLoad = async ({ locals }) => {
-  const { user } = await locals.auth.validateUser();
+  const session = await locals.auth.validate();
 
-  if (!user) throw redirect(302, "/login");
+  if (!session) throw redirect(302, "/login");
 
-  if (user && EMAIL_VERIFICATION && !user.verified) {
+  if (EMAIL_VERIFICATION && !session.user.verified) {
     throw redirect(302, "/email-verification");
   }
 
   const form = await superValidate(changePasswordSchema);
 
-  return { user, form };
+  return { user: session.user, form };
 };

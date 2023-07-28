@@ -36,7 +36,7 @@ export const actions: Actions = {
 
     try {
       const user = await auth.createUser({
-        primaryKey: {
+        key: {
           providerId: "email",
           providerUserId: form.data.email,
           password: form.data.password,
@@ -50,7 +50,7 @@ export const actions: Actions = {
 
       console.log("User created");
 
-      const session = await auth.createSession(user.userId);
+      const session = await auth.createSession({ userId: user.userId, attributes: {} });
 
       console.log("Session created");
 
@@ -75,9 +75,9 @@ export const load: PageServerLoad = async event => {
   signUpLimiter.cookieLimiter?.preflight(event);
 
   const { locals } = event;
-  const { session } = await locals.auth.validateUser();
+  const session = await locals.auth.validate();
 
-  if (session) throw redirect(302, "/");
+  if (session) throw redirect(302, "/app");
 
   const form = await superValidate(insertAuthUserSchema);
 

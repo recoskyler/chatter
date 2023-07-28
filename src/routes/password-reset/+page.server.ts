@@ -1,4 +1,4 @@
-import { auth, passwordResetToken } from "$lib/server/lucia";
+import { generatePasswordResetToken } from "$lib/server/lucia";
 import { sendPasswordResetEmail } from "$lib/server/mailer";
 import {
   fail, type Actions, error, redirect,
@@ -15,15 +15,19 @@ export const load: PageServerLoad = async event => {
   passwordResetLimiter.cookieLimiter?.preflight(event);
 
   const { locals } = event;
-  const { user } = await locals.auth.validateUser();
+  const session = await locals.auth.validate();
 
-  if (user && EMAIL_VERIFICATION && !user.verified) {
+  if (!session) return;
+
+  const dbUser = await db.query.user.findFirst({ where: eq(user.id, session.userId) });
+
+  if (!dbUser) throw error(404, "User not found");
+
+  if (dbUser && EMAIL_VERIFICATION && !dbUser.verified) {
     throw redirect(302, "/email-verification");
   }
 
-  if (user) {
-    throw redirect(302, "/app/profile");
-  }
+  throw redirect(302, "/app/profile");
 };
 
 export const actions: Actions = {
@@ -41,20 +45,15 @@ export const actions: Actions = {
         return fail(400, { error: "Invalid email}" });
       }
 
-      const databaseUsers = await db.select().from(user).where(eq(user.email, email)).limit(1);
+      const dbUser = await db.query.user.findFirst({ where: eq(user.email, email) });
 
-      if (databaseUsers.length === 0) {
-        return { success: true };
-      }
+      if (!dbUser) return { success: true };
 
-      const [databaseUser] = databaseUsers;
-
-      const authUser = auth.transformDatabaseUser(databaseUser);
-      const token = await passwordResetToken.issue(authUser.userId);
+      const token = await generatePasswordResetToken(dbUser.id);
 
       console.log("Issued new password reset token");
 
-      const passwordResetResult = await sendPasswordResetEmail(authUser.email, token.toString());
+      const passwordResetResult = await sendPasswordResetEmail(dbUser.email, token.toString());
 
       if (!passwordResetResult) {
         return fail(500, { error: "Failed to send password reset email" });

@@ -6,15 +6,15 @@ import {
 // Lucia Auth
 
 export const user = pgTable("auth_user", {
-  id: varchar("id", { length: 15 }).primaryKey(),
+  id: text("id").primaryKey(),
   email: varchar("email", { length: 255 }).unique().notNull(),
   name: varchar("name", { length: 255 }).notNull(),
   verified: boolean("verified").default(false).notNull(),
 });
 
 export const session = pgTable("auth_session", {
-  id: varchar("id", { length: 128 }).primaryKey(),
-  userId: varchar("user_id", { length: 15 })
+  id: text("id").primaryKey(),
+  userId: text("user_id")
     .notNull()
     .references(() => user.id),
   activeExpires: bigint("active_expires", { mode: "number" }).notNull(),
@@ -22,13 +22,19 @@ export const session = pgTable("auth_session", {
 });
 
 export const key = pgTable("auth_key", {
-  id: varchar("id", { length: 255 }).primaryKey(),
-  userId: varchar("user_id", { length: 15 })
+  id: text("id").primaryKey(),
+  userId: text("user_id")
     .notNull()
     .references(() => user.id),
-  primaryKey: boolean("primary_key").notNull(),
-  hashedPassword: varchar("hashed_password", { length: 255 }),
-  expires: bigint("expires", { mode: "number" }),
+  hashedPassword: text("hashed_password"),
+});
+
+export const token = pgTable("auth_token", {
+  id: text("id").primaryKey(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => user.id),
+  expires: bigint("expires", { mode: "number" }).notNull(),
 });
 
 // Chatter
@@ -52,7 +58,7 @@ export const account = pgTable("account", {
   chatModelId: uuid("chat_model_id")
     .references(() => chatModel.id)
     .notNull(),
-  userId: varchar("user_id", { length: 15 })
+  userId: text("id")
     .notNull()
     .references(() => user.id),
   deletedAt: timestamp("deleted_at"),
@@ -65,7 +71,7 @@ export const chat = pgTable("chat", {
     .notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   name: varchar("name", { length: 255 }).default("New chat"),
-  userId: varchar("user_id", { length: 15 })
+  userId: text("id")
     .notNull()
     .references(() => user.id),
   deletedAt: timestamp("deleted_at"),

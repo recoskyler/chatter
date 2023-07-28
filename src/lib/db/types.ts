@@ -1,7 +1,7 @@
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 import {
-  account, chatModel, chat, user, prompt,
+  account, chatModel, chat, user, prompt, token,
 } from "./schema";
 import {
   MAX_EMAIL_LENGTH, MAX_NAME_LENGTH, MIN_EMAIL_LENGTH, MIN_NAME_LENGTH,
@@ -15,6 +15,10 @@ export const insertUserSchema = createInsertSchema(user, {
 });
 
 export const selectUserSchema = createSelectSchema(user);
+
+export const insertTokenSchema = createInsertSchema(token);
+
+export const selectTokenSchema = createSelectSchema(token);
 
 export const insertChatSchema = createInsertSchema(chat, {
   name: z.string().min(MIN_NAME_LENGTH).max(MAX_NAME_LENGTH),
@@ -61,3 +65,6 @@ export type Account = z.infer<typeof selectAccountSchema>;
 
 export type NewChatModel = z.infer<typeof insertChatModelSchema>;
 export type ChatModel = z.infer<typeof selectChatModelSchema>;
+
+export type NewToken = z.infer<typeof insertTokenSchema>;
+export type Token = z.infer<typeof selectTokenSchema>;

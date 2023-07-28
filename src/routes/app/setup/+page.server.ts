@@ -12,9 +12,9 @@ import { setError, superValidate } from "sveltekit-superforms/server";
 import { insertAccountSchema } from "$lib/db/types";
 
 export const load: PageServerLoad = async ({ locals }) => {
-  const { user: authUser, session } = await locals.auth.validateUser();
+  const session = await locals.auth.validate();
 
-  if (!authUser || !session || (EMAIL_VERIFICATION && !authUser.verified)) {
+  if (!session || (EMAIL_VERIFICATION && !session.user.verified)) {
     throw redirect(302, "/login");
   }
 
@@ -23,7 +23,7 @@ export const load: PageServerLoad = async ({ locals }) => {
       chats: true,
       accounts: true,
     },
-    where: eq(user.id, authUser.userId),
+    where: eq(user.id, session.user.userId),
   });
 
   if (!dbUser) throw error(404, "User not found");
@@ -44,9 +44,9 @@ export const load: PageServerLoad = async ({ locals }) => {
 
 export const actions: Actions = {
   default: async ({ request, locals }) => {
-    const { user: authUser, session } = await locals.auth.validateUser();
+    const session = await locals.auth.validate();
 
-    if (!authUser || !session || (EMAIL_VERIFICATION && !authUser.verified)) {
+    if (!session || (EMAIL_VERIFICATION && !session.user.verified)) {
       throw redirect(302, "/login");
     }
 
