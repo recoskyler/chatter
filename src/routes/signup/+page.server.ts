@@ -38,12 +38,12 @@ export const actions: Actions = {
       const user = await auth.createUser({
         key: {
           providerId: "email",
-          providerUserId: form.data.email,
+          providerUserId: form.data.email.trim(),
           password: form.data.password,
         },
         attributes: {
-          email: form.data.email,
-          name: form.data.name,
+          email: form.data.email.trim(),
+          name: form.data.name.trim(),
           verified: false,
         },
       });
