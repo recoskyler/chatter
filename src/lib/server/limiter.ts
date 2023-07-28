@@ -52,3 +52,16 @@ export const emailVerificationLimiter = new RateLimiter({
     },
   },
 });
+
+export const profileUpdateLimiter = new RateLimiter({
+  rates: {
+    IP: [3, "h"], // IP address limiter
+    IPUA: [4, "m"], // IP + User Agent limiter
+    cookie: {
+      name: "chatter_pr_rl",
+      secret: RATE_LIMIT_SECRET,
+      rate: [5, "m"],
+      preflight: true,
+    },
+  },
+});
