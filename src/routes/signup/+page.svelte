@@ -1,6 +1,6 @@
 <script lang="ts">
   import PasswordStrengthMeter from "../../lib/components/PasswordStrengthMeter/PasswordStrengthMeter.svelte";
-  import { ProgressRadial, popup } from "@skeletonlabs/skeleton";
+  import { popup } from "@skeletonlabs/skeleton";
   import PasswordPopup from "components/PasswordPopup.svelte";
   import FormError from "components/FormError.svelte";
   import { passwordPopupFocusBlur } from "components/PasswordStrengthMeter/helpers";
@@ -30,6 +30,7 @@
         class="input"
         title="Name"
         placeholder="John Doe"
+        disabled={$delayed}
         bind:value={$form.name}
         {...$constraints.name}
       /><br />
@@ -49,6 +50,7 @@
         title="Email"
         placeholder="john@example.com"
         autocomplete="email"
+        disabled={$delayed}
         bind:value={$form.email}
         {...$constraints.email}
       /><br />
@@ -68,6 +70,7 @@
         class="input mb-3"
         title="Password"
         placeholder="password"
+        disabled={$delayed}
         bind:value={$form.password}
         use:popup={passwordPopupFocusBlur}
         {...$constraints.password}
@@ -86,17 +89,12 @@
       <a class="anchor" href="/privacy-policy">privacy policy</a>
     </p>
 
-    <div class="flex flex-row gap-5">
-      <input
-        type="submit"
-        value="Continue"
-        class="btn mt-5 w-full variant-filled-primary"
-      />
-
-      {#if $delayed}
-        <ProgressRadial width="2rem" />
-      {/if}
-    </div>
+    <input
+      type="submit"
+      value={$delayed ? "Signing up..." : "Continue"}
+      class={`btn mt-5 w-full ${$delayed ? "variant-filled-surface" : "variant-filled"}`}
+      disabled={$delayed}
+    />
   </form>
 
   <hr class="!border-t-2 my-5" />

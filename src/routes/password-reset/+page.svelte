@@ -1,12 +1,16 @@
 <script lang="ts">
-  import { enhance } from "$app/forms";
   import { MAX_EMAIL_LENGTH, MIN_EMAIL_LENGTH } from "$lib/constants";
   import FormError from "components/FormError.svelte";
   import { isEmailValid } from "$lib/functions/validators.js";
+  import type { PageData } from "./$types";
+  import { superForm } from "sveltekit-superforms/client";
+  import FormSuccess from "components/FormSuccess.svelte";
 
-  let email = "";
+  export let data: PageData;
 
-  export let form;
+  const { form, delayed, enhance, message, errors, constraints } = superForm(
+    data.form
+  );
 </script>
 
 <svelte:head>
@@ -16,38 +20,41 @@
 <div class="login-cont mx-auto flex-col my-auto">
   <h1 class="h2 text-center mb-5 p-5">Password reset</h1>
 
-  {#if form?.success}
-    <p class="text-center my-5 break-words max-w-xs text-slate-400">
-      A password reset email has been sent if an account with that email exists.
-    </p>
+  <form method="POST" use:enhance>
+    <label for="email" class="label mb-2">Email</label>
 
-    <a href="/login" class="btn variant-filled-primary mt-5 w-full">Back to login</a>
-  {:else}
-    <form method="POST" use:enhance>
-      <label for="email" class="label mb-2">Email</label>
+    <input
+      id="email"
+      name="email"
+      type="email"
+      class="input mb-5"
+      title="Email"
+      placeholder="john@example.com"
+      autocomplete="email"
+      disabled={!(!$message) || $delayed}
+      bind:value={$form.email}
+      {...$constraints.email}
+    /><br />
 
-      <input
-        id="email"
-        name="email"
-        type="email"
-        class="input mb-5"
-        title="Email"
-        placeholder="john@example.com"
-        autocomplete="email"
-        minlength={MIN_EMAIL_LENGTH}
-        maxlength={MAX_EMAIL_LENGTH}
-        required
-        bind:value={email}
-      /><br />
+    {#if $errors.email}<FormError error={$errors.email} />{/if}
 
-      <FormError error={form?.error} />
+    {#if $message}<FormSuccess message={$message} />{/if}
 
-      <input
-        type="submit"
-        value="Continue"
-        class={`btn mt-5 w-full ${isEmailValid(email) ? "variant-filled-primary" : "variant-filled-surface"}`}
-        disabled={!isEmailValid(email)}
-      />
-    </form>
+    <input
+      type="submit"
+      value={$delayed ? "Loading..." : "Continue"}
+      class={`btn mt-5 w-full ${
+        isEmailValid($form.email) && !$delayed && !$message
+          ? "variant-filled"
+          : "variant-filled-surface"
+      }`}
+      disabled={!isEmailValid($form.email) || $delayed || $message}
+    />
+  </form>
+
+  {#if $message}
+    <a href="/login" class="btn variant-filled-primary w-full mt-5">
+      Back to login
+    </a>
   {/if}
 </div>

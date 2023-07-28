@@ -8,7 +8,7 @@
   import Minidenticon from "components/Minidenticon.svelte";
   import type { LayoutData } from "./$types";
   import Fa from "svelte-fa";
-  import { faMessage, faUsers } from "@fortawesome/free-solid-svg-icons";
+  import { faMessage, faUserCircle, faUsers } from "@fortawesome/free-solid-svg-icons";
   import { page } from "$app/stores";
   import { selectedChat } from "writables/selectedChat";
   import { pageTitle } from "writables/pageTitle";
@@ -24,22 +24,13 @@
       slotTrail="place-content-end"
     >
       <svelte:fragment slot="lead">
-        <AppRailAnchor selected={$page.route?.id === "/app"} href="/app">
-          <svelte:fragment slot="lead">
-            <span></span>
-          </svelte:fragment>
-
-          <span></span>
-        </AppRailAnchor>
+        <span></span>
       </svelte:fragment>
 
       <h3 class="h3">{$pageTitle}</h3>
 
       <svelte:fragment slot="trail">
-        <a href="/app/profile" class="btn variant-surface">
-          <Minidenticon email={data.user.email} size={2} />
-          <span class="pl-3"><strong>{data.user.name}</strong></span>
-        </a>
+        <span></span>
       </svelte:fragment>
     </AppBar>
   </svelte:fragment>
@@ -77,6 +68,19 @@
         </svelte:fragment>
 
         <span>Accounts</span>
+      </AppRailAnchor>
+
+      <AppRailAnchor
+        selected={$page.route?.id === "/app/profile"}
+        href="/app/profile"
+      >
+        <svelte:fragment slot="lead">
+          <div class="flex items-center justify-center mb-2">
+            <Minidenticon email={data.user.email} size={1.5} />
+          </div>
+        </svelte:fragment>
+
+        <span>Profile</span>
       </AppRailAnchor>
     </AppRail>
   </svelte:fragment>

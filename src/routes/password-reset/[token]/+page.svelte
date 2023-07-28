@@ -1,19 +1,19 @@
 <script lang="ts">
-  import { enhance } from "$app/forms";
   import PasswordPopup from "components/PasswordPopup.svelte";
   import { popup } from "@skeletonlabs/skeleton";
-  import {
-    MAX_PASSWORD_LENGTH,
-    MIN_PASSWORD_LENGTH,
-  } from "$lib/constants.js";
   import FormError from "components/FormError.svelte";
   import { isPasswordValid } from "$lib/functions/validators.js";
   import PasswordStrengthMeter from "components/PasswordStrengthMeter/PasswordStrengthMeter.svelte";
   import { passwordPopupFocusBlur } from "components/PasswordStrengthMeter/helpers.js";
+  import type { PageData } from "./$types";
+  import { superForm } from "sveltekit-superforms/client";
+  import FormSuccess from "components/FormSuccess.svelte";
 
-  let password = "";
+  export let data: PageData;
 
-  export let form;
+  const { form, delayed, enhance, message, errors, constraints } = superForm(
+    data.form
+  );
 </script>
 
 <svelte:head>
@@ -26,7 +26,7 @@
   <form method="POST" use:enhance>
     <label for="password" class="label mb-2">New password</label>
 
-    <PasswordPopup password={password} />
+    <PasswordPopup password={$form.password} />
 
     <input
       id="password"
@@ -35,22 +35,33 @@
       class="input mb-5"
       title="Password"
       placeholder="password"
-      minlength={MIN_PASSWORD_LENGTH}
-      maxlength={MAX_PASSWORD_LENGTH}
-      required
-      bind:value={password}
+      disabled={!(!$message) || $delayed}
+      bind:value={$form.password}
       use:popup={passwordPopupFocusBlur}
+      {...$constraints.password}
     /><br />
 
-    <PasswordStrengthMeter password={password} />
+    <PasswordStrengthMeter password={$form.password} />
 
-    <FormError error={form?.error} />
+    {#if $errors.password}<FormError error={$errors.password} />{/if}
+
+    {#if $message}<FormSuccess message={$message} />{/if}
 
     <input
       type="submit"
-      value="Reset password"
-      class={`btn mt-5 w-full ${isPasswordValid(password) ? "variant-filled-primary" : "variant-filled-surface"}`}
-      disabled={!isPasswordValid(password)}
+      value={$delayed ? "Resetting password..." : "Reset password"}
+      class={`btn mt-5 w-full ${
+        isPasswordValid($form.password) && !$delayed && !$message
+          ? "variant-filled"
+          : "variant-filled-surface"
+      }`}
+      disabled={!isPasswordValid($form.password) || $delayed || $message}
     />
   </form>
+
+  {#if $message}
+    <a href="/login" class="btn variant-filled-primary w-full mt-5">
+      Back to login
+    </a>
+  {/if}
 </div>

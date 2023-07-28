@@ -12,5 +12,5 @@
   <br />
   <p>Hooray! Your email has been verified.</p>
   <br />
-  <a href="/app/profile" class="btn variant-filled-primary">Continue</a>
+  <a href="/app/profile" class="btn variant-filled">Continue</a>
 </div>

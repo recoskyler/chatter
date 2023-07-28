@@ -130,6 +130,5 @@
   <input type="hidden" bind:value={$form.name} name="name" required />
   <input type="hidden" bind:value={$form.key} name="key" required />
   <input type="hidden" bind:value={$form.chatModelId} name="chatModelId" required />
-  <input type="hidden" bind:value={$form.userId} name="userId" required />
   <input type="submit" id="submit-btn" />
 </form>

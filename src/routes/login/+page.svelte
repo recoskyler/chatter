@@ -2,7 +2,6 @@
   import FormError from "components/FormError.svelte";
   import { superForm } from "sveltekit-superforms/client";
   import type { PageData } from "./$types";
-  import { ProgressRadial } from "@skeletonlabs/skeleton";
 
   export let data: PageData;
 
@@ -28,6 +27,7 @@
         title="Email"
         placeholder="john@example.com"
         autocomplete="email"
+        disabled={$delayed}
         bind:value={$form.email}
         {...$constraints.email}
       /><br />
@@ -45,6 +45,7 @@
         class="input mb-5"
         title="Password"
         placeholder="password"
+        disabled={$delayed}
         bind:value={$form.password}
         {...$constraints.password}
       /><br />
@@ -59,17 +60,12 @@
       <a class="anchor" href="/password-reset">Reset password</a>
     </p>
 
-    <div class="flex flex-row gap-5 justify-center items-center">
-      <input
-        type="submit"
-        value="Continue"
-        class="btn mt-5 w-full variant-filled-primary"
-      />
-
-      {#if $delayed}
-        <ProgressRadial width="w-10" />
-      {/if}
-    </div>
+    <input
+      type="submit"
+      value={$delayed ? "Logging in..." : "Continue"}
+      class={`btn mt-5 w-full ${$delayed ? "variant-filled-surface" : "variant-filled"}`}
+      disabled={$delayed}
+    />
   </form>
 
   <hr class="!border-t-2 my-5" />
