@@ -40,7 +40,7 @@ export const token = pgTable("auth_token", {
 // Chatter
 
 export const chatModel = pgTable("chat_model", {
-  id: uuid("id").defaultRandom().primaryKey(),
+  id: uuid("id").primaryKey().defaultRandom(),
   name: varchar("name", { length: 32 })
     .notNull()
     .unique(),
@@ -51,27 +51,37 @@ export const chatModel = pgTable("chat_model", {
 }, table => ({ enabledIndex: index("api_enabled_index").on(table.enabled) }));
 
 export const account = pgTable("account", {
-  id: uuid("id").defaultRandom().primaryKey(),
+  id: uuid("id").primaryKey().defaultRandom(),
   name: varchar("name", { length: 255 }).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   key: varchar("key", { length: 255 }).notNull(),
   chatModelId: uuid("chat_model_id")
     .references(() => chatModel.id)
     .notNull(),
-  userId: text("id")
+  userId: text("user_id")
     .notNull()
     .references(() => user.id),
   deletedAt: timestamp("deleted_at"),
 });
 
+export const userConfig = pgTable("user_config", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: text("user_id")
+    .notNull()
+    .unique()
+    .references(() => user.id),
+  defaultAccountId: uuid("default_account_id")
+    .references(() => account.id),
+});
+
 export const chat = pgTable("chat", {
-  id: uuid("id").defaultRandom().primaryKey(),
+  id: uuid("id").primaryKey().defaultRandom(),
   remember: boolean("remember")
     .default(true)
     .notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   name: varchar("name", { length: 255 }).default("New chat"),
-  userId: text("id")
+  userId: text("user_id")
     .notNull()
     .references(() => user.id),
   deletedAt: timestamp("deleted_at"),
@@ -87,7 +97,7 @@ export const roleEnum = pgEnum(
 );
 
 export const prompt = pgTable("prompt", {
-  id: uuid("id").defaultRandom().primaryKey(),
+  id: uuid("id").primaryKey().defaultRandom(),
   chatId: uuid("chat_id")
     .references(() => chat.id),
   createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -107,9 +117,13 @@ export const prompt = pgTable("prompt", {
 
 // Relations
 
-export const userRelations = relations(user, ({ many }) => ({
+export const userRelations = relations(user, ({ many, one }) => ({
   chats: many(chat),
   accounts: many(account),
+  config: one(userConfig, {
+    fields: [user.id],
+    references: [userConfig.userId],
+  }),
 }));
 
 export const chatRelations = relations(
@@ -148,6 +162,16 @@ export const promptRelations = relations(
     chat: one(chat, {
       fields: [prompt.chatId],
       references: [chat.id],
+    }),
+  }),
+);
+
+export const userConfigRelations = relations(
+  userConfig,
+  ({ one }) => ({
+    defaultAccount: one(account, {
+      fields: [userConfig.defaultAccountId],
+      references: [account.id],
     }),
   }),
 );
