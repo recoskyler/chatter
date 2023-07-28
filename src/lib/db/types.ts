@@ -1,7 +1,7 @@
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 import {
-  account, chatModel, chat, user, prompt, token,
+  account, chatModel, chat, user, prompt, token, userConfig,
 } from "./schema";
 import {
   MAX_EMAIL_LENGTH, MAX_NAME_LENGTH, MIN_EMAIL_LENGTH, MIN_NAME_LENGTH,
@@ -10,7 +10,7 @@ import {
 // Zod Schemas
 
 export const insertUserSchema = createInsertSchema(user, {
-  email: schema => schema.email.email().min(MIN_EMAIL_LENGTH).max(MAX_EMAIL_LENGTH),
+  email: z.string().email().min(MIN_EMAIL_LENGTH).max(MAX_EMAIL_LENGTH),
   name: z.string().min(MIN_NAME_LENGTH).max(MAX_NAME_LENGTH),
 });
 
@@ -20,25 +20,24 @@ export const insertTokenSchema = createInsertSchema(token);
 
 export const selectTokenSchema = createSelectSchema(token);
 
-export const insertChatSchema = createInsertSchema(chat, {
-  name: z.string().min(MIN_NAME_LENGTH).max(MAX_NAME_LENGTH),
-  userId: z.string().length(15),
-});
+export const insertChatSchema = createInsertSchema(
+  chat,
+  { name: z.string().min(MIN_NAME_LENGTH).max(MAX_NAME_LENGTH) },
+);
 
 export const selectChatSchema = createSelectSchema(chat);
 
-export const insertPromptSchema = createInsertSchema(prompt, {
-  chatId: schema => schema.chatId.uuid(),
-  content: z.string().min(1),
-});
+export const insertPromptSchema = createInsertSchema(
+  prompt,
+  { content: z.string().min(1) },
+);
 
 export const selectPromptSchema = createSelectSchema(prompt);
 
-export const insertAccountSchema = createInsertSchema(account, {
-  userId: z.string().length(15),
-  name: z.string().min(MIN_NAME_LENGTH).max(MAX_NAME_LENGTH),
-  chatModelId: schema => schema.chatModelId.uuid(),
-});
+export const insertAccountSchema = createInsertSchema(
+  account,
+  { name: z.string().min(MIN_NAME_LENGTH).max(MAX_NAME_LENGTH) },
+);
 
 export const selectAccountSchema = createSelectSchema(account);
 
@@ -48,6 +47,10 @@ export const insertChatModelSchema = createInsertSchema(chatModel, {
 });
 
 export const selectChatModelSchema = createSelectSchema(chatModel);
+
+export const insertUserConfigSchema = createInsertSchema(userConfig);
+
+export const selectUserConfigSchema = createSelectSchema(userConfig);
 
 // Types
 
@@ -68,3 +71,6 @@ export type ChatModel = z.infer<typeof selectChatModelSchema>;
 
 export type NewToken = z.infer<typeof insertTokenSchema>;
 export type Token = z.infer<typeof selectTokenSchema>;
+
+export type NewUserConfig = z.infer<typeof insertUserConfigSchema>;
+export type UserConfig = z.infer<typeof selectUserConfigSchema>;
