@@ -4,12 +4,15 @@ import {
 import type { Actions, PageServerLoad } from "./$types";
 import { db } from "$lib/server/drizzle";
 import {
-  account, chatModel, user,
+  account, chatModel, user, userConfig,
 } from "$lib/db/schema";
 import { eq } from "drizzle-orm";
 import { EMAIL_VERIFICATION } from "$lib/constants";
 import { setError, superValidate } from "sveltekit-superforms/server";
-import { insertAccountSchema } from "$lib/db/types";
+import {
+  insertAccountSchema, type NewAccount, type NewUserConfig,
+} from "$lib/db/types";
+import { seed } from "$lib/db/seed";
 
 export const load: PageServerLoad = async ({ locals }) => {
   const session = await locals.auth.validate();
@@ -30,14 +33,13 @@ export const load: PageServerLoad = async ({ locals }) => {
 
   const chatModels = await db.query.chatModel.findMany({ where: eq(chatModel.enabled, true) });
 
-  if (chatModels.length === 0) throw error(404, "No models found");
+  if (chatModels.length === 0) await seed();
 
   if (dbUser.accounts.length !== 0) throw redirect(302, "/app");
 
-  const form = await superValidate(insertAccountSchema);
+  const form = await superValidate(insertAccountSchema.omit({ userId: true }));
 
   form.data.chatModelId = chatModels[0].id;
-  form.data.userId = dbUser.id;
 
   return { user: dbUser, chatModels, form };
 };
@@ -52,7 +54,7 @@ export const actions: Actions = {
 
     console.info("Creating first account...");
 
-    const form = await superValidate(request, insertAccountSchema);
+    const form = await superValidate(request, insertAccountSchema.omit({ userId: true }));
 
     if (!form.valid) {
       console.error("Form invalid");
@@ -75,7 +77,25 @@ export const actions: Actions = {
     }
 
     try {
-      await db.insert(account).values(form.data);
+      const newAccount: NewAccount = {
+        userId: session.user.userId,
+        chatModelId: form.data.chatModelId,
+        key: form.data.key,
+        name: form.data.name.trim(),
+      };
+
+      const dbAccount = await db
+        .insert(account)
+        .values(newAccount)
+        .returning({ id: account.id });
+
+      const config: NewUserConfig = {
+        userId: session.user.userId,
+        defaultAccountId: dbAccount[0].id,
+      };
+
+      await db.insert(userConfig).values(config);
+
       console.info("Created first account");
     } catch (e) {
       console.error("Failed to create account");
