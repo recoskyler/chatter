@@ -1,65 +1,60 @@
 <script lang="ts">
   import {
-    modalStore,
-    type ModalSettings,
-    toastStore,
     Accordion,
     AccordionItem,
   } from "@skeletonlabs/skeleton";
+  import { popup } from "@skeletonlabs/skeleton";
+  import { passwordPopupFocusBlur } from "components/PasswordStrengthMeter/helpers.js";
   import type { PageData } from "./$types";
   import Minidenticon from "components/Minidenticon.svelte";
   import { pageTitle } from "writables/pageTitle";
   import FormError from "components/FormError.svelte";
   import PasswordStrengthMeter from "components/PasswordStrengthMeter/PasswordStrengthMeter.svelte";
-  import { isPasswordValid } from "$lib/functions/validators";
   import Fa from "svelte-fa";
-  import { faKey, faTrash } from "@fortawesome/free-solid-svg-icons";
+  import { faEnvelope, faIdBadge, faKey, faTrash } from "@fortawesome/free-solid-svg-icons";
   import { superForm } from "sveltekit-superforms/client";
+  import PasswordPopup from "components/PasswordPopup.svelte";
+  import FormSuccess from "components/FormSuccess.svelte";
 
   export let data: PageData;
 
-  const { form, errors, constraints, enhance, delayed } = superForm(data.form);
+  const {
+    form: cpForm,
+    errors: cpErrors,
+    constraints: cpConstraints,
+    enhance: cpEnhance,
+    message: cpMessage,
+    delayed: cpDelayed,
+  } = superForm(data.changePasswordForm);
 
-  let password = "";
+  const {
+    form: ceForm,
+    errors: ceErrors,
+    constraints: ceConstraints,
+    enhance: ceEnhance,
+    message: ceMessage,
+    delayed: ceDelayed,
+  } = superForm(data.changeEmailForm);
+
+  const {
+    form: daForm,
+    errors: daErrors,
+    constraints: daConstraints,
+    enhance: daEnhance,
+    message: daMessage,
+    delayed: daDelayed,
+  } = superForm(data.deleteAccountForm);
+
+  const {
+    form: cnForm,
+    errors: cnErrors,
+    constraints: cnConstraints,
+    enhance: cnEnhance,
+    message: cnMessage,
+    delayed: cnDelayed,
+  } = superForm(data.changeNameForm);
 
   $pageTitle = "Profile";
-
-  const evaluateResponse = (response: string) => {
-    if (response !== "delete") {
-      toastStore.trigger({
-        message: "Aborted account deletion",
-        background: "variant-filled-warning",
-      });
-
-      return;
-    }
-
-    const container = document.getElementById("delete-form");
-
-    if (!container) return;
-
-    const deleteAccountButton = document.createElement("input");
-
-    deleteAccountButton.type = "submit";
-    deleteAccountButton.value = "Deleting account...";
-    deleteAccountButton.style.visibility = "none";
-    deleteAccountButton.classList.add("mt-5", "text-red-400");
-
-    container.appendChild(deleteAccountButton);
-
-    deleteAccountButton.click();
-  };
-
-  const modal: ModalSettings = {
-    type: "prompt",
-    title: "Delete Account",
-    body: 'If you are sure you would like to delete your account, please type "delete" below.',
-    buttonTextConfirm: "Delete account",
-    valueAttr: { type: "text", minlength: 1, maxlength: 6, required: true },
-    response: evaluateResponse,
-  };
-
-  const showPrompt = () => modalStore.trigger(modal);
 </script>
 
 <svelte:head>
@@ -90,7 +85,115 @@
     />
   </form>
 
-  <Accordion class="mt-10">
+  <Accordion class="mt-10" autocollapse>
+    <AccordionItem>
+      <svelte:fragment slot="lead">
+        <Fa icon={faIdBadge} />
+      </svelte:fragment>
+
+      <svelte:fragment slot="summary">Change name</svelte:fragment>
+
+      <svelte:fragment slot="content">
+        <form use:cnEnhance action="?/changeName" method="post">
+          <label class="label">
+            <span>New name</span>
+
+            <input
+              name="name"
+              class="input"
+              type="text"
+              placeholder="John Doe"
+              disabled={$cnDelayed}
+              bind:value={$cnForm.name}
+              {...$cnConstraints.name}
+            />
+
+            {#if $cnErrors.name}
+              <FormError error={$cnErrors.name} />
+            {/if}
+          </label>
+
+          {#if $cnErrors._errors}
+            <FormError error={$cnErrors._errors} />
+          {/if}
+
+          {#if $cnMessage}
+            <FormSuccess message={$cnMessage} />
+          {/if}
+
+          <input
+            type="submit"
+            value={$cnDelayed ? "Saving..." : "Change name"}
+            class={`btn mt-5 w-full ${$cnDelayed ? "variant-filled-surface" : "variant-filled"}`}
+            disabled={$cnDelayed}
+          />
+        </form>
+      </svelte:fragment>
+    </AccordionItem>
+
+    <AccordionItem>
+      <svelte:fragment slot="lead">
+        <Fa icon={faEnvelope} />
+      </svelte:fragment>
+
+      <svelte:fragment slot="summary">Change email</svelte:fragment>
+
+      <svelte:fragment slot="content">
+        <form use:ceEnhance action="?/changeEmail" method="post">
+          <label class="label mb-3 mt-5">
+            <span>Current password</span>
+
+            <input
+              name="password"
+              class="input"
+              type="password"
+              placeholder="current password"
+              disabled={$ceDelayed}
+              bind:value={$ceForm.password}
+              {...$ceConstraints.password}
+            />
+
+            {#if $ceErrors.password}
+              <FormError error={$ceErrors.password} />
+            {/if}
+          </label>
+
+          <label class="label">
+            <span>New email</span>
+
+            <input
+              name="email"
+              class="input"
+              type="email"
+              placeholder="john@example.com"
+              disabled={$ceDelayed}
+              bind:value={$ceForm.email}
+              {...$ceConstraints.email}
+            />
+
+            {#if $ceErrors.email}
+              <FormError error={$ceErrors.email} />
+            {/if}
+          </label>
+
+          {#if $ceErrors._errors}
+            <FormError error={$ceErrors._errors} />
+          {/if}
+
+          {#if $ceMessage}
+            <FormSuccess message={$ceMessage} />
+          {/if}
+
+          <input
+            type="submit"
+            value={$ceDelayed ? "Saving..." : "Change email"}
+            class={`btn mt-5 w-full ${$ceDelayed ? "variant-filled-surface" : "variant-filled"}`}
+            disabled={$ceDelayed}
+          />
+        </form>
+      </svelte:fragment>
+    </AccordionItem>
+
     <AccordionItem>
       <svelte:fragment slot="lead">
         <Fa icon={faKey} />
@@ -99,7 +202,7 @@
       <svelte:fragment slot="summary">Change password</svelte:fragment>
 
       <svelte:fragment slot="content">
-        <form use:enhance action="?/changePassword" method="post">
+        <form use:cpEnhance action="?/changePassword" method="post">
           <label class="label mb-3 mt-5">
             <span>Current password</span>
 
@@ -108,14 +211,17 @@
               class="input"
               type="password"
               placeholder="current password"
-              bind:value={$form.currentPassword}
-              {...$constraints.currentPassword}
+              disabled={$cpDelayed}
+              bind:value={$cpForm.currentPassword}
+              {...$cpConstraints.currentPassword}
             />
 
-            {#if $errors.currentPassword}
-              <FormError error={$errors.currentPassword} />
+            {#if $cpErrors.currentPassword}
+              <FormError error={$cpErrors.currentPassword} />
             {/if}
           </label>
+
+          <PasswordPopup password={$cpForm.password} />
 
           <label class="label">
             <span>New password</span>
@@ -125,25 +231,32 @@
               class="input"
               type="password"
               placeholder="new password"
-              bind:value={$form.password}
-              {...$constraints.password}
+              disabled={$cpDelayed}
+              use:popup={passwordPopupFocusBlur}
+              bind:value={$cpForm.password}
+              {...$cpConstraints.password}
             />
 
-            {#if $errors.password}
-              <FormError error={$errors.password} />
+            {#if $cpErrors.password}
+              <FormError error={$cpErrors.password} />
             {/if}
           </label>
 
-          <PasswordStrengthMeter password={$form.password} />
+          <PasswordStrengthMeter password={$cpForm.password} />
 
-          {#if $errors._errors}
-            <FormError error={$errors._errors} />
+          {#if $cpErrors._errors}
+            <FormError error={$cpErrors._errors} />
+          {/if}
+
+          {#if $cpMessage}
+            <FormSuccess message={$cpMessage} />
           {/if}
 
           <input
             type="submit"
-            value="Change password"
-            class="btn mt-3 w-full variant-filled"
+            value={$cpDelayed ? "Saving..." : "Change password"}
+            class={`btn mt-5 w-full ${$cpDelayed ? "variant-filled-surface" : "variant-filled"}`}
+            disabled={$cpDelayed}
           />
         </form>
       </svelte:fragment>
@@ -161,21 +274,63 @@
       <svelte:fragment slot="content">
         <p>
           <span class="text-orange-400"><strong>WARNING: </strong></span>
-          If you choose to delete your account, there is no going back! You will
-          be asked for confirmation before you can delete your account.
+          If you choose to delete your account, there is no going back!
+          Enter your current password and type "<i>Delete</i>" (case sensitive) without the "quotes" in the <strong>Confirmation</strong> field to proceed.
         </p>
 
-        <button
-          aria-label="Delete account"
-          class="btn variant-filled-error mt-5 w-full"
-          on:click={showPrompt}
-        >
-          Delete account
-        </button>
+        <form use:daEnhance method="post" action="?/delete">
+          <label class="label mb-3 mt-5">
+            <span>Current password</span>
+
+            <input
+              name="password"
+              class="input"
+              type="password"
+              placeholder="current password"
+              disabled={$daDelayed}
+              bind:value={$daForm.password}
+              {...$daConstraints.password}
+            />
+
+            {#if $daErrors.password}
+              <FormError error={$daErrors.password} />
+            {/if}
+          </label>
+
+          <label class="label mb-3 mt-5">
+            <span>Confirmation</span>
+
+            <input
+              name="confirmation"
+              class="input"
+              type="text"
+              placeholder="Delete"
+              disabled={$daDelayed}
+              bind:value={$daForm.confirmation}
+              {...$daConstraints.confirmation}
+            />
+
+            {#if $daErrors.confirmation}
+              <FormError error={$daErrors.confirmation} />
+            {/if}
+          </label>
+
+          {#if $daErrors._errors}
+            <FormError error={$daErrors._errors} />
+          {/if}
+
+          {#if $daMessage}
+            <FormSuccess message={$daMessage} />
+          {/if}
+
+          <input
+            type="submit"
+            value={$daDelayed ? "Exterminating..." : "Delete account"}
+            class={`btn mt-5 w-full ${$daDelayed ? "variant-filled-surface" : "variant-filled-error"}`}
+            disabled={$daDelayed}
+          />
+        </form>
       </svelte:fragment>
     </AccordionItem>
-    <!-- ... -->
   </Accordion>
-
-  <form method="post" action="?/delete" id="delete-form" />
 </main>
