@@ -4,22 +4,32 @@ import {
   fail, type Actions, error, redirect,
 } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types";
-import { isEmailValid } from "$lib/functions/validators";
 import { db } from "$lib/server/drizzle";
 import { eq } from "drizzle-orm";
 import { user } from "$lib/db/schema";
-import { EMAIL_VERIFICATION } from "$lib/constants";
+import {
+  EMAIL_VERIFICATION, MAX_EMAIL_LENGTH, MIN_EMAIL_LENGTH,
+} from "$lib/constants";
 import { passwordResetLimiter } from "$lib/server/limiter";
+import { z } from "zod";
+import {
+  message, setError, superValidate,
+} from "sveltekit-superforms/server";
+
+const passwordResetSchema = z.object(
+  { email: z.string().email().min(MIN_EMAIL_LENGTH).max(MAX_EMAIL_LENGTH) },
+);
 
 export const load: PageServerLoad = async event => {
   passwordResetLimiter.cookieLimiter?.preflight(event);
 
   const { locals } = event;
   const session = await locals.auth.validate();
+  const form = superValidate(passwordResetSchema);
 
-  if (!session) return;
+  if (!session) return { form };
 
-  const dbUser = await db.query.user.findFirst({ where: eq(user.id, session.userId) });
+  const dbUser = await db.query.user.findFirst({ where: eq(user.id, session.user.userId) });
 
   if (!dbUser) throw error(404, "User not found");
 
@@ -36,18 +46,23 @@ export const actions: Actions = {
 
     const { request } = event;
 
+    const form = await superValidate(request, passwordResetSchema);
+
+    if (!form.valid) {
+      console.error("Form invalid");
+      console.error(form.errors);
+      return fail(400, { form });
+    }
+
     try {
-      const form = await request.formData();
-      const email = form.get("email");
+      const dbUser = await db.query.user.findFirst({ where: eq(user.email, form.data.email) });
 
-      if (typeof email !== "string" || !isEmailValid(email)) {
-        console.error("Invalid email");
-        return fail(400, { error: "Invalid email}" });
+      if (!dbUser) {
+        return message(
+          form,
+          "A password reset email has been sent to the email if an account with that email exists.",
+        );
       }
-
-      const dbUser = await db.query.user.findFirst({ where: eq(user.email, email) });
-
-      if (!dbUser) return { success: true };
 
       const token = await generatePasswordResetToken(dbUser.id);
 
@@ -56,14 +71,25 @@ export const actions: Actions = {
       const passwordResetResult = await sendPasswordResetEmail(dbUser.email, token.toString());
 
       if (!passwordResetResult) {
-        return fail(500, { error: "Failed to send password reset email" });
+        return setError(
+          form,
+          "",
+          "Failed to send email.",
+        );
       }
 
       console.log("Sent password reset token");
     } catch {
-      throw error(500, "Failed to send password reset email");
+      return setError(
+        form,
+        "",
+        "Failed to send email.",
+      );
     }
 
-    return { success: true };
+    return message(
+      form,
+      "A password reset email has been sent to the email if an account with that email exists.",
+    );
   },
 };
