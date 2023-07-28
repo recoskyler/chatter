@@ -16,6 +16,7 @@ export const load: PageServerLoad = async ({ locals }) => {
     with: {
       accounts: true,
       chats: true,
+      config: { with: { defaultAccount: true } },
     },
     where: eq(user.id, session.user.userId),
   });
