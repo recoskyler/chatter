@@ -14,7 +14,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 
   const dbUser = await db.query.user.findFirst({
     with: {
-      accounts: true,
+      accounts: { with: { chatModel: true } },
       chats: true,
       config: { with: { defaultAccount: true } },
     },
@@ -23,7 +23,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 
   if (!dbUser) throw error(404, "User not found");
 
-  if (dbUser.accounts.length === 0) throw redirect(302, "/app/setup");
+  if (dbUser.config === null) throw redirect(302, "/app/setup");
 
   return { user: dbUser };
 };
