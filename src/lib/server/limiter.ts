@@ -65,3 +65,16 @@ export const profileUpdateLimiter = new RateLimiter({
     },
   },
 });
+
+export const accountUpdateLimiter = new RateLimiter({
+  rates: {
+    IP: [2, "h"], // IP address limiter
+    IPUA: [3, "m"], // IP + User Agent limiter
+    cookie: {
+      name: "chatter_pr_rl",
+      secret: RATE_LIMIT_SECRET,
+      rate: [4, "m"],
+      preflight: true,
+    },
+  },
+});
