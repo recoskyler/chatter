@@ -47,7 +47,7 @@
 
   <svelte:fragment slot="sidebarLeft">
     <AppRail>
-      <AppRailAnchor selected={$page.route?.id === "/app"} href="/app">
+      <AppRailAnchor selected={$pageTitle === "Chatter"} href="/app">
         <svelte:fragment slot="lead">
           <div class="flex items-center justify-center mb-2">
             <Fa icon={faMessage} />
@@ -58,7 +58,7 @@
       </AppRailAnchor>
 
       <AppRailAnchor
-        selected={$page.route?.id === "/app/accounts"}
+        selected={$pageTitle === "Accounts"}
         href="/app/accounts"
       >
         <svelte:fragment slot="lead">
@@ -71,7 +71,7 @@
       </AppRailAnchor>
 
       <AppRailAnchor
-        selected={$page.route?.id === "/app/profile"}
+        selected={$pageTitle === "Profile"}
         href="/app/profile"
       >
         <svelte:fragment slot="lead">
