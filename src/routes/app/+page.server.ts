@@ -23,7 +23,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 
   if (!dbUser) throw error(404, "User not found");
 
-  if (dbUser.accounts.length === 0) throw redirect(302, "/app/setup");
+  if (dbUser.config === null) throw redirect(302, "/app/setup");
 
   return { user: dbUser };
 };
