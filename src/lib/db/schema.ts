@@ -61,7 +61,7 @@ export const account = pgTable("account", {
   userId: text("user_id")
     .notNull()
     .references(() => user.id),
-  deletedAt: timestamp("deleted_at"),
+  deleted: boolean("deleted").notNull().default(false),
 });
 
 export const userConfig = pgTable("user_config", {
@@ -84,7 +84,7 @@ export const chat = pgTable("chat", {
   userId: text("user_id")
     .notNull()
     .references(() => user.id),
-  deletedAt: timestamp("deleted_at"),
+  deleted: boolean("deleted").notNull().default(false),
 });
 
 export const roleEnum = pgEnum(
@@ -112,7 +112,7 @@ export const prompt = pgTable("prompt", {
     .notNull(),
   role: roleEnum("role").notNull(),
   content: text("content").notNull(),
-  deletedAt: timestamp("deleted_at"),
+  deleted: boolean("deleted").notNull().default(false),
 }, table => ({ enabledIndex: index("prompt_enabled_index").on(table.enabled) }));
 
 // Relations
