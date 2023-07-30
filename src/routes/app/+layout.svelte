@@ -4,6 +4,8 @@
     AppRail,
     AppRailAnchor,
     AppShell,
+    TabAnchor,
+    TabGroup,
   } from "@skeletonlabs/skeleton";
   import Minidenticon from "components/Minidenticon.svelte";
   import type { LayoutData } from "./$types";
@@ -65,7 +67,7 @@
   </svelte:fragment>
 
   <svelte:fragment slot="sidebarLeft">
-    <AppRail>
+    <AppRail class="hidden md:block">
       <AppRailAnchor selected={$pageTitle === "Chatter"} href="/app">
         <svelte:fragment slot="lead">
           <div class="flex items-center justify-center mb-2">
@@ -101,4 +103,46 @@
   <slot />
 
   <svelte:fragment slot="pageFooter" />
+
+  <svelte:fragment slot="footer">
+    <TabGroup
+      justify="justify-center"
+      active="variant-filled-primary"
+      hover="hover:variant-soft-primary"
+      flex="flex-1 lg:flex-none"
+      rounded=""
+      border=""
+      class="bg-surface-100-800-token w-full block md:hidden"
+    >
+      <TabAnchor selected={$pageTitle === "Chatter"} href="/app">
+        <svelte:fragment slot="lead">
+          <div class="flex items-center justify-center mb-2">
+            <Fa icon={faMessage} />
+          </div>
+        </svelte:fragment>
+
+        <span>Chats</span>
+      </TabAnchor>
+
+      <TabAnchor selected={$pageTitle === "Accounts"} href="/app/accounts">
+        <svelte:fragment slot="lead">
+          <div class="flex items-center justify-center mb-2">
+            <Fa icon={faUsers} />
+          </div>
+        </svelte:fragment>
+
+        <span>Accounts</span>
+      </TabAnchor>
+
+      <TabAnchor selected={$pageTitle === "Profile"} href="/app/profile">
+        <svelte:fragment slot="lead">
+          <div class="flex items-center justify-center mb-2">
+            <Minidenticon email={data.user.email} size={1} />
+          </div>
+        </svelte:fragment>
+
+        <span>Profile</span>
+      </TabAnchor>
+    </TabGroup>
+  </svelte:fragment>
 </AppShell>
