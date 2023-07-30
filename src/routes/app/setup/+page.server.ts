@@ -31,9 +31,17 @@ export const load: PageServerLoad = async ({ locals }) => {
 
   if (!dbUser) throw error(404, "User not found");
 
-  const chatModels = await db.query.chatModel.findMany({ where: eq(chatModel.enabled, true) });
+  let chatModels = await db.query.chatModel.findMany(
+    { where: eq(chatModel.enabled, true) },
+  );
 
-  if (chatModels.length === 0) await seed();
+  if (chatModels.length === 0) {
+    await seed();
+
+    chatModels = await db.query.chatModel.findMany(
+      { where: eq(chatModel.enabled, true) },
+    );
+  }
 
   if (dbUser.accounts.length !== 0) throw redirect(302, "/app");
 
@@ -84,14 +92,14 @@ export const actions: Actions = {
         name: form.data.name.trim(),
       };
 
-      const dbAccount = await db
+      const [dbAccount] = await db
         .insert(account)
         .values(newAccount)
         .returning({ id: account.id });
 
       const config: NewUserConfig = {
         userId: session.user.userId,
-        defaultAccountId: dbAccount[0].id,
+        defaultAccountId: dbAccount.id,
       };
 
       await db.insert(userConfig).values(config);
