@@ -189,6 +189,6 @@ export const actions: Actions = {
       throw error(500, "Failed to delete account");
     }
 
-    // throw redirect(302, `/app/accounts/${params.id}`);
+    throw redirect(302, "/app/accounts");
   },
 };
