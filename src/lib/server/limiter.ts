@@ -45,7 +45,7 @@ export const emailVerificationLimiter = new RateLimiter({
     IP: [3, "h"], // IP address limiter
     IPUA: [2, "m"], // IP + User Agent limiter
     cookie: {
-      name: "chatter_pr_rl",
+      name: "chatter_ev_rl",
       secret: RATE_LIMIT_SECRET,
       rate: [1, "m"],
       preflight: true,
@@ -58,7 +58,7 @@ export const profileUpdateLimiter = new RateLimiter({
     IP: [3, "h"], // IP address limiter
     IPUA: [4, "m"], // IP + User Agent limiter
     cookie: {
-      name: "chatter_pr_rl",
+      name: "chatter_pu_rl",
       secret: RATE_LIMIT_SECRET,
       rate: [5, "m"],
       preflight: true,
@@ -68,12 +68,12 @@ export const profileUpdateLimiter = new RateLimiter({
 
 export const accountUpdateLimiter = new RateLimiter({
   rates: {
-    IP: [2, "h"], // IP address limiter
-    IPUA: [3, "m"], // IP + User Agent limiter
+    IP: [6, "h"], // IP address limiter
+    IPUA: [6, "m"], // IP + User Agent limiter
     cookie: {
-      name: "chatter_pr_rl",
+      name: "chatter_au_rl",
       secret: RATE_LIMIT_SECRET,
-      rate: [4, "m"],
+      rate: [12, "m"],
       preflight: true,
     },
   },
