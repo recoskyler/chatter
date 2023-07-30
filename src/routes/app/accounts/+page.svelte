@@ -5,6 +5,7 @@
   import { superForm } from "sveltekit-superforms/client";
   import { writable } from "svelte/store";
   import FormError from "components/FormError.svelte";
+  import { MAX_ACCOUNTS } from "$lib/constants";
 
   export let data: PageData;
 
@@ -24,8 +25,8 @@
   <title>Chatter | Accounts</title>
 </svelte:head>
 
-<div class="h-full flex items-center p-5 flex-col gap-5">
-  <form use:enhance method="post" class="w-full max-w-lg mx-auto p-5">
+<div class="h-full flex items-center p-2 flex-col gap-5">
+  <form use:enhance method="post" class="w-full max-w-lg mx-auto p-2">
     <label class="label">
       <span>Default account</span>
 
@@ -62,23 +63,31 @@
     />
   </form>
 
-  <div class="container mx-auto max-w-lg p-3">
+  <div class="container mx-auto max-w-lg">
+    {#if data.user.accounts.length >= MAX_ACCOUNTS}
+      <FormError
+        error={`You have reached the limit of ${MAX_ACCOUNTS} accounts. Please permanently delete unused accounts before attempting to create new accounts.`}
+      />
+    {/if}
+
     {#if data.user.accounts}
       <dl class="list-dl" />
 
       <nav class="list-nav">
         <ul>
-          <li>
-            <a href={`/app/accounts/create`}>
-              <span class="badge text-secondary-400">
-                <Fa icon={faPlus} />
-              </span>
+          {#if data.user.accounts.length < MAX_ACCOUNTS}
+            <li>
+              <a href={`/app/accounts/create`}>
+                <span class="badge text-secondary-400">
+                  <Fa icon={faPlus} />
+                </span>
 
-              <span class="flex-auto">
-                <span><strong>Create new account</strong></span>
-              </span>
-            </a>
-          </li>
+                <span class="flex-auto">
+                  <span><strong>Create new account</strong></span>
+                </span>
+              </a>
+            </li>
+          {/if}
 
           {#each data.user.accounts as account}
             <li>

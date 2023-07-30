@@ -6,7 +6,7 @@ import {
   account, chatModel, user, userConfig,
 } from "$lib/db/schema";
 import { eq } from "drizzle-orm";
-import { EMAIL_VERIFICATION } from "$lib/constants";
+import { EMAIL_VERIFICATION, MAX_ACCOUNTS } from "$lib/constants";
 import { accountUpdateLimiter } from "$lib/server/limiter";
 import type { Actions, PageServerLoad } from "./$types";
 import { setError, superValidate } from "sveltekit-superforms/server";
@@ -68,6 +68,25 @@ export const actions: Actions = {
     let createdId = "";
 
     try {
+      const dbUser = await db.query.user.findFirst({
+        with: {
+          config: true,
+          accounts: true,
+        },
+        where: eq(user.id, session.user.userId),
+      });
+
+      if (!dbUser) throw error(404, "User not found");
+
+      if (dbUser.accounts.length >= MAX_ACCOUNTS) {
+        return setError(
+          form,
+          "",
+          // eslint-disable-next-line max-len
+          `You can have maximum ${MAX_ACCOUNTS} accounts. Please permanently delete unused accounts first.`,
+        );
+      }
+
       const newAccount: NewAccount = {
         chatModelId: form.data.chatModelId,
         userId: session.user.userId,
@@ -78,13 +97,6 @@ export const actions: Actions = {
       const [createdAccount] = await db.insert(account)
         .values(newAccount)
         .returning();
-
-      const dbUser = await db.query.user.findFirst({
-        with: { config: true },
-        where: eq(user.id, session.user.userId),
-      });
-
-      if (!dbUser) throw error(404, "User not found");
 
       if (!dbUser.config.defaultAccountId) {
         await db.update(userConfig)
