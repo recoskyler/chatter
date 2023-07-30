@@ -24,5 +24,7 @@ export const load: LayoutServerLoad = async ({ locals }) => {
 
   if (!dbUser) throw error(404, "User not found");
 
+  if (!dbUser.config) throw redirect(302, "/app/setup");
+
   return { user: dbUser };
 };
