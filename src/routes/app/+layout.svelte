@@ -58,14 +58,6 @@
     </AppBar>
   </svelte:fragment>
 
-  <svelte:fragment slot="pageHeader">
-    {#if $selectedChat}
-      <div>
-        <form method="post" action="?/rename" />
-      </div>
-    {/if}
-  </svelte:fragment>
-
   <svelte:fragment slot="sidebarLeft">
     <AppRail class="hidden md:block">
       <AppRailAnchor selected={$pageTitle === "Chatter"} href="/app">
@@ -101,8 +93,6 @@
   </svelte:fragment>
 
   <slot />
-
-  <svelte:fragment slot="pageFooter" />
 
   <svelte:fragment slot="footer">
     <TabGroup
