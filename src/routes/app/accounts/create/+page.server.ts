@@ -34,10 +34,11 @@ export const load: PageServerLoad = async event => {
     where: eq(user.id, session.user.userId),
   });
 
-  const dbChatModels = await db.query.chatModel.findMany({ where: eq(chatModel.enabled, true) });
-
   if (!dbUser) throw error(404, "User not found");
 
+  if (dbUser.config === null) throw redirect(302, "/app/setup");
+
+  const dbChatModels = await db.query.chatModel.findMany({ where: eq(chatModel.enabled, true) });
   const form = await superValidate(schema);
 
   form.data.chatModelId = dbChatModels[0].id;

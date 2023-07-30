@@ -41,14 +41,14 @@ export const load: PageServerLoad = async event => {
     where: eq(user.id, session.user.userId),
   });
 
-  const dbChatModels = await db.query.chatModel.findMany({ where: eq(chatModel.enabled, true) });
-
   if (!dbUser) throw error(404, "User not found");
+
+  if (dbUser.config === null) throw redirect(302, "/app/setup");
 
   if (dbUser.accounts.length === 0) throw error(404, "Account not found");
 
+  const dbChatModels = await db.query.chatModel.findMany({ where: eq(chatModel.enabled, true) });
   const [dbAccount] = dbUser.accounts;
-
   const form = await superValidate(dbAccount, schema);
 
   return { user: dbUser, account: dbAccount, chatModels: dbChatModels, form };

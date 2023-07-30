@@ -18,7 +18,7 @@ import {
 import { LuciaError } from "lucia";
 import { db } from "$lib/server/drizzle";
 import {
-  account, chat, prompt, userConfig,
+  account, chat, prompt, user, userConfig,
 } from "$lib/db/schema";
 import { eq } from "drizzle-orm";
 import { profileUpdateLimiter } from "$lib/server/limiter";
@@ -234,6 +234,15 @@ export const load: PageServerLoad = async event => {
   if (EMAIL_VERIFICATION && !session.user.verified) {
     throw redirect(302, "/email-verification");
   }
+
+  const dbUser = await db.query.user.findFirst({
+    with: { config: true },
+    where: eq(user.id, session.user.userId),
+  });
+
+  if (!dbUser) throw error(404, "User not found");
+
+  if (dbUser.config === null) throw redirect(302, "/app/setup");
 
   const changePasswordForm = await superValidate(changePasswordSchema);
   const changeEmailForm = await superValidate(changeEmailSchema);
