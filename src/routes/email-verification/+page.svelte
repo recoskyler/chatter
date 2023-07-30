@@ -11,7 +11,7 @@
   <img class="max-w-xs mb-5" src={mailbox} alt="Mailbox">
   <h1 class="h1">Email verification</h1>
   <br />
-  <p>Please check your email for a verification link</p>
+  <p>Please check your inbox/spam folder for a verification link</p>
   <br />
   <form use:enhance method="post">
     <input type="submit" value="Sign out" class="btn variant-filled-primary" />
