@@ -1,9 +1,7 @@
 <script lang="ts">
-  import { pageTitle } from "$lib/stores/pageTitle";
   import { canGoBack } from "$lib/stores/canGoBack";
 
   $canGoBack = null;
-  $pageTitle = "Accounts";
 </script>
 
 <slot />
