@@ -25,7 +25,7 @@ export const load: PageServerLoad = async event => {
 
   const { locals } = event;
   const session = await locals.auth.validate();
-  const form = superValidate(passwordResetSchema);
+  const form = await superValidate(passwordResetSchema);
 
   if (!session) return { form };
 

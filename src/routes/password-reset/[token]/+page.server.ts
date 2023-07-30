@@ -15,10 +15,10 @@ const passwordResetSchema = z.object(
   { password: z.string().min(MIN_PASSWORD_LENGTH).max(MAX_PASSWORD_LENGTH) },
 );
 
-export const load: PageServerLoad = event => {
+export const load: PageServerLoad = async event => {
   passwordResetLimiter.cookieLimiter?.preflight(event);
 
-  const form = superValidate(passwordResetSchema);
+  const form = await superValidate(passwordResetSchema);
 
   return { form };
 };
