@@ -7,7 +7,7 @@
   import { passwordPopupFocusBlur } from "components/PasswordStrengthMeter/helpers.js";
   import type { PageData } from "./$types";
   import Minidenticon from "components/Minidenticon.svelte";
-  import { pageTitle } from "writables/pageTitle";
+  import { pageTitle } from "$lib/stores/pageTitle";
   import FormError from "components/FormError.svelte";
   import PasswordStrengthMeter from "components/PasswordStrengthMeter/PasswordStrengthMeter.svelte";
   import Fa from "svelte-fa";

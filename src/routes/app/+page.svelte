@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { pageTitle } from "writables/pageTitle";
+  import { pageTitle } from "$lib/stores/pageTitle";
   import type { PageData } from "./$types";
 
   export let data: PageData;
