@@ -12,10 +12,14 @@ const chatModels: NewChatModel[] = [
 ];
 
 export const seed = async () => {
+  console.log("Seeding database...");
+
   try {
     await migrate(db, { migrationsFolder: "drizzle" });
     await db.insert(schema.chatModel).values(chatModels).onConflictDoNothing();
+    console.log("Seeding complete");
   } catch (error) {
     console.error("Failed to seed (some) Chat models");
+    console.error(error);
   }
 };
