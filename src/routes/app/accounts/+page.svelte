@@ -6,6 +6,13 @@
   import { writable } from "svelte/store";
   import FormError from "components/FormError.svelte";
   import { MAX_ACCOUNTS } from "$lib/constants";
+  import { pageTitle } from "$lib/stores/pageTitle";
+  import { canGoBack } from "$lib/stores/canGoBack";
+  import { CHATTER_PAGE, currentPage } from "$lib/stores/currentPage";
+
+  $currentPage = CHATTER_PAGE.ACCOUNTS;
+  $canGoBack = null;
+  $pageTitle = "Accounts";
 
   export let data: PageData;
 
@@ -26,7 +33,7 @@
 </svelte:head>
 
 <div class="h-full flex items-center p-2 flex-col gap-5">
-  <form use:enhance method="post" class="w-full max-w-lg mx-auto p-2">
+  <form use:enhance method="post" class="w-full max-w-lg mx-auto p-2 bg-surface-400 rounded-lg">
     <label class="label">
       <span>Default account</span>
 
@@ -71,8 +78,6 @@
     {/if}
 
     {#if data.user.accounts}
-      <dl class="list-dl" />
-
       <nav class="list-nav">
         <ul>
           {#if data.user.accounts.length < MAX_ACCOUNTS}
