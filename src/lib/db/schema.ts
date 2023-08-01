@@ -107,12 +107,9 @@ export const prompt = pgTable("prompt", {
   busy: boolean("busy")
     .default(false)
     .notNull(),
-  successful: boolean("successful")
-    .default(false)
-    .notNull(),
+  successful: boolean("successful"),
   role: roleEnum("role").notNull(),
   content: text("content").notNull(),
-  deleted: boolean("deleted").notNull().default(false),
 }, table => ({ enabledIndex: index("prompt_enabled_index").on(table.enabled) }));
 
 // Relations

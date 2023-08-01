@@ -32,7 +32,10 @@ export const insertPromptSchema = createInsertSchema(
   { content: z.string().min(1) },
 );
 
-export const selectPromptSchema = createSelectSchema(prompt);
+export const selectPromptSchema = createSelectSchema(
+  prompt,
+  { createdAt: z.string().or(z.date()) },
+);
 
 export const insertAccountSchema = createInsertSchema(
   account,
