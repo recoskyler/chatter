@@ -4,6 +4,11 @@
   import FormError from "components/FormError.svelte";
   import FormSuccess from "components/FormSuccess.svelte";
   import { writable } from "svelte/store";
+  import { canGoBack } from "$lib/stores/canGoBack";
+  import { CHATTER_PAGE, currentPage } from "$lib/stores/currentPage";
+
+  $currentPage = CHATTER_PAGE.ACCOUNTS;
+  $canGoBack = "/app/accounts";
 
   export let data: PageData;
 

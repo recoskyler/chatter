@@ -15,12 +15,10 @@
     faMessage,
     faUsers,
   } from "@fortawesome/free-solid-svg-icons";
-  import { selectedChat } from "$lib/stores/selectedChat";
   import { pageTitle } from "$lib/stores/pageTitle";
-  import { canGoBack } from "$lib/stores/canGoBack";
   import { goto } from "$app/navigation";
-
-  $canGoBack = null;
+  import { CHATTER_PAGE, currentPage } from "$lib/stores/currentPage";
+  import { canGoBack } from "$lib/stores/canGoBack";
 
   export let data: LayoutData;
 </script>
@@ -60,7 +58,7 @@
 
   <svelte:fragment slot="sidebarLeft">
     <AppRail class="hidden md:block">
-      <AppRailAnchor selected={$pageTitle === "Chatter"} href="/app">
+      <AppRailAnchor selected={$currentPage === CHATTER_PAGE.CHATS} href="/app">
         <svelte:fragment slot="lead">
           <div class="flex items-center justify-center mb-2">
             <Fa icon={faMessage} />
@@ -70,7 +68,7 @@
         <span>Chats</span>
       </AppRailAnchor>
 
-      <AppRailAnchor selected={$pageTitle === "Accounts"} href="/app/accounts">
+      <AppRailAnchor selected={$currentPage === CHATTER_PAGE.ACCOUNTS} href="/app/accounts">
         <svelte:fragment slot="lead">
           <div class="flex items-center justify-center mb-2">
             <Fa icon={faUsers} />
@@ -80,7 +78,7 @@
         <span>Accounts</span>
       </AppRailAnchor>
 
-      <AppRailAnchor selected={$pageTitle === "Profile"} href="/app/profile">
+      <AppRailAnchor selected={$currentPage === CHATTER_PAGE.PROFILE} href="/app/profile">
         <svelte:fragment slot="lead">
           <div class="flex items-center justify-center mb-2">
             <Minidenticon email={data.user.email} size={1.5} />
@@ -104,7 +102,7 @@
       border=""
       class="bg-surface-100-800-token w-full block md:hidden"
     >
-      <TabAnchor selected={$pageTitle === "Chatter"} href="/app">
+      <TabAnchor selected={$currentPage === CHATTER_PAGE.CHATS} href="/app">
         <svelte:fragment slot="lead">
           <div class="flex items-center justify-center mb-2">
             <Fa icon={faMessage} />
@@ -114,7 +112,7 @@
         <span>Chats</span>
       </TabAnchor>
 
-      <TabAnchor selected={$pageTitle === "Accounts"} href="/app/accounts">
+      <TabAnchor selected={$currentPage === CHATTER_PAGE.ACCOUNTS} href="/app/accounts">
         <svelte:fragment slot="lead">
           <div class="flex items-center justify-center mb-2">
             <Fa icon={faUsers} />
@@ -124,7 +122,7 @@
         <span>Accounts</span>
       </TabAnchor>
 
-      <TabAnchor selected={$pageTitle === "Profile"} href="/app/profile">
+      <TabAnchor selected={$currentPage === CHATTER_PAGE.PROFILE} href="/app/profile">
         <svelte:fragment slot="lead">
           <div class="flex items-center justify-center mb-2">
             <Minidenticon email={data.user.email} size={1} />
