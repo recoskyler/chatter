@@ -5,8 +5,23 @@ import type { NewChatModel } from "./types";
 
 const chatModels: NewChatModel[] = [
   {
-    displayName: "Chat-GPT 3.5 Turbo",
+    displayName: "ChatGPT 3.5 Turbo",
     name: "gpt-3.5-turbo",
+    enabled: true,
+  },
+  {
+    displayName: "ChatGPT 3.5 Turbo (16K tokens)",
+    name: "gpt-3.5-turbo-16k",
+    enabled: true,
+  },
+  {
+    displayName: "ChatGPT 4",
+    name: "gpt-4",
+    enabled: true,
+  },
+  {
+    displayName: "ChatGPT 4 (32K tokens)",
+    name: "gpt-4-32k",
     enabled: true,
   },
 ];
