@@ -2,9 +2,38 @@
 
 <a href='https://ko-fi.com/recoskyler' target='_blank'><img height='35' style='border:0px;height:46px;' src='https://az743702.vo.msecnd.net/cdn/kofi3.png?v=0' border='0' alt='Buy Me a Coffee at ko-fi.com'></a>
 
-A free and open-source OpenAI ChatGPT client with multi-account support.
+A simple, free, and open-source OpenAI ChatGPT client with multi-account support.
 
-![Chatter screenshot](screenshot.webp)
+![Chatter screenshot](screenshot.png)
+
+## Features
+
+### Multi-chat support
+
+You can create up to 100 chats (can be configured in `.env` in case of self-deployment).
+
+### Multi-account support
+
+You can have multiple accounts (API keys) defined, and switch between accounts on the fly. Each account can use a different [ChatGPT model](#supported-models).
+
+This is very useful in the case of having a personal, and a business OpenAI account, each having their distinct API keys.
+
+**Chatter does not come with ant warranty/liability. API keys are stored as plain text in the database and it is your responsibility to set appropriate [usage limits](https://platform.openai.com/account/billing/limits).**
+
+### Toggle prompt/remember support
+
+You can enable/disable remembering of the previous prompts. If enabled, previous prompts in the chat will also be submitted alongside the latest prompt.
+
+**Keep in mind, enabling the remember option will cost more tokens.**
+
+You can also toggle each prompt on/off if the remember option is enabled. This will allow you to submit/not submit selected prompts in order to fine-tune the response from ChatGPT.
+
+## Supported models
+
+- ChatGPT 3.5 Turbo
+- ChatGPT 3.5 Turbo (16K tokens)
+- ChatGPT 4
+- ChatGPT 4 (32K tokens)
 
 ## Status
 
@@ -77,3 +106,7 @@ You can preview the production build with `npm run preview`.
 ## About
 
 By [recoskyler](https://github.com/recoskyler) - 2023
+
+### License
+
+Chatter is licensed under [GNU Affero General Public License v3.0](https://github.com/recoskyler/chatter/blob/main/LICENSE)
