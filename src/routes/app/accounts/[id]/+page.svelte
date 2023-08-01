@@ -15,13 +15,31 @@
   const changed = writable(false);
 
   const {
-    form,
-    enhance,
-    message,
-    delayed,
-    errors,
-    constraints,
-  } = superForm(data.form, {onUpdated: () => {$changed = false;}});
+    errors: deleteErrors,
+    enhance: deleteEnhance,
+    delayed: deleteDelayed,
+  } = superForm(data.deleteForm);
+
+  const {
+    errors: permDeleteErrors,
+    enhance: permDeleteEnhance,
+    delayed: permDeleteDelayed,
+  } = superForm(data.permDeleteForm);
+
+  const {
+    errors: restoreErrors,
+    enhance: restoreEnhance,
+    delayed: restoreDelayed,
+  } = superForm(data.restoreForm);
+
+  const { form, enhance, message, delayed, errors, constraints } = superForm(
+    data.form,
+    {
+      onUpdated: () => {
+        $changed = false;
+      },
+    }
+  );
 </script>
 
 <svelte:head>
@@ -29,7 +47,9 @@
   <title>Chatter | Account | {data.account.name}</title>
 </svelte:head>
 
-<div class="flex h-screen mx-auto my-auto max-w-sm items-center flex-col justify-center">
+<div
+  class="flex h-screen mx-auto my-auto max-w-sm items-center flex-col justify-center"
+>
   <form use:enhance method="post" action="?/save" class="w-full">
     <label class="label mb-5">
       <span>Account name</span>
@@ -40,7 +60,9 @@
         type="text"
         placeholder="John Doe"
         disabled={$delayed || data.account.deleted}
-        on:change={(_) => {$changed = true;}}
+        on:change={(_) => {
+          $changed = true;
+        }}
         bind:value={$form.name}
         {...$constraints.name}
       />
@@ -59,7 +81,9 @@
         type="password"
         placeholder="SECRET API KEY"
         disabled={$delayed || data.account.deleted}
-        on:change={(_) => {$changed = true;}}
+        on:change={(_) => {
+          $changed = true;
+        }}
         bind:value={$form.key}
         {...$constraints.key}
       />
@@ -76,7 +100,9 @@
         class="select"
         name="chatModelId"
         disabled={$delayed || data.account.deleted}
-        on:change={(_) => {$changed = true;}}
+        on:change={(_) => {
+          $changed = true;
+        }}
         bind:value={$form.chatModelId}
       >
         {#each data.chatModels as model}
@@ -101,38 +127,82 @@
       <input
         type="submit"
         value={$delayed ? "Saving..." : "Save"}
-        class={`btn mt-5 w-full ${$delayed || !$changed ? "variant-filled-surface" : "variant-filled"}`}
+        class={`btn mt-5 w-full ${
+          $delayed || !$changed ? "variant-filled-surface" : "variant-filled"
+        }`}
         disabled={$delayed || !$changed}
       />
     {/if}
   </form>
 
   {#if !data.account.deleted}
-    <form action="?/delete" method="post" class="w-full">
+    <form
+      action="?/delete"
+      method="post"
+      class="w-full"
+      use:deleteEnhance
+      id="delete-form"
+    >
       <input
         type="submit"
-        value="Delete account"
-        class={`btn mt-5 w-full ${$delayed ? "variant-filled-surface" : "variant-filled-error"}`}
-        disabled={$delayed}
+        value={$deleteDelayed ? "Deleting..." : "Delete account"}
+        class={`btn mt-2 w-full ${
+          $deleteDelayed
+            ? "variant-filled-surface"
+            : "variant-filled-error"
+        }`}
+        disabled={$deleteDelayed}
       />
+
+      {#if $deleteErrors._errors}
+        <FormError error={$deleteErrors._errors} />
+      {/if}
     </form>
   {:else}
-    <form action="?/restore" method="post" class="w-full">
+    <form
+      action="?/restore"
+      method="post"
+      class="w-full"
+      use:restoreEnhance
+      id="restore-form"
+    >
       <input
         type="submit"
-        value="Restore account"
-        class={`btn mt-5 w-full ${$delayed ? "variant-filled-surface" : "variant-filled-primary"}`}
-        disabled={$delayed}
+        value={$restoreDelayed ? "Restoring..." : "Restore account"}
+        class={`btn mt-2 w-full ${
+          $restoreDelayed
+            ? "variant-filled-surface"
+            : "variant-filled"
+        }`}
+        disabled={$restoreDelayed}
       />
+
+      {#if $restoreErrors._errors}
+        <FormError error={$restoreErrors._errors} />
+      {/if}
     </form>
 
-    <form action="?/permanentlyDelete" method="post" class="w-full">
+    <form
+      action="?/permanentlyDelete"
+      method="post"
+      class="w-full"
+      use:permDeleteEnhance
+      id="perm-delete-form"
+    >
       <input
         type="submit"
-        value="Permanently delete account"
-        class={`btn mt-5 w-full ${$delayed ? "variant-filled-surface" : "variant-filled-error"}`}
-        disabled={$delayed}
+        value={$permDeleteDelayed ? "Deleting..." : "Permanently delete account"}
+        class={`btn mt-2 w-full ${
+          $permDeleteDelayed
+            ? "variant-filled-surface"
+            : "variant-filled-error"
+        }`}
+        disabled={$permDeleteDelayed}
       />
+
+      {#if $permDeleteErrors._errors}
+        <FormError error={$permDeleteErrors._errors} />
+      {/if}
     </form>
   {/if}
 </div>

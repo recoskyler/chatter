@@ -20,6 +20,10 @@ const schema = z.object({
   chatModelId: z.string().uuid(),
 });
 
+const deleteSchema = z.object({});
+const permDeleteSchema = z.object({});
+const restoreSchema = z.object({});
+
 export const load: PageServerLoad = async event => {
   accountUpdateLimiter.cookieLimiter?.preflight(event);
 
@@ -49,9 +53,21 @@ export const load: PageServerLoad = async event => {
 
   const dbChatModels = await db.query.chatModel.findMany({ where: eq(chatModel.enabled, true) });
   const [dbAccount] = dbUser.accounts;
-  const form = await superValidate(dbAccount, schema);
 
-  return { user: dbUser, account: dbAccount, chatModels: dbChatModels, form };
+  const form = await superValidate(dbAccount, schema);
+  const deleteForm = await superValidate(deleteSchema, { id: "delete-form" });
+  const permDeleteForm = await superValidate(permDeleteSchema, { id: "perm-delete-form" });
+  const restoreForm = await superValidate(restoreSchema, { id: "restore-form" });
+
+  return {
+    user: dbUser,
+    account: dbAccount,
+    chatModels: dbChatModels,
+    form,
+    deleteForm,
+    permDeleteForm,
+    restoreForm,
+  };
 };
 
 export const actions: Actions = {
