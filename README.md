@@ -2,7 +2,7 @@
 
 <a href='https://ko-fi.com/recoskyler' target='_blank'><img height='35' style='border:0px;height:46px;' src='https://az743702.vo.msecnd.net/cdn/kofi3.png?v=0' border='0' alt='Buy Me a Coffee at ko-fi.com'></a>
 
-A self-hosted OpenAI ChatGPT client.
+A free and open-source OpenAI ChatGPT client with multi-account support.
 
 ![Chatter screenshot](screenshot.webp)
 
@@ -12,13 +12,13 @@ A self-hosted OpenAI ChatGPT client.
 
 - [X] Multi chat
 - [X] Delete/Restore chat
-- [X] Import/Export chat
-- [X] Delete/Restore prompt
+- [X] ~~Import/Export chat~~
+- [X] Toggle prompt
 - [X] Remember toggle (remember previous prompts/send only the last prompt)
-- [X] Local storage
+- [X] ~~Local storage~~
 - [X] Dockerization
-- [ ] Database storage (*In-progress*)
-- [ ] Mobile layout (*In-progress*)
+- [X] Database storage
+- [X] Mobile layout
 - [ ] I18N (maybe)
 - [ ] Themes (maybe)
 
@@ -31,8 +31,8 @@ A self-hosted OpenAI ChatGPT client.
 
 ## Requirements
 
-- [Docker](https://docs.docker.com/get-docker/)
-- [Docker Compose](https://docs.docker.com/compose/install/linux/)
+- [Docker](https://docs.docker.com/get-docker/) (In case you want to run it as a docker container)
+- [Docker Compose](https://docs.docker.com/compose/install/linux/) (In case you want to run it as a docker container)
 - Node ^18
 - NPM/PNPM
 - Vite
@@ -46,7 +46,7 @@ A self-hosted OpenAI ChatGPT client.
 3. Create your `.env` file `cp sample.env .env`
 4. Open the `.env` file and set your environment variables. Save when you are done editing.
 5. Install the dependencies `npm i`
-6. Generate migrations `npm run generate`. Migrations will automatically run when you start the app
+6. Generate migrations `npm run generate`. Migrations will automatically run when you start the app.
 
 ### Running
 
@@ -61,6 +61,8 @@ or if you have a database set up already, and you would like the hot-reload to w
 ```bash
 npm run dev -- --open
 ```
+
+When you run the app using the command above, you can access it through [http://127.0.0.1:5173](http://127.0.0.1:5173).
 
 ### Building
 
