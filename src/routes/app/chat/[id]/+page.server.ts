@@ -5,7 +5,9 @@ import { db } from "$lib/server/drizzle";
 import {
   chat, user, prompt, userConfig,
 } from "$lib/db/schema";
-import { asc, eq } from "drizzle-orm";
+import {
+  and, asc, eq,
+} from "drizzle-orm";
 import { EMAIL_VERIFICATION } from "$lib/constants";
 import { accountUpdateLimiter, chatLimiter } from "$lib/server/limiter";
 import type { Actions, PageServerLoad } from "./$types";
@@ -18,6 +20,10 @@ import { Configuration, OpenAIApi } from "openai";
 import axios from "axios";
 
 const accountSchema = z.object({ accountId: z.string().uuid().nullable() });
+
+const deleteSchema = z.object({});
+const permDeleteSchema = z.object({});
+const restoreSchema = z.object({});
 
 const renameSchema = z.object({ name: z.string().min(1).max(255) });
 
@@ -74,6 +80,9 @@ export const load: PageServerLoad = async event => {
   const systemForm = await superValidate(systemSchema);
   const toggleForm = await superValidate(toggleSchema);
   const accountForm = await superValidate(accountSchema);
+  const deleteForm = await superValidate(deleteSchema, { id: "delete-form" });
+  const permDeleteForm = await superValidate(permDeleteSchema, { id: "perm-delete-form" });
+  const restoreForm = await superValidate(restoreSchema, { id: "restore-form" });
 
   renameForm.data.name = dbUser.chats[0].name ?? "New name";
   chatForm.data.remember = dbUser.chats[0].remember;
@@ -84,7 +93,17 @@ export const load: PageServerLoad = async event => {
     systemForm.data.prompt = dbUser.chats[0].prompts.find(p => p.role === "system")?.content ?? "";
   }
 
-  return { user: dbUser, renameForm, chatForm, systemForm, toggleForm, accountForm };
+  return {
+    user: dbUser,
+    renameForm,
+    chatForm,
+    systemForm,
+    toggleForm,
+    accountForm,
+    restoreForm,
+    deleteForm,
+    permDeleteForm,
+  };
 };
 
 export const actions: Actions = {
@@ -353,7 +372,7 @@ export const actions: Actions = {
     if (!form.valid) {
       console.error("Form invalid");
       console.error(form.errors);
-      return fail(400, { systemForm: form });
+      return fail(400, { toggleForm: form });
     }
 
     try {
@@ -409,7 +428,7 @@ export const actions: Actions = {
     if (!form.valid) {
       console.error("Form invalid");
       console.error(form.errors);
-      return fail(400, { form });
+      return fail(400, { accountForm: form });
     }
 
     try {
@@ -431,5 +450,136 @@ export const actions: Actions = {
     }
 
     return { accountForm: form };
+  },
+  delete: async event => {
+    if (await chatLimiter.isLimited(event)) throw error(429, "Too many requests");
+
+    const { locals, request, params } = event;
+    const session = await locals.auth.validate();
+
+    if (!session || (EMAIL_VERIFICATION && !session.user.verified)) {
+      throw redirect(302, "/login");
+    }
+
+    const form = await superValidate(request, deleteSchema);
+
+    if (!form.valid) {
+      console.error("Form invalid");
+      console.error(form.errors);
+      return fail(400, { deleteForm: form });
+    }
+
+    try {
+      const dbUser = await db.query.user.findFirst({
+        with: {
+          config: { with: { defaultAccount: true } },
+          chats: { where: and(eq(chat.id, params.id), eq(chat.deleted, false)) },
+        },
+        where: eq(user.id, session.user.userId),
+      });
+
+      if (!dbUser) throw error(404, "User not found");
+
+      if (dbUser.chats.length === 0) throw error(404, "Chat not found");
+
+      await db.update(chat)
+        .set({ deleted: true })
+        .where(eq(chat.id, params.id));
+    } catch (e) {
+      console.error("Failed to delete chat");
+      console.error(e);
+
+      return setError(form, "", "Failed to delete chat");
+    }
+
+    return { toggleForm: form };
+  },
+  restore: async event => {
+    if (await chatLimiter.isLimited(event)) throw error(429, "Too many requests");
+
+    const { locals, request, params } = event;
+    const session = await locals.auth.validate();
+
+    if (!session || (EMAIL_VERIFICATION && !session.user.verified)) {
+      throw redirect(302, "/login");
+    }
+
+    const form = await superValidate(request, restoreSchema);
+
+    if (!form.valid) {
+      console.error("Form invalid");
+      console.error(form.errors);
+      return fail(400, { restoreForm: form });
+    }
+
+    try {
+      const dbUser = await db.query.user.findFirst({
+        with: {
+          config: { with: { defaultAccount: true } },
+          chats: { where: and(eq(chat.id, params.id), eq(chat.deleted, true)) },
+        },
+        where: eq(user.id, session.user.userId),
+      });
+
+      if (!dbUser) throw error(404, "User not found");
+
+      if (dbUser.chats.length === 0) throw error(404, "Chat not found");
+
+      await db.update(chat)
+        .set({ deleted: false })
+        .where(eq(chat.id, params.id));
+    } catch (e) {
+      console.error("Failed to restore chat");
+      console.error(e);
+
+      return setError(form, "", "Failed to restore chat");
+    }
+
+    return { toggleForm: form };
+  },
+  permanentlyDelete: async event => {
+    if (await chatLimiter.isLimited(event)) throw error(429, "Too many requests");
+
+    const { locals, request, params } = event;
+    const session = await locals.auth.validate();
+
+    if (!session || (EMAIL_VERIFICATION && !session.user.verified)) {
+      throw redirect(302, "/login");
+    }
+
+    const form = await superValidate(request, permDeleteSchema);
+
+    if (!form.valid) {
+      console.error("Form invalid");
+      console.error(form.errors);
+      return fail(400, { permDeleteForm: form });
+    }
+
+    try {
+      const dbUser = await db.query.user.findFirst({
+        with: {
+          config: { with: { defaultAccount: true } },
+          chats: { where: and(eq(chat.id, params.id), eq(chat.deleted, true)) },
+        },
+        where: eq(user.id, session.user.userId),
+      });
+
+      if (!dbUser) throw error(404, "User not found");
+
+      if (dbUser.chats.length === 0) throw error(404, "Chat not found");
+
+      await db.delete(prompt)
+        .where(eq(prompt.chatId, params.id));
+
+      await db.delete(chat)
+        .where(eq(chat.id, params.id));
+    } catch (e) {
+      console.error("Failed to permanently delete chat");
+      console.error(e);
+
+      return setError(form, "", "Failed to permanently delete chat");
+    }
+
+    throw redirect(302, "/app");
   },
 };

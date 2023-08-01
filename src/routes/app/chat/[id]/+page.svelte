@@ -26,6 +26,7 @@
   import { selectPromptSchema, type Prompt } from "$lib/db/types";
   import { z } from "zod";
   import { CHATTER_PAGE, currentPage } from "$lib/stores/currentPage";
+  import { canGoBack } from "$lib/stores/canGoBack";
 
   export let data: PageData;
 
@@ -129,12 +130,31 @@
     },
   });
 
+  const {
+    errors: deleteErrors,
+    enhance: deleteEnhance,
+    delayed: deleteDelayed,
+  } = superForm(data.deleteForm);
+
+  const {
+    errors: permDeleteErrors,
+    enhance: permDeleteEnhance,
+    delayed: permDeleteDelayed,
+  } = superForm(data.permDeleteForm);
+
+  const {
+    errors: restoreErrors,
+    enhance: restoreEnhance,
+    delayed: restoreDelayed,
+  } = superForm(data.restoreForm);
+
   let chatFormElem: HTMLFormElement;
   let ctrlPressed = false;
   let enterPressed = false;
 
   $pageTitle = data.user.chats[0].name ?? "Chatter";
   $currentPage = CHATTER_PAGE.CHATS;
+  $canGoBack = "/app";
 
   onMount(() => {
     $contentHeight = document
@@ -181,7 +201,7 @@
               use:renameEnhance
               action="?/rename"
               method="post"
-              class="flex flex-row gap-5 mx-auto w-full max-w-3xl items-end justify-stretch"
+              class="flex flex-row gap-2 mx-auto w-full max-w-3xl items-end justify-stretch"
             >
               <div class="w-full">
                 <input
@@ -226,9 +246,9 @@
               use:systemEnhance
               action="?/updateSystem"
               method="post"
-              class="flex flex-row gap-5 mx-auto w-full max-w-3xl items-end justify-stretch"
+              class="flex flex-row gap-2 mx-auto w-full max-w-3xl items-end justify-stretch"
             >
-              <label class="label mt-5 w-full">
+              <label class="label mt-2 w-full">
                 <span class="flex flex-row gap-2 items-center">
                   <span>System prompt</span>
                   <span>
@@ -286,9 +306,9 @@
               use:accountEnhance
               method="post"
               action="?/changeAccount"
-              class="flex flex-row gap-5 mx-auto w-full max-w-3xl items-end justify-stretch"
+              class="flex flex-row gap-2 mx-auto w-full max-w-3xl items-end justify-stretch"
             >
-              <label class="label mt-5 w-full">
+              <label class="label mt-2 w-full">
                 <span>Default account</span>
 
                 <select
@@ -325,6 +345,79 @@
                 disabled={$accountDelayed || !$accountChanged}
               />
             </form>
+
+            {#if !data.user.chats[0].deleted}
+              <form
+                use:deleteEnhance
+                id="delete-form"
+                method="post"
+                action="?/delete"
+                class="flex flex-row gap-5 mx-auto w-full max-w-3xl items-end justify-stretch"
+              >
+                <input
+                  type="submit"
+                  value={$deleteDelayed ? "Deleting..." : "Delete chat"}
+                  class={`btn mt-2 w-full ${
+                    $deleteDelayed
+                      ? "variant-filled-surface"
+                      : "variant-filled-error"
+                  }`}
+                  disabled={$deleteDelayed}
+                />
+
+                {#if $deleteErrors._errors}
+                  <FormError error={$deleteErrors._errors} />
+                {/if}
+              </form>
+            {:else}
+              <div class="flex flex-row w-full mt-2 gap-2">
+                <form
+                  use:restoreEnhance
+                  id="restore-form"
+                  method="post"
+                  action="?/restore"
+                  class="flex flex-row gap-5 mx-auto w-full max-w-3xl items-end justify-stretch"
+                >
+                  <input
+                    type="submit"
+                    value={$restoreDelayed ? "Restoring..." : "Restore chat"}
+                    class={`btn w-full ${
+                      $restoreDelayed
+                        ? "variant-filled-surface"
+                        : "variant-filled"
+                    }`}
+                    disabled={$restoreDelayed}
+                  />
+
+                  {#if $restoreErrors._errors}
+                    <FormError error={$restoreErrors._errors} />
+                  {/if}
+                </form>
+
+                <form
+                  use:permDeleteEnhance
+                  id="perm-delete-form"
+                  method="post"
+                  action="?/permanentlyDelete"
+                  class="flex flex-row gap-5 mx-auto w-full max-w-3xl items-end justify-stretch"
+                >
+                  <input
+                    type="submit"
+                    value={$permDeleteDelayed ? "Deleting..." : "Permanently delete chat"}
+                    class={`btn w-full ${
+                      $permDeleteDelayed
+                        ? "variant-filled-surface"
+                        : "variant-filled-error"
+                    }`}
+                    disabled={$permDeleteDelayed}
+                  />
+
+                  {#if $permDeleteErrors._errors}
+                    <FormError error={$permDeleteErrors._errors} />
+                  {/if}
+                </form>
+              </div>
+            {/if}
           </div>
         </svelte:fragment>
       </AccordionItem>
