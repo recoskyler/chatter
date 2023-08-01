@@ -2,11 +2,20 @@
   import "styles/theme.postcss";
   import "@skeletonlabs/skeleton/styles/skeleton.css";
   import "styles/app.postcss";
-	import { Modal, Toast, storePopup } from "@skeletonlabs/skeleton";
+  import "highlight.js/styles/github-dark.css";
+  import { Modal, Toast, storePopup } from "@skeletonlabs/skeleton";
   import {
-    computePosition, autoUpdate, offset, shift, flip, arrow,
+    computePosition,
+    autoUpdate,
+    offset,
+    shift,
+    flip,
+    arrow,
   } from "@floating-ui/dom";
+  import hljs from "highlight.js";
+  import { storeHighlightJs } from "@skeletonlabs/skeleton";
 
+  storeHighlightJs.set(hljs);
   storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
 </script>
 
