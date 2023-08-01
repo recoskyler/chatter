@@ -15,6 +15,8 @@
   import { superForm } from "sveltekit-superforms/client";
   import PasswordPopup from "components/PasswordPopup.svelte";
   import FormSuccess from "components/FormSuccess.svelte";
+  import { canGoBack } from "$lib/stores/canGoBack";
+  import { CHATTER_PAGE, currentPage } from "$lib/stores/currentPage";
 
   export let data: PageData;
 
@@ -55,6 +57,8 @@
   } = superForm(data.changeNameForm);
 
   $pageTitle = "Profile";
+  $currentPage = CHATTER_PAGE.PROFILE;
+  $canGoBack = null;
 </script>
 
 <svelte:head>
@@ -88,7 +92,7 @@
   <Accordion class="mt-10" autocollapse>
     <AccordionItem>
       <svelte:fragment slot="lead">
-        <Fa icon={faIdBadge} />
+        <Fa fw icon={faIdBadge} />
       </svelte:fragment>
 
       <svelte:fragment slot="summary">Change name</svelte:fragment>
@@ -133,7 +137,7 @@
 
     <AccordionItem>
       <svelte:fragment slot="lead">
-        <Fa icon={faEnvelope} />
+        <Fa fw icon={faEnvelope} />
       </svelte:fragment>
 
       <svelte:fragment slot="summary">Change email</svelte:fragment>
@@ -196,7 +200,7 @@
 
     <AccordionItem>
       <svelte:fragment slot="lead">
-        <Fa icon={faKey} />
+        <Fa fw icon={faKey} />
       </svelte:fragment>
 
       <svelte:fragment slot="summary">Change password</svelte:fragment>
@@ -264,7 +268,7 @@
 
     <AccordionItem>
       <svelte:fragment slot="lead">
-        <Fa icon={faTrash} class="text-red-400" />
+        <Fa fw icon={faTrash} class="text-red-400" />
       </svelte:fragment>
 
       <svelte:fragment slot="summary">
