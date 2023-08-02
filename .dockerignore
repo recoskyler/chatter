@@ -1,0 +1,12 @@
+node_modules
+.DS_Store
+/build
+/.svelte-kit
+/static/images
+.vscode
+.git
+.gitattributes
+.eslintignore
+.eslintrc.js
+README.md
+Dockerfile
