@@ -13,8 +13,26 @@ services:
     ports:
       - "${VITE_DB_FORWARD_PORT:-5432}:5432"
 
-    expose:
-      - "${VITE_DB_FORWARD_PORT:-5432}"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+    environment:
+      POSTGRES_USER: ${VITE_DB_USER:-chatter}
+      POSTGRES_PASSWORD: ${VITE_DB_PASSWORD:-chatter}
+      POSTGRES_DB: ${VITE_DB_DATABASE:-chatter}
+
+  postgres-dev:
+    image: postgres
+    restart: always
+
+    volumes:
+      - postgres-dev-data:/var/lib/postgresql/data
+
+    ports:
+      - "5433:5432"
 
     healthcheck:
       test: ["CMD-SHELL", "pg_isready"]
@@ -29,4 +47,5 @@ services:
 
 volumes:
   postgres-data:
+  postgres-dev-data:
   pgadmin-data:
