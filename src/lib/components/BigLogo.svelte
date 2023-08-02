@@ -4,7 +4,7 @@
 
 <div class="logo flex flex-row items-center gap-2 justify-center">
   <img src={logo} alt="Logo" id="logo-img">
-  <a href="https://kit.svelte.dev" class="h1"><strong>Chatter</strong></a>
+  <a href="/" class="h1"><strong>Chatter</strong></a>
 </div>
 
 <style lang="scss">
