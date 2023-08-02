@@ -43,6 +43,20 @@ You can also toggle each prompt on/off if the remember option is enabled. This w
 - ChatGPT 4
 - ChatGPT 4 (32K tokens)
 
+## FAQ
+
+[a](#what-is-a-system-prompt)
+
+### What is a "system prompt"?
+
+> A system prompt in any version of GPT refers to the initial instruction or input provided to guide the model's response generation. It establishes the context and provides guidelines or instructions for the desired output. The system prompt can help shape the behavior, tone, style, or topic of the generated response by influencing the AI model's decision-making process.
+
+### What does the "remember" toggle do?
+
+The remember toggle allows Chatter to **remember** previous prompts and their respective answers by submitting the previous prompts alongside the last prompt you have entered. If disabled, ChatGPT will not remember any previous topics talked about in the chat.
+
+**Remember function only remembers the content of the current chat, not all chats**
+
 ## Status
 
 **Currently in Usable stage.** This project will receive updates if it proves itself to be useful. Please use the [main](/recoskyler/chatter/tree/main) branch for the stable version.
