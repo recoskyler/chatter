@@ -4,7 +4,9 @@ import {
   VITE_DB_DATABASE, VITE_DB_PASSWORD, VITE_DB_USER, VITE_DB_HOST, VITE_DB_FORWARD_PORT,
 } from "$env/static/private";
 import * as schema from "../db/schema";
-import { Pool } from "pg";
+import pg from "pg";
+
+const { Pool } = pg;
 
 export const pool = new Pool({
   host: VITE_DB_HOST === "" ? "127.0.0.1" : VITE_DB_HOST,
