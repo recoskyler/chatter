@@ -364,6 +364,15 @@
     </a>
 
     <a
+      href="/cookie"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="anchor text-center"
+    >
+      Cookie Policy
+    </a>
+
+    <a
       href="https://github.com/recoskyler/chatter/blob/main/LICENSE"
       target="_blank"
       rel="noopener noreferrer"

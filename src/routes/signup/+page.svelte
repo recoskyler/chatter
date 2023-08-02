@@ -85,7 +85,9 @@
       <span>By continuing you agree to Chatter's </span>
       <br />
       <a class="anchor" href="/disclaimer">disclaimer</a>
-      <span> and </span>
+      <span>, </span>
+      <a class="anchor" href="/cookie">cookie policy</a>
+      <span>, and </span>
       <a class="anchor" href="/privacy">privacy policy</a>
     </p>
 
