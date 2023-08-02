@@ -2,6 +2,8 @@
 
 <a href='https://ko-fi.com/recoskyler' target='_blank'><img height='35' style='border:0px;height:46px;' src='https://az743702.vo.msecnd.net/cdn/kofi3.png?v=0' border='0' alt='Buy Me a Coffee at ko-fi.com'></a>
 
+<img src="https://raw.githubusercontent.com/recoskyler/chatter/main/static/favicon.png" alt="logo" width="100" height="100">
+
 A simple, free, and open-source OpenAI ChatGPT client with multi-account support.
 
 You can either self-host it, or [start using it now](https://chatter.recoskyler.com)!
@@ -67,8 +69,6 @@ You can also toggle each prompt on/off if the remember option is enabled. This w
 
 ## Requirements
 
-- [Docker](https://docs.docker.com/get-docker/) (In case you want to run it as a docker container)
-- [Docker Compose](https://docs.docker.com/compose/install/linux/) (In case you want to run it as a docker container)
 - Node ^18
 - NPM/PNPM
 - Vite
@@ -86,13 +86,13 @@ You can also toggle each prompt on/off if the remember option is enabled. This w
 
 ### Running
 
-The following command will run the app and the database as a Docker container. Your changes will not effect the app.
+The following command will run the database as a Docker container.
 
 ```bash
 $ docker compose up -d
 ```
 
-or if you have a database set up already, and you would like the hot-reload to work:
+If you have the database set up already, and you would like the hot-reload to work:
 
 ```bash
 npm run dev -- --open
