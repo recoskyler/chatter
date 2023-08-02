@@ -60,14 +60,16 @@
       {/if}
     </label>
 
-    <input
-      type="submit"
-      value={$delayed ? "Saving..." : "Save"}
-      class={`btn mt-5 w-full ${
-        $delayed || !$changed ? "variant-filled-surface" : "variant-filled"
-      }`}
-      disabled={$delayed || !$changed}
-    />
+    {#if $changed}
+      <input
+        type="submit"
+        value={$delayed ? "Saving..." : "Save"}
+        class={`btn mt-5 w-full ${
+          $delayed || !$changed ? "variant-filled-surface" : "variant-filled"
+        }`}
+        disabled={$delayed || !$changed}
+      />
+    {/if}
   </form>
 
   <div class="container mx-auto max-w-lg">

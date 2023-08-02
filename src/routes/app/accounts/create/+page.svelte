@@ -12,8 +12,6 @@
 
   export let data: PageData;
 
-  const changed = writable(false);
-
   const {
     form,
     enhance,
@@ -21,7 +19,7 @@
     delayed,
     errors,
     constraints,
-  } = superForm(data.form, {onUpdated: () => {$changed = false;}});
+  } = superForm(data.form);
 </script>
 
 <svelte:head>

@@ -60,7 +60,7 @@
         type="text"
         placeholder="John Doe"
         disabled={$delayed || data.account.deleted}
-        on:change={(_) => {
+        on:input={(_) => {
           $changed = true;
         }}
         bind:value={$form.name}
@@ -81,7 +81,7 @@
         type="password"
         placeholder="SECRET API KEY"
         disabled={$delayed || data.account.deleted}
-        on:change={(_) => {
+        on:input={(_) => {
           $changed = true;
         }}
         bind:value={$form.key}
@@ -123,7 +123,7 @@
       <FormSuccess message={$message} />
     {/if}
 
-    {#if !data.account.deleted}
+    {#if !data.account.deleted && $changed}
       <input
         type="submit"
         value={$delayed ? "Saving..." : "Save"}

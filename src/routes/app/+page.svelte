@@ -11,8 +11,6 @@
 
   export let data: PageData;
 
-  const changed = writable(false);
-
   $currentPage = CHATTER_PAGE.CHATS;
   $pageTitle = "Chatter";
   $canGoBack = null;

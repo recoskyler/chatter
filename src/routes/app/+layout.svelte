@@ -69,7 +69,7 @@
 
           <a
             href="https://github.com/recoskyler/chatter"
-            class="px-5"
+            class="px-2"
             target="_blank"
             rel="noopener noreferrer"
           >
