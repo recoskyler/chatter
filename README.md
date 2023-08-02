@@ -18,7 +18,7 @@ You can create up to 100 chats (can be configured in `.env` in case of self-depl
 
 ### Multi-account support
 
-You can have multiple accounts (API keys) defined, and switch between accounts on the fly. Each account can use a different [ChatGPT model](#supported-models).
+You can have multiple accounts (API keys) defined, and switch between accounts on the fly. Each account can use a different [ChatGPT model](#supported-models), and each chat can use a different account.
 
 This is very useful in the case of having a personal, and a business OpenAI account, each having their distinct API keys.
 
