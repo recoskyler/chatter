@@ -82,11 +82,11 @@
     <PasswordStrengthMeter password={$form.password} />
 
     <p class="text-center text-slate-400">
-      <span>By continuing you agree to</span>
+      <span>By continuing you agree to Chatter's </span>
       <br />
-      <a class="anchor" href="/terms-and-conditions">terms and conditions</a>
+      <a class="anchor" href="/disclaimer">disclaimer</a>
       <span> and </span>
-      <a class="anchor" href="/privacy-policy">privacy policy</a>
+      <a class="anchor" href="/privacy">privacy policy</a>
     </p>
 
     <input

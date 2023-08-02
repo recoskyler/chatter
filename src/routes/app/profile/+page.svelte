@@ -1,8 +1,5 @@
 <script lang="ts">
-  import {
-    Accordion,
-    AccordionItem,
-  } from "@skeletonlabs/skeleton";
+  import { Accordion, AccordionItem } from "@skeletonlabs/skeleton";
   import { popup } from "@skeletonlabs/skeleton";
   import { passwordPopupFocusBlur } from "components/PasswordStrengthMeter/helpers.js";
   import type { PageData } from "./$types";
@@ -11,7 +8,12 @@
   import FormError from "components/FormError.svelte";
   import PasswordStrengthMeter from "components/PasswordStrengthMeter/PasswordStrengthMeter.svelte";
   import Fa from "svelte-fa";
-  import { faEnvelope, faIdBadge, faKey, faTrash } from "@fortawesome/free-solid-svg-icons";
+  import {
+    faEnvelope,
+    faIdBadge,
+    faKey,
+    faTrash,
+  } from "@fortawesome/free-solid-svg-icons";
   import { superForm } from "sveltekit-superforms/client";
   import PasswordPopup from "components/PasswordPopup.svelte";
   import FormSuccess from "components/FormSuccess.svelte";
@@ -67,7 +69,7 @@
 </svelte:head>
 
 <main
-  class="flex flex-col mx-auto my-auto p-5 max-w-md auto-cols-min"
+  class=" h-full flex flex-col mx-auto my-auto p-5 max-w-md auto-cols-min"
   id="profile-cont"
 >
   <div class="flex flex-row gap-5">
@@ -128,7 +130,9 @@
           <input
             type="submit"
             value={$cnDelayed ? "Saving..." : "Change name"}
-            class={`btn mt-5 w-full ${$cnDelayed ? "variant-filled-surface" : "variant-filled"}`}
+            class={`btn mt-5 w-full ${
+              $cnDelayed ? "variant-filled-surface" : "variant-filled"
+            }`}
             disabled={$cnDelayed}
           />
         </form>
@@ -191,7 +195,9 @@
           <input
             type="submit"
             value={$ceDelayed ? "Saving..." : "Change email"}
-            class={`btn mt-5 w-full ${$ceDelayed ? "variant-filled-surface" : "variant-filled"}`}
+            class={`btn mt-5 w-full ${
+              $ceDelayed ? "variant-filled-surface" : "variant-filled"
+            }`}
             disabled={$ceDelayed}
           />
         </form>
@@ -259,7 +265,9 @@
           <input
             type="submit"
             value={$cpDelayed ? "Saving..." : "Change password"}
-            class={`btn mt-5 w-full ${$cpDelayed ? "variant-filled-surface" : "variant-filled"}`}
+            class={`btn mt-5 w-full ${
+              $cpDelayed ? "variant-filled-surface" : "variant-filled"
+            }`}
             disabled={$cpDelayed}
           />
         </form>
@@ -278,8 +286,9 @@
       <svelte:fragment slot="content">
         <p>
           <span class="text-orange-400"><strong>WARNING: </strong></span>
-          If you choose to delete your account, there is no going back!
-          Enter your current password and type "<i>Delete</i>" (case sensitive) without the "quotes" in the <strong>Confirmation</strong> field to proceed.
+          If you choose to delete your account, there is no going back! Enter your
+          current password and type "<i>Delete</i>" (case sensitive) without the
+          "quotes" in the <strong>Confirmation</strong> field to proceed.
         </p>
 
         <form use:daEnhance method="post" action="?/delete">
@@ -330,11 +339,46 @@
           <input
             type="submit"
             value={$daDelayed ? "Exterminating..." : "Delete account"}
-            class={`btn mt-5 w-full ${$daDelayed ? "variant-filled-surface" : "variant-filled-error"}`}
+            class={`btn mt-5 w-full ${
+              $daDelayed ? "variant-filled-surface" : "variant-filled-error"
+            }`}
             disabled={$daDelayed}
           />
         </form>
       </svelte:fragment>
     </AccordionItem>
   </Accordion>
+
+  <div class="flex flex-row items-center justify-center gap-5 pt-10">
+    <a href="/privacy" target="_blank" rel="noopener noreferrer" class="anchor">
+      Privacy Policy
+    </a>
+
+    <a
+      href="/disclaimer"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="anchor"
+    >
+      Disclaimer
+    </a>
+
+    <a
+      href="https://github.com/recoskyler/chatter/blob/main/LICENSE"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="anchor"
+    >
+      License
+    </a>
+
+    <a
+      href="https://github.com/recoskyler/chatter"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="anchor"
+    >
+      Source Code
+    </a>
+  </div>
 </main>
