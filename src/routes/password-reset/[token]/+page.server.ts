@@ -1,7 +1,5 @@
 import { auth, validateToken } from "$lib/server/lucia";
-import {
-  fail, type Actions, error,
-} from "@sveltejs/kit";
+import { fail, type Actions } from "@sveltejs/kit";
 import { passwordResetLimiter } from "$lib/server/limiter";
 import type { PageServerLoad } from "./$types";
 import { MAX_PASSWORD_LENGTH, MIN_PASSWORD_LENGTH } from "$lib/constants";
@@ -25,11 +23,17 @@ export const load: PageServerLoad = async event => {
 
 export const actions: Actions = {
   default: async event => {
-    if (await passwordResetLimiter.isLimited(event)) throw error(429, "Too many requests");
-
     const { request, params } = event;
 
     const form = await superValidate(request, passwordResetSchema);
+
+    if (await passwordResetLimiter.isLimited(event)) {
+      return setError(
+        form,
+        "",
+        "You are doing this too fast. Please wait a few minutes.",
+      );
+    }
 
     if (!form.valid) {
       console.error("Form invalid");
@@ -58,7 +62,7 @@ export const actions: Actions = {
     } catch (e) {
       console.error(e);
 
-      throw error(401, "Invalid or expired token");
+      return setError(form, "", "Invalid or expired token.");
     }
 
     return message(form, "Reset password successfully");

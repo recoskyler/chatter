@@ -3,13 +3,13 @@ import {
 } from "@sveltejs/kit";
 import { db } from "$lib/server/drizzle";
 import {
-  chat, user, prompt, userConfig,
+  chat, user, prompt, account,
 } from "$lib/db/schema";
 import {
   and, asc, eq,
 } from "drizzle-orm";
 import { EMAIL_VERIFICATION } from "$lib/constants";
-import { accountUpdateLimiter, chatLimiter } from "$lib/server/limiter";
+import { chatLimiter } from "$lib/server/limiter";
 import type { Actions, PageServerLoad } from "./$types";
 import {
   message, setError, superValidate,
@@ -19,7 +19,7 @@ import type { NewPrompt, Prompt } from "$lib/db/types";
 import { Configuration, OpenAIApi } from "openai";
 import axios from "axios";
 
-const accountSchema = z.object({ accountId: z.string().uuid().nullable() });
+const accountSchema = z.object({ accountId: z.string().uuid() });
 
 const deleteSchema = z.object({});
 const permDeleteSchema = z.object({});
@@ -59,7 +59,10 @@ export const load: PageServerLoad = async event => {
 
   const dbUser = await db.query.user.findFirst({
     with: {
-      accounts: { with: { chatModel: true } },
+      accounts: {
+        with: { chatModel: true },
+        where: eq(account.deleted, false),
+      },
       config: { with: { defaultAccount: true } },
       chats: {
         with: { prompts: { orderBy: asc(prompt.createdAt) } },
@@ -75,6 +78,8 @@ export const load: PageServerLoad = async event => {
 
   if (dbUser.chats.length === 0) throw error(404, "Chat not found");
 
+  if (dbUser.accounts.length === 0) throw redirect(302, "/app/accounts");
+
   const renameForm = await superValidate(renameSchema);
   const chatForm = await superValidate(chatSchema);
   const systemForm = await superValidate(systemSchema);
@@ -87,7 +92,9 @@ export const load: PageServerLoad = async event => {
   renameForm.data.name = dbUser.chats[0].name ?? "New name";
   chatForm.data.remember = dbUser.chats[0].remember;
   toggleForm.data.remember = dbUser.chats[0].remember;
-  accountForm.data.accountId = dbUser.config.defaultAccountId;
+  accountForm.data.accountId = dbUser.chats[0].accountId
+    ?? dbUser.config.defaultAccountId
+    ?? dbUser.accounts[0].id;
 
   if (dbUser.chats[0].prompts.find(p => p.role === "system")) {
     systemForm.data.prompt = dbUser.chats[0].prompts.find(p => p.role === "system")?.content ?? "";
@@ -108,8 +115,6 @@ export const load: PageServerLoad = async event => {
 
 export const actions: Actions = {
   rename: async event => {
-    if (await chatLimiter.isLimited(event)) throw error(429, "Too many requests");
-
     const { locals, request, params } = event;
     const session = await locals.auth.validate();
 
@@ -118,6 +123,14 @@ export const actions: Actions = {
     }
 
     const form = await superValidate(request, renameSchema);
+
+    if (await chatLimiter.isLimited(event)) {
+      return setError(
+        form,
+        "",
+        "You are doing this too fast. Please wait a few minutes.",
+      );
+    }
 
     if (!form.valid) {
       console.error("Form invalid");
@@ -131,15 +144,30 @@ export const actions: Actions = {
           config: { with: { defaultAccount: true } },
           chats: {
             with: { prompts: true },
-            where: eq(chat.id, params.id),
+            where: and(
+              eq(chat.id, params.id),
+              eq(chat.deleted, false),
+            ),
           },
         },
         where: eq(user.id, session.user.userId),
       });
 
-      if (!dbUser) throw error(404, "User not found");
+      if (!dbUser) {
+        return setError(
+          form,
+          "",
+          "User not found",
+        );
+      }
 
-      if (dbUser.chats.length === 0) throw error(404, "Chat not found");
+      if (dbUser.chats.length === 0) {
+        return setError(
+          form,
+          "",
+          "Chat not found or deleted",
+        );
+      }
 
       await db.update(chat)
         .set({ name: form.data.name })
@@ -154,8 +182,6 @@ export const actions: Actions = {
     return { renameForm: form };
   },
   submit: async event => {
-    if (await chatLimiter.isLimited(event)) throw error(429, "Too many requests");
-
     const { locals, request, params } = event;
     const session = await locals.auth.validate();
 
@@ -164,6 +190,14 @@ export const actions: Actions = {
     }
 
     const form = await superValidate(request, chatSchema);
+
+    if (await chatLimiter.isLimited(event)) {
+      return setError(
+        form,
+        "",
+        "You are doing this too fast. Please wait a few minutes.",
+      );
+    }
 
     if (!form.valid) {
       console.error("Form invalid");
@@ -178,18 +212,42 @@ export const actions: Actions = {
         with: {
           config: { with: { defaultAccount: { with: { chatModel: true } } } },
           chats: {
-            with: { prompts: { orderBy: [asc(prompt.createdAt)] } },
-            where: eq(chat.id, params.id),
+            with: {
+              defaultAccount: { with: { chatModel: true } },
+              prompts: { orderBy: [asc(prompt.createdAt)] },
+            },
+            where: and(
+              eq(chat.id, params.id),
+              eq(chat.deleted, false),
+            ),
           },
         },
         where: eq(user.id, session.user.userId),
       });
 
-      if (!dbUser) throw error(404, "User not found");
+      if (!dbUser) {
+        return setError(
+          form,
+          "",
+          "User not found",
+        );
+      }
 
-      if (dbUser.chats.length === 0) throw error(404, "Chat not found");
+      if (dbUser.chats.length === 0) {
+        return setError(
+          form,
+          "",
+          "Chat not found or deleted",
+        );
+      }
 
-      if (!dbUser.config.defaultAccount) throw error(400, "Default account not selected");
+      if (!dbUser.chats[0].defaultAccount) {
+        return setError(
+          form,
+          "",
+          "Please select a valid account first from the \"Chat configuration\" above.",
+        );
+      }
 
       const newUserPrompt: NewPrompt = {
         role: "user",
@@ -198,11 +256,23 @@ export const actions: Actions = {
         busy: true,
       };
 
-      if (dbUser.chats[0].prompts.length === 0) throw error(404, "System prompt not found");
+      if (dbUser.chats[0].prompts.length === 0) {
+        return setError(
+          form,
+          "",
+          "System prompt not found. Please try creating a new chat.",
+        );
+      }
 
       const dbSystemPrompt = dbUser.chats[0].prompts.find(p => p.role === "system");
 
-      if (!dbSystemPrompt) throw error(404, "System prompt not found");
+      if (!dbSystemPrompt) {
+        return setError(
+          form,
+          "",
+          "System prompt not found. Please try creating a new chat.",
+        );
+      }
 
       const systemPrompt: Message = { role: "system", content: dbSystemPrompt.content };
 
@@ -210,7 +280,7 @@ export const actions: Actions = {
 
       submittedPrompt = dbUserPrompt;
 
-      const configuration = new Configuration({ apiKey: dbUser.config.defaultAccount.key });
+      const configuration = new Configuration({ apiKey: dbUser.chats[0].defaultAccount.key });
       const openai = new OpenAIApi(configuration);
 
       const lastMessage: Message = { role: dbUserPrompt.role, content: dbUserPrompt.content };
@@ -225,7 +295,7 @@ export const actions: Actions = {
       // console.log(messages);
 
       const completion = await openai.createChatCompletion({
-        model: dbUser.config.defaultAccount.chatModel.name,
+        model: dbUser.chats[0].defaultAccount.chatModel.name,
         messages: messages,
       });
 
@@ -306,8 +376,6 @@ export const actions: Actions = {
     }
   },
   updateSystem: async event => {
-    if (await chatLimiter.isLimited(event)) throw error(429, "Too many requests");
-
     const { locals, request, params } = event;
     const session = await locals.auth.validate();
 
@@ -316,6 +384,14 @@ export const actions: Actions = {
     }
 
     const form = await superValidate(request, systemSchema);
+
+    if (await chatLimiter.isLimited(event)) {
+      return setError(
+        form,
+        "",
+        "You are doing this too fast. Please wait a few minutes.",
+      );
+    }
 
     if (!form.valid) {
       console.error("Form invalid");
@@ -329,25 +405,52 @@ export const actions: Actions = {
           config: { with: { defaultAccount: true } },
           chats: {
             with: { prompts: true },
-            where: eq(chat.id, params.id),
+            where: and(
+              eq(chat.id, params.id),
+              eq(chat.deleted, false),
+            ),
           },
         },
         where: eq(user.id, session.user.userId),
       });
 
-      if (!dbUser) throw error(404, "User not found");
+      if (!dbUser) {
+        return setError(
+          form,
+          "",
+          "User not found",
+        );
+      }
 
-      if (dbUser.chats.length === 0) throw error(404, "Chat not found");
+      if (dbUser.chats.length === 0) {
+        return setError(
+          form,
+          "",
+          "Chat not found or deleted",
+        );
+      }
 
-      if (dbUser.chats[0].prompts.length === 0) throw error(404, "System prompt not found");
+      if (dbUser.chats[0].prompts.length === 0) {
+        return setError(
+          form,
+          "",
+          "System prompt not found. Please try creating a new chat.",
+        );
+      }
 
-      const systemPrompt = dbUser.chats[0].prompts.find(p => p.role === "system");
+      const dbSystemPrompt = dbUser.chats[0].prompts.find(p => p.role === "system");
 
-      if (!systemPrompt) throw error(404, "System prompt not found");
+      if (!dbSystemPrompt) {
+        return setError(
+          form,
+          "",
+          "System prompt not found. Please try creating a new chat.",
+        );
+      }
 
       await db.update(prompt)
         .set({ content: form.data.prompt })
-        .where(eq(prompt.id, systemPrompt.id));
+        .where(eq(prompt.id, dbSystemPrompt.id));
     } catch (e) {
       console.error("Failed to save system prompt");
       console.error(e);
@@ -358,8 +461,6 @@ export const actions: Actions = {
     return { systemForm: form };
   },
   toggle: async event => {
-    if (await chatLimiter.isLimited(event)) throw error(429, "Too many requests");
-
     const { locals, request, params } = event;
     const session = await locals.auth.validate();
 
@@ -368,6 +469,14 @@ export const actions: Actions = {
     }
 
     const form = await superValidate(request, toggleSchema);
+
+    if (await chatLimiter.isLimited(event)) {
+      return setError(
+        form,
+        "",
+        "You are doing this too fast. Please wait a few minutes.",
+      );
+    }
 
     if (!form.valid) {
       console.error("Form invalid");
@@ -381,24 +490,51 @@ export const actions: Actions = {
           config: { with: { defaultAccount: true } },
           chats: {
             with: { prompts: true },
-            where: eq(chat.id, params.id),
+            where: and(
+              eq(chat.id, params.id),
+              eq(chat.deleted, false),
+            ),
           },
         },
         where: eq(user.id, session.user.userId),
       });
 
-      if (!dbUser) throw error(404, "User not found");
+      if (!dbUser) {
+        return setError(
+          form,
+          "",
+          "User not found",
+        );
+      }
 
-      if (dbUser.chats.length === 0) throw error(404, "Chat not found");
+      if (dbUser.chats.length === 0) {
+        return setError(
+          form,
+          "",
+          "Chat not found or deleted",
+        );
+      }
 
-      if (dbUser.chats[0].prompts.length === 0) throw error(404, "System prompt not found");
+      if (dbUser.chats[0].prompts.length === 0) {
+        return setError(
+          form,
+          "",
+          "System prompt not found. Please try creating a new chat.",
+        );
+      }
 
-      const systemPrompt = dbUser.chats[0].prompts.find(p => p.role === "system");
+      const dbSystemPrompt = dbUser.chats[0].prompts.find(p => p.role === "system");
 
-      if (!systemPrompt) throw error(404, "System prompt not found");
+      if (!dbSystemPrompt) {
+        return setError(
+          form,
+          "",
+          "System prompt not found. Please try creating a new chat.",
+        );
+      }
 
-      if (form.data.promptId === systemPrompt.id) {
-        return setError(form, "System prompt cannot be toggled");
+      if (form.data.promptId === dbSystemPrompt.id) {
+        return setError(form, "", "System prompt cannot be toggled");
       }
 
       await db.update(prompt)
@@ -414,9 +550,7 @@ export const actions: Actions = {
     return { toggleForm: form };
   },
   changeAccount: async event => {
-    if (await accountUpdateLimiter.isLimited(event)) throw error(429, "Too many requests");
-
-    const { locals, request } = event;
+    const { locals, request, params } = event;
     const session = await locals.auth.validate();
 
     if (!session || (EMAIL_VERIFICATION && !session.user.verified)) {
@@ -424,6 +558,14 @@ export const actions: Actions = {
     }
 
     const form = await superValidate(request, accountSchema);
+
+    if (await chatLimiter.isLimited(event)) {
+      return setError(
+        form,
+        "",
+        "You are doing this too fast. Please wait a few minutes.",
+      );
+    }
 
     if (!form.valid) {
       console.error("Form invalid");
@@ -433,15 +575,51 @@ export const actions: Actions = {
 
     try {
       const dbUser = await db.query.user.findFirst({
-        with: { config: true },
+        with: {
+          config: true,
+          accounts: {
+            where: and(
+              eq(account.id, form.data.accountId),
+              eq(account.deleted, false),
+            ),
+          },
+          chats: {
+            where: and(
+              eq(chat.id, params.id),
+              eq(chat.deleted, false),
+            ),
+          },
+        },
         where: eq(user.id, session.user.userId),
       });
 
-      if (!dbUser) throw error(404, "User not found");
+      if (!dbUser) {
+        return setError(
+          form,
+          "",
+          "User not found",
+        );
+      }
 
-      await db.update(userConfig)
-        .set({ defaultAccountId: form.data.accountId })
-        .where(eq(userConfig.userId, session.user.userId));
+      if (dbUser.chats.length === 0) {
+        return setError(
+          form,
+          "",
+          "Chat not found or deleted",
+        );
+      }
+
+      if (dbUser.accounts.length === 0) {
+        return setError(
+          form,
+          "",
+          "Account not found or deleted",
+        );
+      }
+
+      await db.update(chat)
+        .set({ accountId: form.data.accountId })
+        .where(eq(chat.userId, session.user.userId));
     } catch (e) {
       console.error("Failed to create account");
       console.error(e);
@@ -452,8 +630,6 @@ export const actions: Actions = {
     return { accountForm: form };
   },
   delete: async event => {
-    if (await chatLimiter.isLimited(event)) throw error(429, "Too many requests");
-
     const { locals, request, params } = event;
     const session = await locals.auth.validate();
 
@@ -462,6 +638,14 @@ export const actions: Actions = {
     }
 
     const form = await superValidate(request, deleteSchema);
+
+    if (await chatLimiter.isLimited(event)) {
+      return setError(
+        form,
+        "",
+        "You are doing this too fast. Please wait a few minutes.",
+      );
+    }
 
     if (!form.valid) {
       console.error("Form invalid");
@@ -478,9 +662,21 @@ export const actions: Actions = {
         where: eq(user.id, session.user.userId),
       });
 
-      if (!dbUser) throw error(404, "User not found");
+      if (!dbUser) {
+        return setError(
+          form,
+          "",
+          "User not found",
+        );
+      }
 
-      if (dbUser.chats.length === 0) throw error(404, "Chat not found");
+      if (dbUser.chats.length === 0) {
+        return setError(
+          form,
+          "",
+          "Chat not found, already restored, or permanently deleted",
+        );
+      }
 
       await db.update(chat)
         .set({ deleted: true })
@@ -495,8 +691,6 @@ export const actions: Actions = {
     return { toggleForm: form };
   },
   restore: async event => {
-    if (await chatLimiter.isLimited(event)) throw error(429, "Too many requests");
-
     const { locals, request, params } = event;
     const session = await locals.auth.validate();
 
@@ -505,6 +699,14 @@ export const actions: Actions = {
     }
 
     const form = await superValidate(request, restoreSchema);
+
+    if (await chatLimiter.isLimited(event)) {
+      return setError(
+        form,
+        "",
+        "You are doing this too fast. Please wait a few minutes.",
+      );
+    }
 
     if (!form.valid) {
       console.error("Form invalid");
@@ -521,9 +723,21 @@ export const actions: Actions = {
         where: eq(user.id, session.user.userId),
       });
 
-      if (!dbUser) throw error(404, "User not found");
+      if (!dbUser) {
+        return setError(
+          form,
+          "",
+          "User not found",
+        );
+      }
 
-      if (dbUser.chats.length === 0) throw error(404, "Chat not found");
+      if (dbUser.chats.length === 0) {
+        return setError(
+          form,
+          "",
+          "Chat not found, already restored, or permanently deleted",
+        );
+      }
 
       await db.update(chat)
         .set({ deleted: false })
@@ -538,8 +752,6 @@ export const actions: Actions = {
     return { toggleForm: form };
   },
   permanentlyDelete: async event => {
-    if (await chatLimiter.isLimited(event)) throw error(429, "Too many requests");
-
     const { locals, request, params } = event;
     const session = await locals.auth.validate();
 
@@ -548,6 +760,14 @@ export const actions: Actions = {
     }
 
     const form = await superValidate(request, permDeleteSchema);
+
+    if (await chatLimiter.isLimited(event)) {
+      return setError(
+        form,
+        "",
+        "You are doing this too fast. Please wait a few minutes.",
+      );
+    }
 
     if (!form.valid) {
       console.error("Form invalid");
@@ -564,9 +784,21 @@ export const actions: Actions = {
         where: eq(user.id, session.user.userId),
       });
 
-      if (!dbUser) throw error(404, "User not found");
+      if (!dbUser) {
+        return setError(
+          form,
+          "",
+          "User not found",
+        );
+      }
 
-      if (dbUser.chats.length === 0) throw error(404, "Chat not found");
+      if (dbUser.chats.length === 0) {
+        return setError(
+          form,
+          "",
+          "Chat not found, already restored, or permanently deleted",
+        );
+      }
 
       await db.delete(prompt)
         .where(eq(prompt.chatId, params.id));

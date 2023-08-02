@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Accordion, AccordionItem } from "@skeletonlabs/skeleton";
+  import { Accordion, AccordionItem, LightSwitch } from "@skeletonlabs/skeleton";
   import { popup } from "@skeletonlabs/skeleton";
   import { passwordPopupFocusBlur } from "components/PasswordStrengthMeter/helpers.js";
   import type { PageData } from "./$types";
@@ -348,6 +348,10 @@
       </svelte:fragment>
     </AccordionItem>
   </Accordion>
+
+  <div class="w-full flex items-center justify-center md:hidden">
+    <LightSwitch bgDark="bg-surface-400" />
+  </div>
 
   <div class="flex flex-row flex-wrap items-center justify-center gap-x-3 gap-y-2 mt-10 py-2 px-5 bg-surface-200 dark:bg-surface-200 rounded-lg">
     <a href="/privacy" target="_blank" rel="noopener noreferrer" class="anchor text-center">

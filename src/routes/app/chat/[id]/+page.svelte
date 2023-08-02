@@ -312,7 +312,7 @@
               class="flex flex-row gap-2 mx-auto w-full max-w-3xl items-end justify-stretch"
             >
               <label class="label mt-2 w-full">
-                <span>Default account</span>
+                <span>Account</span>
 
                 <select
                   class="select w-full"

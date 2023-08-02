@@ -63,13 +63,11 @@
 
       <svelte:fragment slot="trail">
         <div class="flex flex-row items-center justify-center">
-          <LightSwitch
-            bgDark="bg-surface-400"
-          />
+          <LightSwitch bgDark="bg-surface-400 hidden md:block" />
 
           <a
             href="https://github.com/recoskyler/chatter"
-            class="px-2"
+            class="px-3"
             target="_blank"
             rel="noopener noreferrer"
           >

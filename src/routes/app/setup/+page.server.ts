@@ -73,8 +73,7 @@ export const actions: Actions = {
     const chatModels = await db.query.chatModel.findMany({ where: eq(chatModel.enabled, true) });
 
     if (chatModels.length === 0) {
-      console.error("No models found. Did you seed the database?");
-      throw error(404, "No models found");
+      return setError(form, "chatModelId", "No models found, contact the developer");
     }
 
     const chatModelIds = chatModels.map(m => m.id);
@@ -103,12 +102,8 @@ export const actions: Actions = {
       };
 
       await db.insert(userConfig).values(config);
-
-      console.info("Created first account");
     } catch (e) {
-      console.error("Failed to create account");
-      console.error(e);
-      throw error(500, "Failed to create account");
+      return setError(form, "", "Failed to create account.");
     }
 
     throw redirect(302, "/app");

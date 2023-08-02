@@ -85,6 +85,8 @@ export const chat = pgTable("chat", {
     .notNull()
     .references(() => user.id),
   deleted: boolean("deleted").notNull().default(false),
+  accountId: uuid("account_id")
+    .references(() => account.id),
 });
 
 export const roleEnum = pgEnum(
@@ -130,6 +132,10 @@ export const chatRelations = relations(
     user: one(user, {
       fields: [chat.userId],
       references: [user.id],
+    }),
+    defaultAccount: one(account, {
+      fields: [chat.accountId],
+      references: [account.id],
     }),
   }),
 );

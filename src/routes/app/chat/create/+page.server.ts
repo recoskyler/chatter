@@ -3,9 +3,10 @@ import {
 } from "@sveltejs/kit";
 import { db } from "$lib/server/drizzle";
 import {
+  account,
   chat, prompt, user,
 } from "$lib/db/schema";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { EMAIL_VERIFICATION, MAX_CHATS } from "$lib/constants";
 import { chatLimiter } from "$lib/server/limiter";
 import type { Actions, PageServerLoad } from "./$types";
@@ -16,6 +17,7 @@ import type { NewChat, NewPrompt } from "$lib/db/types";
 const schema = z.object({
   name: z.string().min(1).max(255),
   prompt: z.string().min(5).max(255),
+  accountId: z.string().uuid(),
 });
 
 export const load: PageServerLoad = async event => {
@@ -32,6 +34,10 @@ export const load: PageServerLoad = async event => {
     with: {
       config: { with: { defaultAccount: true } },
       chats: true,
+      accounts: {
+        with: { chatModel: true },
+        where: eq(account.deleted, false),
+      },
     },
     where: eq(user.id, session.user.userId),
   });
@@ -42,17 +48,18 @@ export const load: PageServerLoad = async event => {
 
   if (dbUser.chats.length >= MAX_CHATS) throw redirect(302, "/app");
 
+  if (dbUser.accounts.length === 0) throw redirect(302, "/app/accounts");
+
   const form = await superValidate(schema);
 
   form.data.prompt = "You are a helpful assistant";
+  form.data.accountId = dbUser.config.defaultAccountId ?? dbUser.accounts[0].id;
 
-  return { form };
+  return { form, user: dbUser };
 };
 
 export const actions: Actions = {
   default: async event => {
-    if (await chatLimiter.isLimited(event)) throw error(429, "Too many requests");
-
     const { locals, request } = event;
     const session = await locals.auth.validate();
 
@@ -61,6 +68,14 @@ export const actions: Actions = {
     }
 
     const form = await superValidate(request, schema);
+
+    if (await chatLimiter.isLimited(event)) {
+      return setError(
+        form,
+        "",
+        "You are doing this too fast. Please wait a few minutes.",
+      );
+    }
 
     if (!form.valid) {
       console.error("Form invalid");
@@ -72,11 +87,26 @@ export const actions: Actions = {
 
     try {
       const dbUser = await db.query.user.findFirst({
-        with: { chats: true },
+        with: {
+          config: { with: { defaultAccount: true } },
+          chats: true,
+          accounts: {
+            where: and(
+              eq(account.id, form.data.accountId),
+              eq(account.deleted, false),
+            ),
+          },
+        },
         where: eq(user.id, session.user.userId),
       });
 
-      if (!dbUser) throw error(404, "User not found");
+      if (!dbUser) {
+        return setError(
+          form,
+          "",
+          "User not found",
+        );
+      }
 
       if (dbUser.chats.length >= MAX_CHATS) {
         return setError(
@@ -87,9 +117,18 @@ export const actions: Actions = {
         );
       }
 
+      if (dbUser.accounts.length === 0) {
+        return setError(
+          form,
+          "",
+          "Account not found or deleted",
+        );
+      }
+
       const newChat: NewChat = {
         userId: session.user.userId,
         name: form.data.name,
+        accountId: form.data.accountId,
       };
 
       const [dbChat] = await db.insert(chat)

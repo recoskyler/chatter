@@ -42,11 +42,17 @@ export const load: PageServerLoad = async event => {
 
 export const actions: Actions = {
   default: async event => {
-    if (await passwordResetLimiter.isLimited(event)) throw error(429, "Too many requests");
-
     const { request } = event;
 
     const form = await superValidate(request, passwordResetSchema);
+
+    if (await passwordResetLimiter.isLimited(event)) {
+      return setError(
+        form,
+        "",
+        "You are doing this too fast. Please wait a few minutes.",
+      );
+    }
 
     if (!form.valid) {
       console.error("Form invalid");
