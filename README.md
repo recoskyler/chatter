@@ -45,8 +45,6 @@ You can also toggle each prompt on/off if the remember option is enabled. This w
 
 ## FAQ
 
-[a](#what-is-a-system-prompt)
-
 ### What is a "system prompt"?
 
 > A system prompt in any version of GPT refers to the initial instruction or input provided to guide the model's response generation. It establishes the context and provides guidelines or instructions for the desired output. The system prompt can help shape the behavior, tone, style, or topic of the generated response by influencing the AI model's decision-making process.
