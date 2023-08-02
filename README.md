@@ -2,6 +2,8 @@
 
 <a href='https://ko-fi.com/recoskyler' target='_blank'><img height='35' style='border:0px;height:46px;' src='https://az743702.vo.msecnd.net/cdn/kofi3.png?v=0' border='0' alt='Buy Me a Coffee at ko-fi.com'></a>
 
+<img src="https://raw.githubusercontent.com/recoskyler/chatter/main/static/favicon.png" alt="logo" width="100" height="100">
+
 A simple, free, and open-source OpenAI ChatGPT client with multi-account support.
 
 You can either self-host it, or [start using it now](https://chatter.recoskyler.com)!
@@ -16,7 +18,7 @@ You can create up to 100 chats (can be configured in `.env` in case of self-depl
 
 ### Multi-account support
 
-You can have multiple accounts (API keys) defined, and switch between accounts on the fly. Each account can use a different [ChatGPT model](#supported-models).
+You can have multiple accounts (API keys) defined, and switch between accounts on the fly. Each account can use a different [ChatGPT model](#supported-models), and each chat can use a different account.
 
 This is very useful in the case of having a personal, and a business OpenAI account, each having their distinct API keys.
 
@@ -40,6 +42,20 @@ You can also toggle each prompt on/off if the remember option is enabled. This w
 - ChatGPT 3.5 Turbo (16K tokens)
 - ChatGPT 4
 - ChatGPT 4 (32K tokens)
+
+## FAQ
+
+[a](#what-is-a-system-prompt)
+
+### What is a "system prompt"?
+
+> A system prompt in any version of GPT refers to the initial instruction or input provided to guide the model's response generation. It establishes the context and provides guidelines or instructions for the desired output. The system prompt can help shape the behavior, tone, style, or topic of the generated response by influencing the AI model's decision-making process.
+
+### What does the "remember" toggle do?
+
+The remember toggle allows Chatter to **remember** previous prompts and their respective answers by submitting the previous prompts alongside the last prompt you have entered. If disabled, ChatGPT will not remember any previous topics talked about in the chat.
+
+**Remember function only remembers the content of the current chat, not all chats**
 
 ## Status
 
@@ -67,8 +83,6 @@ You can also toggle each prompt on/off if the remember option is enabled. This w
 
 ## Requirements
 
-- [Docker](https://docs.docker.com/get-docker/) (In case you want to run it as a docker container)
-- [Docker Compose](https://docs.docker.com/compose/install/linux/) (In case you want to run it as a docker container)
 - Node ^18
 - NPM/PNPM
 - Vite
@@ -86,13 +100,13 @@ You can also toggle each prompt on/off if the remember option is enabled. This w
 
 ### Running
 
-The following command will run the app and the database as a Docker container. Your changes will not effect the app.
+The following command will run the database as a Docker container.
 
 ```bash
 $ docker compose up -d
 ```
 
-or if you have a database set up already, and you would like the hot-reload to work:
+If you have the database set up already, and you would like the hot-reload to work:
 
 ```bash
 npm run dev -- --open

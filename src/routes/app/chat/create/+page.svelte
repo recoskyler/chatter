@@ -67,6 +67,25 @@
       {/if}
     </label>
 
+    <label class="label mt-2 w-full">
+      <span>Account</span>
+
+      <select
+        class="select w-full"
+        name="accountId"
+        disabled={$delayed}
+        bind:value={$form.accountId}
+      >
+        {#each data.user.accounts as account}
+          <option value={account.id}>{account.name} ({account.chatModel.displayName})</option>
+        {/each}
+      </select>
+
+      {#if $errors.accountId}
+        <FormError error={$errors.accountId} />
+      {/if}
+    </label>
+
     {#if $errors._errors}
       <FormError error={$errors._errors} />
     {/if}

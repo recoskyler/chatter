@@ -3,7 +3,7 @@ import {
 } from "@sveltejs/kit";
 import { db } from "$lib/server/drizzle";
 import {
-  account, chatModel, user, userConfig,
+  account, chat, chatModel, user, userConfig,
 } from "$lib/db/schema";
 import { and, eq } from "drizzle-orm";
 import { EMAIL_VERIFICATION } from "$lib/constants";
@@ -72,8 +72,6 @@ export const load: PageServerLoad = async event => {
 
 export const actions: Actions = {
   save: async event => {
-    if (await accountUpdateLimiter.isLimited(event)) throw error(429, "Too many requests");
-
     const { locals, params, request } = event;
     const session = await locals.auth.validate();
 
@@ -82,6 +80,14 @@ export const actions: Actions = {
     }
 
     const form = await superValidate(request, schema);
+
+    if (await accountUpdateLimiter.isLimited(event)) {
+      return setError(
+        form,
+        "",
+        "You are doing this too fast. Please wait a few minutes.",
+      );
+    }
 
     if (!form.valid) {
       console.error("Form invalid");
@@ -110,21 +116,65 @@ export const actions: Actions = {
     return message(form, "Successfully saved changes");
   },
   delete: async event => {
-    if (await accountUpdateLimiter.isLimited(event)) throw error(429, "Too many requests");
-
-    const { locals, params } = event;
+    const { locals, params, request } = event;
     const session = await locals.auth.validate();
 
     if (!session || (EMAIL_VERIFICATION && !session.user.verified)) {
       throw redirect(302, "/login");
     }
 
+    const form = await superValidate(request, deleteSchema);
+
+    if (await accountUpdateLimiter.isLimited(event)) {
+      return setError(
+        form,
+        "",
+        "You are doing this too fast. Please wait a few minutes.",
+      );
+    }
+
+    if (!form.valid) {
+      console.error("Form invalid");
+      console.error(form.errors);
+      return fail(400, { deleteForm: form });
+    }
+
     try {
+      const dbUser = await db.query.user.findFirst({
+        with: {
+          chats: { where: eq(chat.accountId, params.id) },
+          config: { with: { defaultAccount: true } },
+        },
+        where: eq(user.id, session.user.userId),
+      });
+
+      if (!dbUser) {
+        return setError(
+          form,
+          "",
+          "User not found",
+        );
+      }
+
+      if (dbUser.chats.length > 0) {
+        return setError(
+          form,
+          "",
+          "There are 1 or more chats using this account. Please change the account used for those chats first.",
+        );
+      }
+
       const dbAccount = await db.query.account.findFirst(
         { where: and(eq(account.id, params.id), eq(account.deleted, false)) },
       );
 
-      if (!dbAccount) return;
+      if (!dbAccount) {
+        return setError(
+          form,
+          "",
+          "Account not found or already restored/permanently deleted.",
+        );
+      }
 
       await db.update(userConfig)
         .set({ defaultAccountId: null })
@@ -139,19 +189,37 @@ export const actions: Actions = {
         .set({ deleted: true })
         .where(eq(account.id, params.id));
     } catch (e) {
-      throw error(500, "Failed to delete account");
+      return setError(
+        form,
+        "",
+        "Failed to delete account.",
+      );
     }
 
-    // throw redirect(302, `/app/accounts/${params.id}`);
+    return { deleteForm: form };
   },
   restore: async event => {
-    if (await accountUpdateLimiter.isLimited(event)) throw error(429, "Too many requests");
-
-    const { locals, params } = event;
+    const { locals, params, request } = event;
     const session = await locals.auth.validate();
 
     if (!session || (EMAIL_VERIFICATION && !session.user.verified)) {
       throw redirect(302, "/login");
+    }
+
+    const form = await superValidate(request, restoreSchema);
+
+    if (await accountUpdateLimiter.isLimited(event)) {
+      return setError(
+        form,
+        "",
+        "You are doing this too fast. Please wait a few minutes.",
+      );
+    }
+
+    if (!form.valid) {
+      console.error("Form invalid");
+      console.error(form.errors);
+      return fail(400, { restoreForm: form });
     }
 
     try {
@@ -159,33 +227,87 @@ export const actions: Actions = {
         { where: and(eq(account.id, params.id), eq(account.deleted, true)) },
       );
 
-      if (!dbAccount) return;
+      if (!dbAccount) {
+        return setError(
+          form,
+          "",
+          "Account not found or already restored/permanently deleted.",
+        );
+      }
 
       await db.update(account)
         .set({ deleted: false })
         .where(eq(account.id, params.id));
     } catch (e) {
-      throw error(500, "Failed to delete account");
+      return setError(
+        form,
+        "",
+        "Failed to restore account.",
+      );
     }
 
-    // throw redirect(302, `/app/accounts/${params.id}`);
+    return { restoreForm: form };
   },
   permanentlyDelete: async event => {
-    if (await accountUpdateLimiter.isLimited(event)) throw error(429, "Too many requests");
-
-    const { locals, params } = event;
+    const { locals, params, request } = event;
     const session = await locals.auth.validate();
 
     if (!session || (EMAIL_VERIFICATION && !session.user.verified)) {
       throw redirect(302, "/login");
     }
 
+    const form = await superValidate(request, permDeleteSchema);
+
+    if (await accountUpdateLimiter.isLimited(event)) {
+      return setError(
+        form,
+        "",
+        "You are doing this too fast. Please wait a few minutes.",
+      );
+    }
+
+    if (!form.valid) {
+      console.error("Form invalid");
+      console.error(form.errors);
+      return fail(400, { permDeleteForm: form });
+    }
+
     try {
+      const dbUser = await db.query.user.findFirst({
+        with: {
+          chats: { where: eq(chat.accountId, params.id) },
+          config: { with: { defaultAccount: true } },
+        },
+        where: eq(user.id, session.user.userId),
+      });
+
+      if (!dbUser) {
+        return setError(
+          form,
+          "",
+          "User not found",
+        );
+      }
+
+      if (dbUser.chats.length > 0) {
+        return setError(
+          form,
+          "",
+          "There are 1 or more chats using this account. Please change the account used for those chats first.",
+        );
+      }
+
       const dbAccount = await db.query.account.findFirst(
         { where: and(eq(account.id, params.id), eq(account.deleted, true)) },
       );
 
-      if (!dbAccount) throw error(400, "Cannot permanently delete active account.");
+      if (!dbAccount) {
+        return setError(
+          form,
+          "",
+          "Account not found or already restored/permanently deleted.",
+        );
+      }
 
       await db.update(userConfig)
         .set({ defaultAccountId: null })
@@ -199,10 +321,11 @@ export const actions: Actions = {
       await db.delete(account)
         .where(eq(account.id, params.id));
     } catch (e) {
-      console.error("Failed to permanently delete account");
-      console.error(e);
-
-      throw error(500, "Failed to delete account");
+      return setError(
+        form,
+        "",
+        "Failed to permanently delete account.",
+      );
     }
 
     throw redirect(302, "/app/accounts");

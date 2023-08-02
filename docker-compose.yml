@@ -3,27 +3,6 @@ version: "3.8"
 name: chatter
 
 services:
-  chatter-app:
-    build:
-      dockerfile: Dockerfile
-
-    ports:
-      - "${APP_PORT:-3000}:3000"
-
-  pgadmin:
-    image: dpage/pgadmin4
-    restart: always
-
-    ports:
-      - "${PGADMIN_FORWARD_PORT:-8888}:80"
-
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
-      PGADMIN_DEFAULT_PASSWORD: ${VITE_DB_PASSWORD:-chatter}
-
-    volumes:
-      - pgadmin-data:/var/lib/pgadmin
-
   postgres:
     image: postgres
     restart: always
@@ -34,6 +13,33 @@ services:
     ports:
       - "${VITE_DB_FORWARD_PORT:-5432}:5432"
 
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+    environment:
+      POSTGRES_USER: ${VITE_DB_USER:-chatter}
+      POSTGRES_PASSWORD: ${VITE_DB_PASSWORD:-chatter}
+      POSTGRES_DB: ${VITE_DB_DATABASE:-chatter}
+
+  postgres-dev:
+    image: postgres
+    restart: always
+
+    volumes:
+      - postgres-dev-data:/var/lib/postgresql/data
+
+    ports:
+      - "5433:5432"
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
     environment:
       POSTGRES_USER: ${VITE_DB_USER:-chatter}
       POSTGRES_PASSWORD: ${VITE_DB_PASSWORD:-chatter}
@@ -41,4 +47,5 @@ services:
 
 volumes:
   postgres-data:
+  postgres-dev-data:
   pgadmin-data:

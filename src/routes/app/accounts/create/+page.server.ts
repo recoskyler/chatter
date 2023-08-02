@@ -48,8 +48,6 @@ export const load: PageServerLoad = async event => {
 
 export const actions: Actions = {
   default: async event => {
-    if (await accountUpdateLimiter.isLimited(event)) throw error(429, "Too many requests");
-
     const { locals, request } = event;
     const session = await locals.auth.validate();
 
@@ -58,6 +56,14 @@ export const actions: Actions = {
     }
 
     const form = await superValidate(request, schema);
+
+    if (await accountUpdateLimiter.isLimited(event)) {
+      return setError(
+        form,
+        "",
+        "You are doing this too fast. Please wait a few minutes.",
+      );
+    }
 
     if (!form.valid) {
       console.error("Form invalid");
@@ -76,7 +82,13 @@ export const actions: Actions = {
         where: eq(user.id, session.user.userId),
       });
 
-      if (!dbUser) throw error(404, "User not found");
+      if (!dbUser) {
+        return setError(
+          form,
+          "",
+          "User not found",
+        );
+      }
 
       if (dbUser.accounts.length >= MAX_ACCOUNTS) {
         return setError(

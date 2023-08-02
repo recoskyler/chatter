@@ -98,14 +98,20 @@ export const actions: Actions = {
     return message(form, "Account deleted successfully");
   },
   changePassword: async event => {
-    if (await profileUpdateLimiter.isLimited(event)) throw error(429, "Too many requests");
-
     const { locals, request } = event;
     const session = await locals.auth.validate();
 
     if (!session) return fail(401);
 
     const form = await superValidate(request, changePasswordSchema);
+
+    if (await profileUpdateLimiter.isLimited(event)) {
+      return setError(
+        form,
+        "",
+        "You are doing this too fast. Please wait a few minutes.",
+      );
+    }
 
     if (!form.valid) {
       console.error("Form invalid");
@@ -141,14 +147,20 @@ export const actions: Actions = {
     return message(form, "Password changed successfully");
   },
   changeEmail: async event => {
-    if (await profileUpdateLimiter.isLimited(event)) throw error(429, "Too many requests");
-
     const { locals, request } = event;
     const session = await locals.auth.validate();
 
     if (!session) return fail(401);
 
     const form = await superValidate(request, changeEmailSchema);
+
+    if (await profileUpdateLimiter.isLimited(event)) {
+      return setError(
+        form,
+        "",
+        "You are doing this too fast. Please wait a few minutes.",
+      );
+    }
 
     if (!form.valid) {
       console.error("Form invalid");
@@ -189,14 +201,20 @@ export const actions: Actions = {
     return message(form, "Email changed successfully");
   },
   changeName: async event => {
-    if (await profileUpdateLimiter.isLimited(event)) throw error(429, "Too many requests");
-
     const { locals, request } = event;
     const session = await locals.auth.validate();
 
     if (!session) return fail(401);
 
     const form = await superValidate(request, changeNameSchema);
+
+    if (await profileUpdateLimiter.isLimited(event)) {
+      return setError(
+        form,
+        "",
+        "You are doing this too fast. Please wait a few minutes.",
+      );
+    }
 
     if (!form.valid) {
       console.error("Form invalid");

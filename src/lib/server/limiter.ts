@@ -84,7 +84,7 @@ export const chatLimiter = new RateLimiter({
     IP: [15, "h"], // IP address limiter
     IPUA: [10, "m"], // IP + User Agent limiter
     cookie: {
-      name: "chatter_au_rl",
+      name: "chatter_c_rl",
       secret: RATE_LIMIT_SECRET,
       rate: [30, "m"],
       preflight: true,

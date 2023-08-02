@@ -210,7 +210,7 @@
                   type="text"
                   placeholder="Chat name"
                   disabled={$renameDelayed}
-                  on:change={(_) => {
+                  on:input={(_) => {
                     $nameChanged = true;
                   }}
                   bind:value={$renameForm.name}
@@ -230,16 +230,18 @@
                 {/if}
               </div>
 
-              <input
-                type="submit"
-                value={$renameDelayed ? "Renaming..." : "Rename"}
-                class={`btn ${
-                  $renameDelayed || !$nameChanged
-                    ? "variant-filled-surface"
-                    : "variant-filled"
-                }`}
-                disabled={$renameDelayed || !$nameChanged}
-              />
+              {#if $nameChanged}
+                <input
+                  type="submit"
+                  value={$renameDelayed ? "Renaming..." : "Rename"}
+                  class={`btn ${
+                    $renameDelayed || !$nameChanged
+                      ? "variant-filled-surface"
+                      : "variant-filled"
+                  }`}
+                  disabled={$renameDelayed || !$nameChanged}
+                />
+              {/if}
             </form>
 
             <form
@@ -252,9 +254,8 @@
                 <span class="flex flex-row gap-2 items-center">
                   <span>System prompt</span>
                   <span>
-                    <!-- TODO: Update URL -->
                     <a
-                      href="/docs"
+                      href="https://github.com/recoskyler/chatter#what-is-a-system-prompt"
                       target="_blank"
                       rel="noopener noreferrer"
                       class="cursor-help"
@@ -270,7 +271,7 @@
                   type="text"
                   placeholder="You are a helpful assistant"
                   disabled={$systemDelayed}
-                  on:change={(_) => {
+                  on:input={(_) => {
                     $systemChanged = true;
                   }}
                   bind:value={$systemForm.prompt}
@@ -290,16 +291,18 @@
                 {/if}
               </label>
 
-              <input
-                type="submit"
-                value={$systemDelayed ? "Saving..." : "Save"}
-                class={`btn ${
-                  $systemDelayed || !$systemChanged
-                    ? "variant-filled-surface"
-                    : "variant-filled"
-                }`}
-                disabled={$systemDelayed || !$systemChanged}
-              />
+              {#if $systemChanged}
+                <input
+                  type="submit"
+                  value={$systemDelayed ? "Saving..." : "Save"}
+                  class={`btn ${
+                    $systemDelayed || !$systemChanged
+                      ? "variant-filled-surface"
+                      : "variant-filled"
+                  }`}
+                  disabled={$systemDelayed || !$systemChanged}
+                />
+              {/if}
             </form>
 
             <form
@@ -309,7 +312,7 @@
               class="flex flex-row gap-2 mx-auto w-full max-w-3xl items-end justify-stretch"
             >
               <label class="label mt-2 w-full">
-                <span>Default account</span>
+                <span>Account</span>
 
                 <select
                   class="select w-full"
@@ -334,16 +337,18 @@
                 {/if}
               </label>
 
-              <input
-                type="submit"
-                value={$accountDelayed ? "Saving..." : "Save"}
-                class={`btn ${
-                  $accountDelayed || !$accountChanged
-                    ? "variant-filled-surface"
-                    : "variant-filled"
-                }`}
-                disabled={$accountDelayed || !$accountChanged}
-              />
+              {#if $accountChanged}
+                <input
+                  type="submit"
+                  value={$accountDelayed ? "Saving..." : "Save"}
+                  class={`btn ${
+                    $accountDelayed || !$accountChanged
+                      ? "variant-filled-surface"
+                      : "variant-filled"
+                  }`}
+                  disabled={$accountDelayed || !$accountChanged}
+                />
+              {/if}
             </form>
 
             {#if !data.user.chats[0].deleted}
@@ -403,7 +408,9 @@
                 >
                   <input
                     type="submit"
-                    value={$permDeleteDelayed ? "Deleting..." : "Permanently delete chat"}
+                    value={$permDeleteDelayed
+                      ? "Deleting..."
+                      : "Permanently delete chat"}
                     class={`btn w-full ${
                       $permDeleteDelayed
                         ? "variant-filled-surface"
@@ -519,6 +526,7 @@
     >
       <div class="w-full">
         <textarea
+          tabindex={1}
           name="content"
           class="textarea w-full"
           placeholder={data.user.chats[0].prompts.length === 0
@@ -562,6 +570,7 @@
           </p>
 
           <SlideToggle
+            tabindex={3}
             name="remember"
             label="Remember previous chat content"
             size="sm"
@@ -570,9 +579,8 @@
             <span class="flex flex-row items-center gap-2">
               <span>Remember</span>
               <span>
-                <!-- TODO: Update URL -->
                 <a
-                  href="/docs"
+                  href="https://github.com/recoskyler/chatter#what-does-the-remember-toggle-do"
                   target="_blank"
                   rel="noopener noreferrer"
                   class="cursor-help"
@@ -594,6 +602,7 @@
       </div>
 
       <input
+        tabindex={2}
         type="submit"
         value={$chatDelayed ? "Submitting..." : "Submit"}
         class={`btn h-auto ${
