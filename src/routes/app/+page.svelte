@@ -24,8 +24,8 @@
 </svelte:head>
 
 {#if data.user.chats.length === 0}
-  <div class="h-full w-full flex flex-col items-center justify-center">
-    <p class="text-center text-slate-400">You don't have any chats</p>
+  <div class="h-full w-full flex flex-col items-center justify-center gap-5">
+    <p class="text-center text-slate-500 dark:text-slate-400">You don't have any chats</p>
 
     <a href="/app/chat/create" class="btn variant-filled">Create chat</a>
   </div>

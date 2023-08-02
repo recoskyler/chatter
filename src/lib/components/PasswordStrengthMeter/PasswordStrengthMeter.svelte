@@ -22,7 +22,7 @@
   $: score = zxcvbn(password).score;
 </script>
 
-<label for="strength" class="label mb-2 mt-3 text-slate-400">
+<label for="strength" class="label mb-2 mt-3 text-slate-600 dark:text-slate-400">
   Password strength:
   <strong>
     <span class={`label ${passwordStrengthColorLevels[score]}`}> {passwordStrengthLevels[score]}</span>

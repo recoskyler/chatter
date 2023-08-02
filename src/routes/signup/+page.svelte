@@ -1,6 +1,6 @@
 <script lang="ts">
   import PasswordStrengthMeter from "../../lib/components/PasswordStrengthMeter/PasswordStrengthMeter.svelte";
-  import { popup } from "@skeletonlabs/skeleton";
+  import { LightSwitch, popup } from "@skeletonlabs/skeleton";
   import PasswordPopup from "components/PasswordPopup.svelte";
   import FormError from "components/FormError.svelte";
   import { passwordPopupFocusBlur } from "components/PasswordStrengthMeter/helpers";
@@ -81,7 +81,7 @@
 
     <PasswordStrengthMeter password={$form.password} />
 
-    <p class="text-center text-slate-400">
+    <p class="text-center text-slate-600 dark:text-slate-400">
       <span>By continuing you agree to Chatter's </span>
       <br />
       <a class="anchor" href="/disclaimer">disclaimer</a>
@@ -102,7 +102,11 @@
   <hr class="!border-t-2 my-5" />
 
   <p class="text-center">
-    <span class="text-slate-400">Already have an account? </span>
+    <span class="text-slate-600 dark:text-slate-400">Already have an account? </span>
     <a class="anchor" href="/login">Sign in now</a>
   </p>
+
+  <div class="flex items-center justify-center w-full mt-5">
+    <LightSwitch bgDark="bg-surface-400" />
+  </div>
 </div>

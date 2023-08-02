@@ -427,7 +427,7 @@
       class={`flex flex-col-reverse flex-grow max-w-3xl w-full mx-auto py-2 overflow-y-auto`}
     >
       {#if $prompts.length <= 1}
-        <p class="my-auto text-slate-400 text-center">
+        <p class="my-auto text-slate-500 dark:text-slate-400 text-center">
           Enter a prompt below to start chatting.
         </p>
       {:else}
@@ -446,7 +446,7 @@
                   : prompt.role === "assistant"
                   ? "text-slate-600 dark:text-slate-300 font-mono"
                   : $chatForm.remember && !prompt.enabled
-                  ? "text-slate-400"
+                  ? "text-slate-500 dark:text-slate-400"
                   : "text-tertiary-600 dark:text-tertiary-400"}
               />
 
@@ -464,8 +464,8 @@
                       fw
                       icon={prompt.enabled ? faToggleOn : faToggleOff}
                       class={!prompt.enabled
-                        ? "text-slate-400"
-                        : "text-tertiary-400"}
+                        ? "text-slate-500 dark:text-slate-400"
+                        : "text-tertiary-600 dark:text-tertiary-400"}
                     />
                   </button>
                 </form>
@@ -494,7 +494,7 @@
                           : prompt.role === "assistant"
                           ? "text-slate-600 dark:text-slate-300 font-mono"
                           : $chatForm.remember && !prompt.enabled
-                          ? "text-slate-400"
+                          ? "text-slate-500 dark:text-slate-400"
                           : "text-tertiary-600 dark:text-tertiary-400"
                       }`}
                     >

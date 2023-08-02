@@ -128,7 +128,7 @@
         </ul>
       </nav>
     {:else}
-      <p class="text-slate-400">You don't have any accounts</p>
+      <p class="text-slate-500 dark:text-slate-400">You don't have any accounts</p>
     {/if}
   </div>
 </div>

@@ -10,7 +10,7 @@ export const passwordStrengthLevels = ["Super weak", "Very weak", "Weak", "Stron
 export const passwordStrengthColorLevels = [
   "text-red-600",
   "text-red-500",
-  "text-orange-400",
-  "text-green-300",
-  "text-green-500",
+  "text-orange-500 dark:text-orange-400",
+  "text-green-600 dark:text-green-300",
+  "text-green-700 dark:text-green-500",
 ];

@@ -2,6 +2,7 @@
   import FormError from "components/FormError.svelte";
   import { superForm } from "sveltekit-superforms/client";
   import type { PageData } from "./$types";
+  import { LightSwitch } from "@skeletonlabs/skeleton";
 
   export let data: PageData;
 
@@ -56,7 +57,7 @@
     {#if $errors?._errors}<FormError error={$errors._errors} />{/if}
 
     <p class="text-center">
-      <span class="text-slate-400">Forgot your password? </span>
+      <span class="text-slate-600 dark:text-slate-400">Forgot your password? </span>
       <a class="anchor" href="/password-reset">Reset password</a>
     </p>
 
@@ -71,10 +72,11 @@
   <hr class="!border-t-2 my-5" />
 
   <p class="text-center">
-    <span class="text-slate-400">Don't have an account? </span>
+    <span class="text-slate-600 dark:text-slate-400">Don't have an account? </span>
     <a class="anchor" href="/signup">Register now</a>
   </p>
-</div>
 
-<style lang="scss">
-</style>
+  <div class="flex items-center justify-center w-full mt-5">
+    <LightSwitch bgDark="bg-surface-400" />
+  </div>
+</div>

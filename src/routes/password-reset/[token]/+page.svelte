@@ -1,6 +1,6 @@
 <script lang="ts">
   import PasswordPopup from "components/PasswordPopup.svelte";
-  import { popup } from "@skeletonlabs/skeleton";
+  import { LightSwitch, popup } from "@skeletonlabs/skeleton";
   import FormError from "components/FormError.svelte";
   import { isPasswordValid } from "$lib/functions/validators.js";
   import PasswordStrengthMeter from "components/PasswordStrengthMeter/PasswordStrengthMeter.svelte";
@@ -24,7 +24,7 @@
   <h1 class="h2 text-center mb-5 p-5">Password reset</h1>
 
   <form method="POST" use:enhance>
-    <label for="password" class="label mb-2">New password</label>
+    <label for="password" class="label mb-5">New password</label>
 
     <PasswordPopup password={$form.password} />
 
@@ -32,7 +32,7 @@
       id="password"
       name="password"
       type="password"
-      class="input mb-5"
+      class="input mb-2"
       title="Password"
       placeholder="password"
       disabled={!(!$message) || $delayed}
@@ -50,7 +50,7 @@
     <input
       type="submit"
       value={$delayed ? "Resetting password..." : "Reset password"}
-      class={`btn mt-5 w-full ${
+      class={`btn w-full ${
         isPasswordValid($form.password) && !$delayed && !$message
           ? "variant-filled"
           : "variant-filled-surface"
@@ -64,4 +64,8 @@
       Back to login
     </a>
   {/if}
+
+  <div class="flex items-center justify-center w-full mt-5">
+    <LightSwitch bgDark="bg-surface-400" />
+  </div>
 </div>

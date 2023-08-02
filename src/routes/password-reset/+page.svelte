@@ -5,6 +5,7 @@
   import type { PageData } from "./$types";
   import { superForm } from "sveltekit-superforms/client";
   import FormSuccess from "components/FormSuccess.svelte";
+  import { LightSwitch } from "@skeletonlabs/skeleton";
 
   export let data: PageData;
 
@@ -43,7 +44,7 @@
     <input
       type="submit"
       value={$delayed ? "Loading..." : "Continue"}
-      class={`btn mt-5 w-full ${
+      class={`btn w-full ${
         isEmailValid($form.email) && !$delayed && !$message
           ? "variant-filled"
           : "variant-filled-surface"
@@ -57,4 +58,8 @@
       Back to login
     </a>
   {/if}
+
+  <div class="flex items-center justify-center w-full mt-5">
+    <LightSwitch bgDark="bg-surface-400" />
+  </div>
 </div>
