@@ -15,7 +15,7 @@
 <img
   src={svgUri}
   alt={email}
-  class={`minidenticon bg-slate-200 ${imgClass}`}
+  class={`minidenticon bg-slate-800 dark:bg-slate-200 ${imgClass}`}
   style={`width:${size}rem; height:${size}rem;`}
 />
 

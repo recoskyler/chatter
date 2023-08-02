@@ -276,16 +276,16 @@
 
     <AccordionItem>
       <svelte:fragment slot="lead">
-        <Fa fw icon={faTrash} class="text-red-400" />
+        <Fa fw icon={faTrash} class="text-red-600 dark:text-red-400" />
       </svelte:fragment>
 
       <svelte:fragment slot="summary">
-        <span class="text-red-400">Delete account</span>
+        <span class="text-red-600 dark:text-red-400">Delete account</span>
       </svelte:fragment>
 
       <svelte:fragment slot="content">
         <p>
-          <span class="text-orange-400"><strong>WARNING: </strong></span>
+          <span class="text-orange-600 dark:text-orange-400"><strong>WARNING: </strong></span>
           If you choose to delete your account, there is no going back! Enter your
           current password and type "<i>Delete</i>" (case sensitive) without the
           "quotes" in the <strong>Confirmation</strong> field to proceed.
@@ -349,8 +349,8 @@
     </AccordionItem>
   </Accordion>
 
-  <div class="flex flex-row items-center justify-center gap-5 pt-10">
-    <a href="/privacy" target="_blank" rel="noopener noreferrer" class="anchor">
+  <div class="flex flex-row flex-wrap items-center justify-center gap-x-3 gap-y-2 mt-10 py-2 px-5 bg-surface-200 dark:bg-surface-200 rounded-lg">
+    <a href="/privacy" target="_blank" rel="noopener noreferrer" class="anchor text-center">
       Privacy Policy
     </a>
 
@@ -358,7 +358,7 @@
       href="/disclaimer"
       target="_blank"
       rel="noopener noreferrer"
-      class="anchor"
+      class="anchor text-center"
     >
       Disclaimer
     </a>
@@ -367,7 +367,7 @@
       href="https://github.com/recoskyler/chatter/blob/main/LICENSE"
       target="_blank"
       rel="noopener noreferrer"
-      class="anchor"
+      class="anchor text-center"
     >
       License
     </a>
@@ -376,7 +376,7 @@
       href="https://github.com/recoskyler/chatter"
       target="_blank"
       rel="noopener noreferrer"
-      class="anchor"
+      class="anchor text-center"
     >
       Source Code
     </a>

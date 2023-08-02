@@ -33,7 +33,7 @@
 </svelte:head>
 
 <div class="h-full flex items-center p-2 flex-col gap-5">
-  <form use:enhance method="post" class="w-full max-w-lg mx-auto p-2 bg-surface-400 rounded-lg">
+  <form use:enhance method="post" class="w-full max-w-lg mx-auto p-2 bg-surface-200 dark:bg-surface-400 rounded-lg">
     <label class="label">
       <span>Default account</span>
 
@@ -83,8 +83,8 @@
           {#if data.user.accounts.length < MAX_ACCOUNTS}
             <li>
               <a href={`/app/accounts/create`}>
-                <span class="badge text-secondary-400">
-                  <Fa icon={faPlus} />
+                <span class="badge text-secondary-700 dark:text-secondary-400">
+                  <Fa fw icon={faPlus} />
                 </span>
 
                 <span class="flex-auto">
@@ -97,11 +97,11 @@
           {#each data.user.accounts as account}
             <li>
               <a href={`/app/accounts/${account.id}`}>
-                <span class="badge text-secondary-400">
+                <span class="badge text-secondary-700 dark:text-secondary-400">
                   {#if account.deleted}
-                    <Fa icon={faTrash} />
+                    <Fa fw icon={faTrash} />
                   {:else}
-                    <Fa icon={faPencil} />
+                    <Fa fw icon={faPencil} />
                   {/if}
                 </span>
 

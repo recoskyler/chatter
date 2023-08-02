@@ -196,7 +196,7 @@
         <svelte:fragment slot="lead"><Fa icon={faGear} /></svelte:fragment>
         <svelte:fragment slot="summary">Chat configuration</svelte:fragment>
         <svelte:fragment slot="content">
-          <div class="bg-surface-400 p-2 rounded-lg">
+          <div class="bg-surface-200 dark:bg-surface-400 p-2 rounded-lg">
             <form
               use:renameEnhance
               action="?/rename"
@@ -440,14 +440,14 @@
                 fw
                 icon={prompt.role === "user" ? faUser : faRobot}
                 class={prompt.busy
-                  ? "text-slate-600"
+                  ? "text-slate-400 dark:text-slate-600"
                   : !prompt.successful
-                  ? "text-red-400"
+                  ? "text-red-600 dark:text-red-400"
                   : prompt.role === "assistant"
-                  ? "text-slate-300 font-mono"
+                  ? "text-slate-600 dark:text-slate-300 font-mono"
                   : $chatForm.remember && !prompt.enabled
                   ? "text-slate-400"
-                  : "text-tertiary-400"}
+                  : "text-tertiary-600 dark:text-tertiary-400"}
               />
 
               {#if !prompt.busy && prompt.successful && prompt.role === "user" && $chatForm.remember}
@@ -488,14 +488,14 @@
                     <p
                       class={`pre m-0 p-0 w-full bg-inherit ${
                         prompt.busy
-                          ? "text-slate-600"
+                          ? "text-slate-400 dark:text-slate-600"
                           : !prompt.successful
-                          ? "text-red-400"
+                          ? "text-red-600 dark:text-red-400"
                           : prompt.role === "assistant"
-                          ? "text-slate-300 font-mono"
+                          ? "text-slate-600 dark:text-slate-300 font-mono"
                           : $chatForm.remember && !prompt.enabled
                           ? "text-slate-400"
-                          : "text-tertiary-400"
+                          : "text-tertiary-600 dark:text-tertiary-400"
                       }`}
                     >
                       {piece}
@@ -515,7 +515,7 @@
       bind:this={chatFormElem}
       action="?/submit"
       method="post"
-      class="flex-none flex flex-row gap-2 mx-auto my-2 justify-stretch items-center w-full max-w-3xl bg-surface-400 rounded-lg p-2"
+      class="flex-none flex flex-row gap-2 mx-auto my-2 justify-stretch items-center w-full max-w-3xl bg-surface-200 dark:bg-surface-400 rounded-lg p-2"
     >
       <div class="w-full">
         <textarea

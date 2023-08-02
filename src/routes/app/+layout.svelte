@@ -4,6 +4,7 @@
     AppRail,
     AppRailAnchor,
     AppShell,
+    LightSwitch,
     TabAnchor,
     TabGroup,
   } from "@skeletonlabs/skeleton";
@@ -19,7 +20,8 @@
   import { goto } from "$app/navigation";
   import { CHATTER_PAGE, currentPage } from "$lib/stores/currentPage";
   import { canGoBack } from "$lib/stores/canGoBack";
-  import github from "$lib/assets/github-mark-white.svg";
+  import githubWhite from "$lib/assets/github-mark-white.svg";
+  import githubBlack from "$lib/assets/github-mark.svg";
 
   export let data: LayoutData;
 </script>
@@ -52,20 +54,34 @@
       <h3 class="h3">{$pageTitle}</h3>
 
       <svelte:fragment slot="trail">
-        <a
-          href="https://github.com/recoskyler/chatter"
-          class="px-5"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <span>
-            <img
-              src={github}
-              alt="View on GitHub"
-              style="width: 1.5rem; height: 1.5rem;"
-            />
-          </span>
-        </a>
+        <div class="flex flex-row items-center justify-center">
+          <LightSwitch
+            bgDark="bg-surface-400"
+          />
+
+          <a
+            href="https://github.com/recoskyler/chatter"
+            class="px-5"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <span>
+              <img
+                src={githubWhite}
+                alt="View on GitHub"
+                style="width: 1.5rem; height: 1.5rem;"
+                class="hidden dark:block"
+              />
+
+              <img
+                src={githubBlack}
+                alt="View on GitHub"
+                style="width: 1.5rem; height: 1.5rem;"
+                class="block dark:hidden"
+              />
+            </span>
+          </a>
+        </div>
       </svelte:fragment>
     </AppBar>
   </svelte:fragment>

@@ -44,8 +44,8 @@
             {#if data.user.chats.length < MAX_CHATS}
               <li>
                 <a href={`/app/chat/create`}>
-                  <span class="badge text-secondary-400">
-                    <Fa icon={faPlus} />
+                  <span class="badge text-secondary-700 dark:text-secondary-400">
+                    <Fa fw icon={faPlus} />
                   </span>
 
                   <span class="flex-auto">
@@ -58,11 +58,11 @@
             {#each data.user.chats as chat}
               <li>
                 <a href={`/app/chat/${chat.id}`}>
-                  <span class="badge text-secondary-400">
+                  <span class="badge text-secondary-700 dark:text-secondary-400">
                     {#if chat.deleted}
-                      <Fa icon={faTrash} />
+                      <Fa fw icon={faTrash} />
                     {:else}
-                      <Fa icon={faMessage} />
+                      <Fa fw icon={faMessage} />
                     {/if}
                   </span>
 
