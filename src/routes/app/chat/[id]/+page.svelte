@@ -10,6 +10,7 @@
     AccordionItem,
     toastStore,
     CodeBlock,
+    focusTrap,
   } from "@skeletonlabs/skeleton";
   import Fa from "svelte-fa";
   import {
@@ -27,6 +28,7 @@
   import { z } from "zod";
   import { CHATTER_PAGE, currentPage } from "$lib/stores/currentPage";
   import { canGoBack } from "$lib/stores/canGoBack";
+  import hljs from "highlight.js";
 
   export let data: PageData;
 
@@ -70,6 +72,7 @@
 
       $prompts = $prompts.concat(deDuplicatedRes);
       $chatForm.content = "";
+      isFocused = true;
     },
   });
 
@@ -151,6 +154,7 @@
   let chatFormElem: HTMLFormElement;
   let ctrlPressed = false;
   let enterPressed = false;
+  let isFocused = true;
 
   $pageTitle = data.user.chats[0].name ?? "Chatter";
   $currentPage = CHATTER_PAGE.CHATS;
@@ -482,7 +486,9 @@
             <div class="flex flex-col">
               {#each prompt.content.split("```") as piece, p}
                 {#if piece.length > 0}
-                  {#if p % 2 === 1 && prompt.content.includes("```")}
+                  {#if p % 2 === 1 && prompt.content.includes("```")
+                    && hljs.listLanguages().includes(piece.split("\n")[0])
+                  }
                     <CodeBlock
                       language={piece.split("\n")[0]}
                       code={piece
@@ -534,6 +540,7 @@
             : "Explain why I'm sad"}
           disabled={$chatDelayed}
           rows={2}
+          use:focusTrap={isFocused}
           on:keyup={(e) => {
             if (e.repeat) return;
 
