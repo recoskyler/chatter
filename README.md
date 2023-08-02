@@ -4,6 +4,8 @@
 
 A simple, free, and open-source OpenAI ChatGPT client with multi-account support.
 
+You can either self-host it, or [start using it now](https://chatter.recoskyler.com)!
+
 ![Chatter screenshot](screenshot.png)
 
 ## Features
@@ -28,6 +30,10 @@ You can enable/disable remembering of the previous prompts. If enabled, previous
 
 You can also toggle each prompt on/off if the remember option is enabled. This will allow you to submit/not submit selected prompts in order to fine-tune the response from ChatGPT.
 
+### Light/Dark themes
+
+*Does this even need an explanation?*
+
 ## Supported models
 
 - ChatGPT 3.5 Turbo
@@ -39,7 +45,8 @@ You can also toggle each prompt on/off if the remember option is enabled. This w
 
 **Currently in Usable stage.** This project will receive updates if it proves itself to be useful. Please use the [main](/recoskyler/chatter/tree/main) branch for the stable version.
 
-- [X] Multi chat
+- [X] Multi-chat
+- [X] Multi-account
 - [X] Delete/Restore chat
 - [X] ~~Import/Export chat~~
 - [X] Toggle prompt
@@ -48,14 +55,14 @@ You can also toggle each prompt on/off if the remember option is enabled. This w
 - [X] Dockerization
 - [X] Database storage
 - [X] Mobile layout
+- [X] Themes
 - [ ] I18N (maybe)
-- [ ] Themes (maybe)
 
 ## Tech Stack
 
 - [SvelteKit 4](https://kit.svelte.dev/)
 - [Drizzle ORM](https://orm.drizzle.team/)
-- [Lucia Auth](https://lucia-auth.com/)
+- [Lucia Auth v2](https://lucia-auth.com/)
 - [Skeleton](https://www.skeleton.dev/)/[Tailwind CSS](https://tailwindcss.com/)
 
 ## Requirements
@@ -106,6 +113,12 @@ You can preview the production build with `npm run preview`.
 ## About
 
 By [recoskyler](https://github.com/recoskyler) - 2023
+
+### Legal
+
+- [Disclaimer](https://chatter.recoskyler.com/disclaimer)
+- [Cookie Policy](https://chatter.recoskyler.com/cookie)
+- [Privacy Policy](https://chatter.recoskyler.com/privacy)
 
 ### License
 
