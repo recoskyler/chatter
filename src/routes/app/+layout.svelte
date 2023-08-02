@@ -22,6 +22,8 @@
   import { canGoBack } from "$lib/stores/canGoBack";
   import githubWhite from "$lib/assets/github-mark-white.svg";
   import githubBlack from "$lib/assets/github-mark.svg";
+  import { page } from "$app/stores";
+  import Logo from "components/Logo.svelte";
 
   export let data: LayoutData;
 </script>
@@ -51,7 +53,13 @@
         {/if}
       </svelte:fragment>
 
-      <h3 class="h3">{$pageTitle}</h3>
+      {#if $page.url.pathname === "/app"}
+        <Logo />
+      {:else}
+        <h3 class="h3">
+          {$pageTitle}
+        </h3>
+      {/if}
 
       <svelte:fragment slot="trail">
         <div class="flex flex-row items-center justify-center">

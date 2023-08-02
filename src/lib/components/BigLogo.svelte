@@ -2,9 +2,9 @@
   import logo from "$lib/assets/chatter.svg";
 </script>
 
-<div class="logo flex flex-row items-center gap-2 justify-center m-0 p-0 !mb-0">
+<div class="logo flex flex-row items-center gap-2 justify-center">
   <img src={logo} alt="Logo" id="logo-img">
-  <a href="https://kit.svelte.dev" class="h3"><strong>Chatter</strong></a>
+  <a href="https://kit.svelte.dev" class="h1"><strong>Chatter</strong></a>
 </div>
 
 <style lang="scss">
@@ -21,7 +21,7 @@
   }
 
   #logo-img {
-    width: 1.5rem;
-    height: 1.5rem;
+    width: 3.5rem;
+    height: 3.5rem;
   }
 </style>

@@ -1,12 +1,12 @@
 <script lang="ts">
   import { version } from "$app/environment";
-  import Logo from "components/Logo.svelte";
+  import BigLogo from "components/BigLogo.svelte";
 </script>
 
 <div
   class="flex flex-col my-auto mx-auto items-center justify-center text-center gap-5"
 >
-  <Logo />
+  <BigLogo />
 
   <p>Free and open-source ChatGPT client</p>
 

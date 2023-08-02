@@ -277,11 +277,11 @@ export const actions: Actions = {
 
         switch (e.response?.status) {
           case 401:
-            errorMessage = "Invalid or expired API key";
+            errorMessage = "Invalid or expired OpenAI API key";
             break;
 
           case 429:
-            errorMessage = "Rate limit or quota exceeded";
+            errorMessage = "OpenAI rate limit or quota exceeded";
             break;
 
           case 500:
@@ -289,7 +289,7 @@ export const actions: Actions = {
             break;
 
           case 503:
-            errorMessage = "Chat GPT servers are currently overloaded";
+            errorMessage = "ChatGPT servers are currently overloaded";
             break;
 
           default:
