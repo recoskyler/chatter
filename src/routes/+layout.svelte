@@ -4,7 +4,7 @@
   import "styles/app.postcss";
   import "highlight.js/styles/github-dark.css";
   import {
-    Modal, Toast, storePopup, toastStore, 
+    Modal, Toast, storePopup, toastStore,
   } from "@skeletonlabs/skeleton";
   import {
     computePosition,
@@ -18,7 +18,7 @@
   import { storeHighlightJs } from "@skeletonlabs/skeleton";
   import { onMount } from "svelte";
   import { getCookie, setCookie } from "$lib/functions/helper";
-  import { DO_NOT_TRACK_COOKIE_NAME } from "$lib/constants";
+  import { DISCLAIMER_DISMISSED_COOKIE_NAME, DO_NOT_TRACK_COOKIE_NAME } from "$lib/constants";
 
   let doNotTrack = "";
 
@@ -26,14 +26,14 @@
   storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
 
   onMount(() => {
-    if (getCookie("disclaimer-dismissed") === "") {
+    if (getCookie(DISCLAIMER_DISMISSED_COOKIE_NAME) === "") {
       toastStore.trigger({
         message:
           "This site uses cookies. <a href='/cookie' rel='noopener noreferrer' target='_blank' class='anchor'>Cookie Policy</a>",
         autohide: false,
         callback: response => {
           if (response.status === "closed") {
-            setCookie("disclaimer-dismissed", "true", 365);
+            setCookie(DISCLAIMER_DISMISSED_COOKIE_NAME, "true", 365);
           }
         },
         background: "variant-filled-warning",
