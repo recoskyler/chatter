@@ -11,7 +11,7 @@ module.exports = {
     env: {
       NODE_ENV: "production",
       HOST: "127.0.0.1",
-      PORT: "3000",
+      PORT: "8224",
       ORIGIN: "https://chatter.recoskyler.com",
       PROTOCOL_HEADER: "x-forwarded-proto",
       HOST_HEADER: "x-forwarded-host",
