@@ -132,8 +132,6 @@ export const actions: Actions = {
 
       locals.auth.setSession(newSession);
     } catch (e) {
-      console.log(session.user.email);
-
       if (e instanceof LuciaError && e.message === "AUTH_INVALID_PASSWORD") {
         return setError(form, "", "Invalid current password");
       }
