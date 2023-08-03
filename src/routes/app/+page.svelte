@@ -1,7 +1,12 @@
 <script lang="ts">
   import type { PageData } from "./$types";
   import Fa from "svelte-fa";
-  import { faMessage, faPencil, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
+  import {
+    faMessage,
+    faPencil,
+    faPlus,
+    faTrash,
+  } from "@fortawesome/free-solid-svg-icons";
   import { writable } from "svelte/store";
   import FormError from "components/FormError.svelte";
   import { MAX_CHATS } from "$lib/constants";
@@ -23,7 +28,9 @@
 
 {#if data.user.chats.length === 0}
   <div class="h-full w-full flex flex-col items-center justify-center gap-5">
-    <p class="text-center text-slate-500 dark:text-slate-400">You don't have any chats</p>
+    <p class="text-center text-slate-500 dark:text-slate-400">
+      You don't have any chats
+    </p>
 
     <a href="/app/chat/create" class="btn variant-filled">Create chat</a>
   </div>
@@ -41,8 +48,13 @@
           <ul>
             {#if data.user.chats.length < MAX_CHATS}
               <li>
-                <a href={`/app/chat/create`}>
-                  <span class="badge text-secondary-700 dark:text-secondary-400">
+                <a
+                  href={`/app/chat/create`}
+                  data-umami-event="Create new chat button"
+                >
+                  <span
+                    class="badge text-secondary-700 dark:text-secondary-400"
+                  >
                     <Fa fw icon={faPlus} />
                   </span>
 
@@ -55,8 +67,13 @@
 
             {#each data.user.chats as chat}
               <li>
-                <a href={`/app/chat/${chat.id}`}>
-                  <span class="badge text-secondary-700 dark:text-secondary-400">
+                <a
+                  href={`/app/chat/${chat.id}`}
+                  data-umami-event="View chat button"
+                >
+                  <span
+                    class="badge text-secondary-700 dark:text-secondary-400"
+                  >
                     {#if chat.deleted}
                       <Fa fw icon={faTrash} />
                     {:else}

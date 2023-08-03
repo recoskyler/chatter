@@ -33,7 +33,11 @@
 </svelte:head>
 
 <div class="h-full flex items-center p-2 flex-col gap-5">
-  <form use:enhance method="post" class="w-full max-w-lg mx-auto p-2 bg-surface-200 dark:bg-surface-400 rounded-lg">
+  <form
+    use:enhance
+    method="post"
+    class="w-full max-w-lg mx-auto p-2 bg-surface-200 dark:bg-surface-400 rounded-lg"
+  >
     <label class="label">
       <span>Default account</span>
 
@@ -68,6 +72,7 @@
           $delayed || !$changed ? "variant-filled-surface" : "variant-filled"
         }`}
         disabled={$delayed || !$changed}
+        data-umami-event="Change default account button"
       />
     {/if}
   </form>
@@ -130,7 +135,9 @@
         </ul>
       </nav>
     {:else}
-      <p class="text-slate-500 dark:text-slate-400">You don't have any accounts</p>
+      <p class="text-slate-500 dark:text-slate-400">
+        You don't have any accounts
+      </p>
     {/if}
   </div>
 </div>

@@ -96,6 +96,9 @@
       value={$delayed ? "Signing up..." : "Continue"}
       class={`btn mt-5 w-full ${$delayed ? "variant-filled-surface" : "variant-filled"}`}
       disabled={$delayed}
+      data-umami-event="Sign-up button"
+      data-umami-event-email={$form.email}
+      data-umami-event-name={$form.name}
     />
   </form>
 

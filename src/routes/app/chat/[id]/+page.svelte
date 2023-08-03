@@ -261,6 +261,7 @@
                       : "variant-filled"
                   }`}
                   disabled={$renameDelayed || !$nameChanged}
+                  data-umami-event="Rename chat button"
                 />
               {/if}
             </form>
@@ -322,6 +323,7 @@
                       : "variant-filled"
                   }`}
                   disabled={$systemDelayed || !$systemChanged}
+                  data-umami-event="Change system prompt button"
                 />
               {/if}
             </form>
@@ -368,6 +370,7 @@
                       : "variant-filled"
                   }`}
                   disabled={$accountDelayed || !$accountChanged}
+                  data-umami-event="Change chat account button"
                 />
               {/if}
             </form>
@@ -389,6 +392,7 @@
                       : "variant-filled-error"
                   }`}
                   disabled={$deleteDelayed}
+                  data-umami-event="Delete chat button"
                 />
 
                 {#if $deleteErrors._errors}
@@ -413,6 +417,7 @@
                         : "variant-filled"
                     }`}
                     disabled={$restoreDelayed}
+                    data-umami-event="Restore chat button"
                   />
 
                   {#if $restoreErrors._errors}
@@ -438,6 +443,7 @@
                         : "variant-filled-error"
                     }`}
                     disabled={$permDeleteDelayed}
+                    data-umami-event="Permanently delete chat button"
                   />
 
                   {#if $permDeleteErrors._errors}
@@ -487,7 +493,11 @@
                     value={prompt.enabled}
                   />
 
-                  <button aria-label="Toggle prompt" title="Toggle prompt">
+                  <button
+                    aria-label="Toggle prompt"
+                    title="Toggle prompt"
+                    data-umami-event="Toggle prompt switch"
+                  >
                     <Fa
                       fw
                       icon={prompt.enabled ? faToggleOn : faToggleOff}
@@ -503,9 +513,9 @@
             <div class="flex flex-col">
               {#each prompt.content.split("```") as piece, p}
                 {#if piece.length > 0}
-                  {#if p % 2 === 1 && prompt.content.includes("```")
-                    && hljs.listLanguages().includes(piece.split("\n")[0])
-                  }
+                  {#if p % 2 === 1 && prompt.content.includes("```") && hljs
+                      .listLanguages()
+                      .includes(piece.split("\n")[0])}
                     <CodeBlock
                       language={piece.split("\n")[0]}
                       code={piece
@@ -599,6 +609,7 @@
             label="Remember previous chat content"
             size="sm"
             bind:checked={$chatForm.remember}
+            data-umami-event="Toggle remember switch"
           >
             <span class="flex flex-row items-center gap-2">
               <span>Remember</span>
@@ -633,6 +644,7 @@
           $chatDelayed ? "variant-filled-surface" : "variant-filled"
         }`}
         disabled={$chatDelayed}
+        data-umami-event="Submit prompt button"
       />
     </form>
   </div>

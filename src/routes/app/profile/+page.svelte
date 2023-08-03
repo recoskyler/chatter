@@ -134,6 +134,7 @@
               $cnDelayed ? "variant-filled-surface" : "variant-filled"
             }`}
             disabled={$cnDelayed}
+            data-umami-event="Change name button"
           />
         </form>
       </svelte:fragment>
@@ -199,6 +200,7 @@
               $ceDelayed ? "variant-filled-surface" : "variant-filled"
             }`}
             disabled={$ceDelayed}
+            data-umami-event="Change email button"
           />
         </form>
       </svelte:fragment>
@@ -269,6 +271,7 @@
               $cpDelayed ? "variant-filled-surface" : "variant-filled"
             }`}
             disabled={$cpDelayed}
+            data-umami-event="Change password button"
           />
         </form>
       </svelte:fragment>
@@ -343,6 +346,7 @@
               $daDelayed ? "variant-filled-surface" : "variant-filled-error"
             }`}
             disabled={$daDelayed}
+            data-umami-event="Delete account button"
           />
         </form>
       </svelte:fragment>
@@ -390,6 +394,7 @@
       target="_blank"
       rel="noopener noreferrer"
       class="anchor text-center"
+      data-umami-event="View source code anchor"
     >
       Source Code
     </a>

@@ -131,6 +131,7 @@
           $delayed || !$changed ? "variant-filled-surface" : "variant-filled"
         }`}
         disabled={$delayed || !$changed}
+        data-umami-event="Save account button"
       />
     {/if}
   </form>
@@ -147,11 +148,10 @@
         type="submit"
         value={$deleteDelayed ? "Deleting..." : "Delete account"}
         class={`btn mt-2 w-full ${
-          $deleteDelayed
-            ? "variant-filled-surface"
-            : "variant-filled-error"
+          $deleteDelayed ? "variant-filled-surface" : "variant-filled-error"
         }`}
         disabled={$deleteDelayed}
+        data-umami-event="Delete account button"
       />
 
       {#if $deleteErrors._errors}
@@ -170,11 +170,10 @@
         type="submit"
         value={$restoreDelayed ? "Restoring..." : "Restore account"}
         class={`btn mt-2 w-full ${
-          $restoreDelayed
-            ? "variant-filled-surface"
-            : "variant-filled"
+          $restoreDelayed ? "variant-filled-surface" : "variant-filled"
         }`}
         disabled={$restoreDelayed}
+        data-umami-event="Restore account button"
       />
 
       {#if $restoreErrors._errors}
@@ -191,13 +190,14 @@
     >
       <input
         type="submit"
-        value={$permDeleteDelayed ? "Deleting..." : "Permanently delete account"}
+        value={$permDeleteDelayed
+          ? "Deleting..."
+          : "Permanently delete account"}
         class={`btn mt-2 w-full ${
-          $permDeleteDelayed
-            ? "variant-filled-surface"
-            : "variant-filled-error"
+          $permDeleteDelayed ? "variant-filled-surface" : "variant-filled-error"
         }`}
         disabled={$permDeleteDelayed}
+        data-umami-event="Permanently delete account button"
       />
 
       {#if $permDeleteErrors._errors}

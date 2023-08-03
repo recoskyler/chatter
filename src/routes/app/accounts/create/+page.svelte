@@ -97,6 +97,7 @@
       value={$delayed ? "Creating account..." : "Create account"}
       class={`btn mt-5 w-full ${$delayed ? "variant-filled-surface" : "variant-filled"}`}
       disabled={$delayed}
+      data-umami-event="Create account button"
     />
   </form>
 </div>

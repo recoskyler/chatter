@@ -56,6 +56,7 @@
           : "variant-filled-surface"
       }`}
       disabled={!isPasswordValid($form.password) || $delayed || $message}
+      data-umami-event="Password reset button"
     />
   </form>
 

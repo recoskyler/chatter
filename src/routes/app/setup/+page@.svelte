@@ -136,5 +136,9 @@
   <input type="hidden" bind:value={$form.name} name="name" required />
   <input type="hidden" bind:value={$form.key} name="key" required />
   <input type="hidden" bind:value={$form.chatModelId} name="chatModelId" required />
-  <input type="submit" id="submit-btn" />
+  <input
+    type="submit"
+    id="submit-btn"
+    data-umami-event="Complete setup button"
+  />
 </form>

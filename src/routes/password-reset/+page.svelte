@@ -50,6 +50,8 @@
           : "variant-filled-surface"
       }`}
       disabled={!isEmailValid($form.email) || $delayed || $message}
+      data-umami-event="Password reset request button"
+      data-umami-event-email={$form.email}
     />
   </form>
 
