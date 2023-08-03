@@ -84,8 +84,7 @@ Please create a new issue [here](https://github.com/recoskyler/chatter/issues/ne
 - [X] Code formatting
 - [X] Themes
 - [X] Analytics ([umami](https://umami.is))
-- [ ] Bug monitoring ([Sentry](https://sentry.io/welcome/))
-- [ ] Server monitoring ([Prometheus](https://prometheus.io/) + [Grafana](https://grafana.com/))
+- [ ] ~~Bug monitoring ([Sentry](https://sentry.io/welcome/))~~ (*Sentry does not support ARM64*)
 - [ ] Transparent Data Encryption
 - [ ] I18N (maybe)
 
