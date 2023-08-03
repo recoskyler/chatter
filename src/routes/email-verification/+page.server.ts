@@ -5,7 +5,9 @@ import type { PageServerLoad } from "./$types";
 import { fail } from "@sveltejs/kit";
 import { auth, generateEmailVerificationToken } from "$lib/server/lucia";
 import { sendEmailVerificationEmail } from "$lib/server/mailer";
-import { EMAIL_VERIFICATION } from "$lib/constants";
+import {
+  DISCLAIMER_DISMISSED_COOKIE_NAME, DO_NOT_TRACK_COOKIE_NAME, EMAIL_VERIFICATION,
+} from "$lib/constants";
 import { emailVerificationLimiter } from "$lib/server/limiter";
 
 export const load: PageServerLoad = async event => {
@@ -49,11 +51,14 @@ export const actions: Actions = {
   default: async event => {
     if (await emailVerificationLimiter.isLimited(event)) throw error(429, "Too many requests");
 
-    const { locals } = event;
+    const { locals, cookies } = event;
 
     const session = await locals.auth.validate();
 
     if (!session) return fail(401);
+
+    cookies.delete(DO_NOT_TRACK_COOKIE_NAME);
+    cookies.delete(DISCLAIMER_DISMISSED_COOKIE_NAME);
 
     await auth.invalidateSession(session.sessionId);
 

@@ -1,5 +1,10 @@
 <script lang="ts">
-  import { Accordion, AccordionItem, LightSwitch } from "@skeletonlabs/skeleton";
+  import {
+    Accordion,
+    AccordionItem,
+    LightSwitch,
+    SlideToggle,
+  } from "@skeletonlabs/skeleton";
   import { popup } from "@skeletonlabs/skeleton";
   import { passwordPopupFocusBlur } from "components/PasswordStrengthMeter/helpers.js";
   import type { PageData } from "./$types";
@@ -9,6 +14,7 @@
   import PasswordStrengthMeter from "components/PasswordStrengthMeter/PasswordStrengthMeter.svelte";
   import Fa from "svelte-fa";
   import {
+    faChartSimple,
     faEnvelope,
     faIdBadge,
     faKey,
@@ -19,6 +25,10 @@
   import FormSuccess from "components/FormSuccess.svelte";
   import { canGoBack } from "$lib/stores/canGoBack";
   import { CHATTER_PAGE, currentPage } from "$lib/stores/currentPage";
+  import { getCookie, setCookie } from "$lib/functions/helper";
+  import { onMount } from "svelte";
+  import { browser } from "$app/environment";
+  import { DO_NOT_TRACK_COOKIE_NAME } from "$lib/constants";
 
   export let data: PageData;
 
@@ -61,6 +71,29 @@
   $pageTitle = "Profile";
   $currentPage = CHATTER_PAGE.PROFILE;
   $canGoBack = null;
+
+  let analyticsEnabled = false;
+
+  const toggleAnalytics = () => {
+    if (!browser) {
+      console.error("Not a browser. Cannot save settings");
+
+      return;
+    }
+
+    setCookie(
+      DO_NOT_TRACK_COOKIE_NAME,
+      analyticsEnabled ? "false" : "true",
+      365,
+    );
+
+    console.info(`${analyticsEnabled ? "Enabled" : "Disabled"} analytics`);
+  };
+
+  onMount(() => {
+    const cookieVal = getCookie(DO_NOT_TRACK_COOKIE_NAME);
+    analyticsEnabled = cookieVal === "false" || cookieVal === "" ? true : false;
+  });
 </script>
 
 <svelte:head>
@@ -134,6 +167,7 @@
               $cnDelayed ? "variant-filled-surface" : "variant-filled"
             }`}
             disabled={$cnDelayed}
+            data-umami-event="Change name button"
           />
         </form>
       </svelte:fragment>
@@ -199,6 +233,7 @@
               $ceDelayed ? "variant-filled-surface" : "variant-filled"
             }`}
             disabled={$ceDelayed}
+            data-umami-event="Change email button"
           />
         </form>
       </svelte:fragment>
@@ -269,8 +304,44 @@
               $cpDelayed ? "variant-filled-surface" : "variant-filled"
             }`}
             disabled={$cpDelayed}
+            data-umami-event="Change password button"
           />
         </form>
+      </svelte:fragment>
+    </AccordionItem>
+
+    <AccordionItem>
+      <svelte:fragment slot="lead">
+        <Fa fw icon={faChartSimple} />
+      </svelte:fragment>
+
+      <svelte:fragment slot="summary">Analytics</svelte:fragment>
+
+      <svelte:fragment slot="content">
+        <p>
+          <span class="text-orange-600 dark:text-orange-400"
+            ><strong>WARNING: </strong></span
+          >
+          <!-- eslint-disable-next-line max-len -->
+          This setting is stored in a cookie. When you sign out, clear the browser
+          cookies, or block cookies it will be reset to its default state (<strong
+            >Disabled</strong
+          >)
+        </p>
+
+        <SlideToggle
+          name="enabled"
+          bind:checked={analyticsEnabled}
+          on:change={toggleAnalytics}
+          bgDark="bg-surface-400"
+          class="my-3"
+        >
+          Enable analytics?
+        </SlideToggle>
+
+        <p>
+          <strong>Please refresh the page after changing this option</strong>
+        </p>
       </svelte:fragment>
     </AccordionItem>
 
@@ -285,7 +356,9 @@
 
       <svelte:fragment slot="content">
         <p>
-          <span class="text-orange-600 dark:text-orange-400"><strong>WARNING: </strong></span>
+          <span class="text-orange-600 dark:text-orange-400"
+            ><strong>WARNING: </strong></span
+          >
           If you choose to delete your account, there is no going back! Enter your
           current password and type "<i>Delete</i>" (case sensitive) without the
           "quotes" in the <strong>Confirmation</strong> field to proceed.
@@ -343,6 +416,7 @@
               $daDelayed ? "variant-filled-surface" : "variant-filled-error"
             }`}
             disabled={$daDelayed}
+            data-umami-event="Delete account button"
           />
         </form>
       </svelte:fragment>
@@ -353,8 +427,17 @@
     <LightSwitch bgDark="bg-surface-400" />
   </div>
 
-  <div class="flex flex-row flex-wrap items-center justify-center gap-x-3 gap-y-2 mt-10 py-2 px-5 bg-surface-200 dark:bg-surface-200 rounded-lg">
-    <a href="/privacy" target="_blank" rel="noopener noreferrer" class="anchor text-center">
+  <!-- eslint-disable max-len -->
+  <div
+    class="flex flex-row flex-wrap items-center justify-center gap-x-3 gap-y-2 mt-10 py-2 px-5 bg-surface-200 dark:bg-surface-200 rounded-lg"
+  >
+  <!-- eslint-enable max-len -->
+    <a
+      href="/privacy"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="anchor text-center"
+    >
       Privacy Policy
     </a>
 
@@ -390,6 +473,7 @@
       target="_blank"
       rel="noopener noreferrer"
       class="anchor text-center"
+      data-umami-event="View source code anchor"
     >
       Source Code
     </a>

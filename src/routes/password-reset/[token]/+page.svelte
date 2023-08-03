@@ -12,7 +12,7 @@
   export let data: PageData;
 
   const { form, delayed, enhance, message, errors, constraints } = superForm(
-    data.form
+    data.form,
   );
 </script>
 
@@ -56,6 +56,7 @@
           : "variant-filled-surface"
       }`}
       disabled={!isPasswordValid($form.password) || $delayed || $message}
+      data-umami-event="Password reset button"
     />
   </form>
 

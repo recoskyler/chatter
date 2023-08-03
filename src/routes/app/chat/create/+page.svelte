@@ -21,7 +21,7 @@
     delayed,
     errors,
     constraints,
-  } = superForm(data.form, {onUpdated: () => {$changed = false;}});
+  } = superForm(data.form, { onUpdated: () => { $changed = false; } });
 </script>
 
 <svelte:head>
@@ -99,6 +99,7 @@
       value={$delayed ? "Creating chat..." : "Create chat"}
       class={`btn mt-5 w-full ${$delayed ? "variant-filled-surface" : "variant-filled"}`}
       disabled={$delayed}
+      data-umami-event="Create chat button"
     />
   </form>
 </div>

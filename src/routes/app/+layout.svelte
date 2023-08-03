@@ -41,9 +41,13 @@
             aria-label="Go back"
             title="Go back"
             class="p-2 ml-2"
-            on:click={() => {
-              goto($canGoBack ?? "");
+            data-umami-event="Back button"
+            on:click={async () => {
+              const url = $canGoBack;
+
               $canGoBack = null;
+
+              await goto(url ?? "");
             }}
           >
             <Fa icon={faArrowLeft} />
@@ -70,6 +74,7 @@
             class="px-3"
             target="_blank"
             rel="noopener noreferrer"
+            data-umami-event="View GitHub button"
           >
             <span>
               <img
@@ -96,7 +101,7 @@
     <AppRail class="hidden md:block">
       <AppRailAnchor selected={$currentPage === CHATTER_PAGE.CHATS} href="/app">
         <svelte:fragment slot="lead">
-          <div class="flex items-center justify-center mb-2">
+          <div class="flex items-center justify-center mb-2" >
             <Fa icon={faMessage} />
           </div>
         </svelte:fragment>

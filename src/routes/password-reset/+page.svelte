@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { MAX_EMAIL_LENGTH, MIN_EMAIL_LENGTH } from "$lib/constants";
   import FormError from "components/FormError.svelte";
   import { isEmailValid } from "$lib/functions/validators.js";
   import type { PageData } from "./$types";
@@ -10,7 +9,7 @@
   export let data: PageData;
 
   const { form, delayed, enhance, message, errors, constraints } = superForm(
-    data.form
+    data.form,
   );
 </script>
 
@@ -32,7 +31,7 @@
       title="Email"
       placeholder="john@example.com"
       autocomplete="email"
-      disabled={!(!$message) || $delayed}
+      disabled={!!$message || $delayed}
       bind:value={$form.email}
       {...$constraints.email}
     /><br />
@@ -50,6 +49,8 @@
           : "variant-filled-surface"
       }`}
       disabled={!isEmailValid($form.email) || $delayed || $message}
+      data-umami-event="Password reset request button"
+      data-umami-event-email={$form.email}
     />
   </form>
 

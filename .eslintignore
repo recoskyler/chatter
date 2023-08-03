@@ -1,0 +1,5 @@
+src/routes/privacy/*
+src/routes/cookie/*
+src/routes/disclaimer/*
+build/**/*
+node_modules/**/*

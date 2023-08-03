@@ -8,7 +8,7 @@
   export let lightness: string | number | undefined = undefined;
 
   const svgUri = `data:image/svg+xml;utf8,${encodeURIComponent(
-    minidenticon(email, saturation, lightness)
+    minidenticon(email, saturation, lightness),
   )}`;
 </script>
 

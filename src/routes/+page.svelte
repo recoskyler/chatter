@@ -15,11 +15,22 @@
   <p>Simple, free, and open-source ChatGPT client</p>
 
   <div class="flex flex-row gap-5 items-center justify-center">
-    <a href="/app" class="btn variant-filled">Launch Chatter</a>
-    <a href="/app" class="btn variant-ghost-tertiary">View source code</a>
+    <a href="/app" class="btn variant-filled" data-umami-event="Launch button">
+      Launch Chatter
+    </a>
+
+    <a
+      href="/app"
+      class="btn variant-ghost-tertiary"
+      data-umami-event="View source code button"
+    >
+      View source code
+    </a>
   </div>
 
-  <div class="flex flex-row gap-5 items-center justify-center text-slate-500 dark:text-slate-400">
+  <div
+    class="flex flex-row gap-5 items-center justify-center text-slate-500 dark:text-slate-400"
+  >
     <span>
       <span>By </span>
       <a
@@ -27,10 +38,11 @@
         target="_blank"
         rel="noopener noreferrer"
         class="anchor"
+        data-umami-event="View recoskyler button"
       >
         recoskyler
       </a>
     </span>
-    <p> v{version}</p>
+    <p>v{version}</p>
   </div>
 </div>

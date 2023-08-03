@@ -66,6 +66,8 @@
       value={$delayed ? "Logging in..." : "Continue"}
       class={`btn mt-5 w-full ${$delayed ? "variant-filled-surface" : "variant-filled"}`}
       disabled={$delayed}
+      data-umami-event="Sign-in button"
+      data-umami-event-email={$form.email}
     />
   </form>
 

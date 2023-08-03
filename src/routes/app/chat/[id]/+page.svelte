@@ -37,6 +37,11 @@
   const accountChanged = writable(false);
   const contentHeight = writable(0);
 
+  let chatFormElem: HTMLFormElement;
+  let ctrlPressed = false;
+  let enterPressed = false;
+  let isFocused = true;
+
   $prompts = data.user.chats[0].prompts;
 
   const {
@@ -47,8 +52,10 @@
     delayed: chatDelayed,
   } = superForm(data.chatForm, {
     onUpdated: ({ form }) => {
+      if (!form.message || typeof form.message !== "string") return;
+
       const promptArraySchema = z.array(selectPromptSchema);
-      const data = JSON.parse(form.message);
+      const data: unknown = JSON.parse(form.message ?? "");
       const res = promptArraySchema.safeParse(data);
 
       if (!res.success) {
@@ -65,7 +72,7 @@
       const deDuplicatedRes: Prompt[] = [];
 
       for (const prompt of res.data) {
-        if (!$prompts.find((p) => p.id === prompt.id)) {
+        if (!$prompts.find(p => p.id === prompt.id)) {
           deDuplicatedRes.push(prompt);
         }
       }
@@ -103,16 +110,9 @@
     },
   });
 
-  const {
-    form: toggleForm,
-    errors: toggleErrors,
-    constraints: toggleConstraints,
-    message: toggleMessage,
-    enhance: toggleEnhance,
-    delayed: toggleDelayed,
-  } = superForm(data.toggleForm, {
+  const { enhance: toggleEnhance } = superForm(data.toggleForm, {
     onUpdated: ({ form }) => {
-      const prompt = $prompts.find((p) => p.id === form.data.promptId);
+      const prompt = $prompts.find(p => p.id === form.data.promptId);
 
       if (!prompt) return;
 
@@ -151,11 +151,6 @@
     delayed: restoreDelayed,
   } = superForm(data.restoreForm);
 
-  let chatFormElem: HTMLFormElement;
-  let ctrlPressed = false;
-  let enterPressed = false;
-  let isFocused = true;
-
   $pageTitle = data.user.chats[0].name ?? "Chatter";
   $currentPage = CHATTER_PAGE.CHATS;
   $canGoBack = "/app";
@@ -166,7 +161,7 @@
       .getBoundingClientRect().height;
   });
 
-  const availableAccounts = data.user.accounts.filter((a) => !a.deleted);
+  const availableAccounts = data.user.accounts.filter(a => !a.deleted);
 </script>
 
 <svelte:head>
@@ -206,7 +201,7 @@
   </div>
 {:else}
   <div
-    class={`flex flex-col w-full items-center`}
+    class={"flex flex-col w-full items-center"}
     style={`height: calc(100vh - ${$contentHeight}px);`}
   >
     <Accordion
@@ -231,7 +226,7 @@
                   type="text"
                   placeholder="Chat name"
                   disabled={$renameDelayed}
-                  on:input={(_) => {
+                  on:input={_ => {
                     $nameChanged = true;
                   }}
                   bind:value={$renameForm.name}
@@ -261,6 +256,7 @@
                       : "variant-filled"
                   }`}
                   disabled={$renameDelayed || !$nameChanged}
+                  data-umami-event="Rename chat button"
                 />
               {/if}
             </form>
@@ -292,7 +288,7 @@
                   type="text"
                   placeholder="You are a helpful assistant"
                   disabled={$systemDelayed}
-                  on:input={(_) => {
+                  on:input={_ => {
                     $systemChanged = true;
                   }}
                   bind:value={$systemForm.prompt}
@@ -322,6 +318,7 @@
                       : "variant-filled"
                   }`}
                   disabled={$systemDelayed || !$systemChanged}
+                  data-umami-event="Change system prompt button"
                 />
               {/if}
             </form>
@@ -339,7 +336,7 @@
                   class="select w-full"
                   name="accountId"
                   disabled={$accountDelayed}
-                  on:change={(_) => {
+                  on:change={_ => {
                     $accountChanged = true;
                   }}
                   bind:value={$accountForm.accountId}
@@ -368,6 +365,7 @@
                       : "variant-filled"
                   }`}
                   disabled={$accountDelayed || !$accountChanged}
+                  data-umami-event="Change chat account button"
                 />
               {/if}
             </form>
@@ -389,6 +387,7 @@
                       : "variant-filled-error"
                   }`}
                   disabled={$deleteDelayed}
+                  data-umami-event="Delete chat button"
                 />
 
                 {#if $deleteErrors._errors}
@@ -413,6 +412,7 @@
                         : "variant-filled"
                     }`}
                     disabled={$restoreDelayed}
+                    data-umami-event="Restore chat button"
                   />
 
                   {#if $restoreErrors._errors}
@@ -438,6 +438,7 @@
                         : "variant-filled-error"
                     }`}
                     disabled={$permDeleteDelayed}
+                    data-umami-event="Permanently delete chat button"
                   />
 
                   {#if $permDeleteErrors._errors}
@@ -452,16 +453,14 @@
     </Accordion>
 
     <div
-      class={`flex flex-col-reverse flex-grow max-w-3xl w-full mx-auto py-2 overflow-y-auto`}
+      class={"flex flex-col-reverse flex-grow max-w-3xl w-full mx-auto py-2 overflow-y-auto"}
     >
       {#if $prompts.length <= 1}
         <p class="my-auto text-slate-500 dark:text-slate-400 text-center">
           Enter a prompt below to start chatting.
         </p>
       {:else}
-        {#each $prompts
-          .filter((p) => p.role !== "system")
-          .reverse() as prompt, i}
+        {#each $prompts.filter(p => p.role !== "system").reverse() as prompt}
           <div class="py-4 flex flex-row items-center gap-3">
             <div class="flex flex-col items-center gap-2">
               <Fa
@@ -470,12 +469,12 @@
                 class={prompt.busy
                   ? "text-slate-400 dark:text-slate-600"
                   : !prompt.successful
-                  ? "text-red-600 dark:text-red-400"
-                  : prompt.role === "assistant"
-                  ? "text-slate-600 dark:text-slate-300 font-mono"
-                  : $chatForm.remember && !prompt.enabled
-                  ? "text-slate-500 dark:text-slate-400"
-                  : "text-tertiary-600 dark:text-tertiary-400"}
+                    ? "text-red-600 dark:text-red-400"
+                    : prompt.role === "assistant"
+                      ? "text-slate-600 dark:text-slate-300 font-mono"
+                      : $chatForm.remember && !prompt.enabled
+                        ? "text-slate-500 dark:text-slate-400"
+                        : "text-tertiary-600 dark:text-tertiary-400"}
               />
 
               {#if !prompt.busy && prompt.successful && prompt.role === "user" && $chatForm.remember}
@@ -487,7 +486,11 @@
                     value={prompt.enabled}
                   />
 
-                  <button aria-label="Toggle prompt" title="Toggle prompt">
+                  <button
+                    aria-label="Toggle prompt"
+                    title="Toggle prompt"
+                    data-umami-event="Toggle prompt switch"
+                  >
                     <Fa
                       fw
                       icon={prompt.enabled ? faToggleOn : faToggleOff}
@@ -503,14 +506,14 @@
             <div class="flex flex-col">
               {#each prompt.content.split("```") as piece, p}
                 {#if piece.length > 0}
-                  {#if p % 2 === 1 && prompt.content.includes("```")
-                    && hljs.listLanguages().includes(piece.split("\n")[0])
-                  }
+                  {#if p % 2 === 1 && prompt.content.includes("```") && hljs
+                    .listLanguages()
+                    .includes(piece.split("\n")[0])}
                     <CodeBlock
                       language={piece.split("\n")[0]}
                       code={piece
                         .substring(
-                          piece.split("").findIndex((c) => c === "\n") + 1
+                          piece.split("").findIndex(c => c === "\n") + 1,
                         )
                         .trim()}
                     />
@@ -520,12 +523,12 @@
                         prompt.busy
                           ? "text-slate-400 dark:text-slate-600"
                           : !prompt.successful
-                          ? "text-red-600 dark:text-red-400"
-                          : prompt.role === "assistant"
-                          ? "text-slate-600 dark:text-slate-300 font-mono"
-                          : $chatForm.remember && !prompt.enabled
-                          ? "text-slate-500 dark:text-slate-400"
-                          : "text-tertiary-600 dark:text-tertiary-400"
+                            ? "text-red-600 dark:text-red-400"
+                            : prompt.role === "assistant"
+                              ? "text-slate-600 dark:text-slate-300 font-mono"
+                              : $chatForm.remember && !prompt.enabled
+                                ? "text-slate-500 dark:text-slate-400"
+                                : "text-tertiary-600 dark:text-tertiary-400"
                       }`}
                     >
                       {piece}
@@ -539,6 +542,7 @@
       {/if}
     </div>
 
+    <!-- eslint-disable max-len -->
     <form
       id="chat-form"
       use:chatEnhance
@@ -547,6 +551,7 @@
       method="post"
       class="flex-none flex flex-row gap-2 mx-auto my-2 justify-stretch items-center w-full max-w-3xl bg-surface-200 dark:bg-surface-400 rounded-lg p-2"
     >
+      <!-- eslint-enable max-len -->
       <div class="w-full">
         <textarea
           tabindex={1}
@@ -558,7 +563,7 @@
           disabled={$chatDelayed}
           rows={2}
           use:focusTrap={isFocused}
-          on:keyup={(e) => {
+          on:keyup={e => {
             if (e.repeat) return;
 
             if (e.key === "Control") {
@@ -569,7 +574,7 @@
               enterPressed = false;
             }
           }}
-          on:keydown={(e) => {
+          on:keydown={e => {
             if (e.repeat) return;
 
             if (e.key === "Control") {
@@ -599,6 +604,7 @@
             label="Remember previous chat content"
             size="sm"
             bind:checked={$chatForm.remember}
+            data-umami-event="Toggle remember switch"
           >
             <span class="flex flex-row items-center gap-2">
               <span>Remember</span>
@@ -633,6 +639,7 @@
           $chatDelayed ? "variant-filled-surface" : "variant-filled"
         }`}
         disabled={$chatDelayed}
+        data-umami-event="Submit prompt button"
       />
     </form>
   </div>

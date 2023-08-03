@@ -1,13 +1,15 @@
 <script lang="ts">
   import type { PageData } from "./$types";
-  import { Stepper, Step, LightSwitch } from "@skeletonlabs/skeleton";
+  import {
+    Stepper, Step, LightSwitch,
+  } from "@skeletonlabs/skeleton";
   import { superForm } from "sveltekit-superforms/client";
 
   export let data: PageData;
 
   const { form, errors, constraints, enhance } = superForm(data.form);
 
-  const onComplete = (e: Event) => {
+  const onComplete = () => {
     const submitButton = document.getElementById("submit-btn");
 
     if (!submitButton) return;
@@ -85,7 +87,7 @@
           class="input"
           type="text"
           placeholder="YOUR SECRET API KEY"
-          aria-invalid={$errors.key ? 'true' : undefined}
+          aria-invalid={$errors.key ? "true" : undefined}
           bind:value={$form.key}
           {...$constraints.key}
         />
@@ -118,7 +120,7 @@
           class="input"
           type="text"
           placeholder="Cool name"
-          aria-invalid={$errors.name ? 'true' : undefined}
+          aria-invalid={$errors.name ? "true" : undefined}
           bind:value={$form.name}
           {...$constraints.name}
         />
@@ -136,5 +138,9 @@
   <input type="hidden" bind:value={$form.name} name="name" required />
   <input type="hidden" bind:value={$form.key} name="key" required />
   <input type="hidden" bind:value={$form.chatModelId} name="chatModelId" required />
-  <input type="submit" id="submit-btn" />
+  <input
+    type="submit"
+    id="submit-btn"
+    data-umami-event="Complete setup button"
+  />
 </form>

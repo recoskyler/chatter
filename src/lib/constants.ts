@@ -21,3 +21,6 @@ export const EMAIL_VERIFICATION = PUBLIC_EMAIL_VERIFICATION === "true" || PUBLIC
 
 export const MAX_CHATS = Number.parseInt(PUBLIC_MAX_CHATS === "" ? "100" : PUBLIC_MAX_CHATS);
 export const MAX_ACCOUNTS = Number.parseInt(PUBLIC_MAX_ACCOUNTS === "" ? "25" : PUBLIC_MAX_ACCOUNTS);
+
+export const DO_NOT_TRACK_COOKIE_NAME = "chatter_do_not_track";
+export const DISCLAIMER_DISMISSED_COOKIE_NAME = "disclaimer-dismissed";

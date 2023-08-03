@@ -1,7 +1,9 @@
 <script lang="ts">
   import type { PageData } from "./$types";
   import Fa from "svelte-fa";
-  import { faPencil, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
+  import {
+    faPencil, faPlus, faTrash, 
+  } from "@fortawesome/free-solid-svg-icons";
   import { superForm } from "sveltekit-superforms/client";
   import { writable } from "svelte/store";
   import FormError from "components/FormError.svelte";
@@ -24,7 +26,7 @@
     },
   });
 
-  const availableAccounts = data.user.accounts.filter((a) => !a.deleted);
+  const availableAccounts = data.user.accounts.filter(a => !a.deleted);
 </script>
 
 <svelte:head>
@@ -33,7 +35,11 @@
 </svelte:head>
 
 <div class="h-full flex items-center p-2 flex-col gap-5">
-  <form use:enhance method="post" class="w-full max-w-lg mx-auto p-2 bg-surface-200 dark:bg-surface-400 rounded-lg">
+  <form
+    use:enhance
+    method="post"
+    class="w-full max-w-lg mx-auto p-2 bg-surface-200 dark:bg-surface-400 rounded-lg"
+  >
     <label class="label">
       <span>Default account</span>
 
@@ -41,7 +47,7 @@
         class="select w-full"
         name="accountId"
         disabled={$delayed}
-        on:change={(_) => {
+        on:change={_ => {
           $changed = true;
         }}
         bind:value={$form.accountId}
@@ -68,15 +74,18 @@
           $delayed || !$changed ? "variant-filled-surface" : "variant-filled"
         }`}
         disabled={$delayed || !$changed}
+        data-umami-event="Change default account button"
       />
     {/if}
   </form>
 
   <div class="container mx-auto max-w-lg">
     {#if data.user.accounts.length >= MAX_ACCOUNTS}
+      <!-- eslint-disable max-len -->
       <FormError
         error={`You have reached the limit of ${MAX_ACCOUNTS} accounts. Please permanently delete unused accounts before attempting to create new accounts.`}
       />
+      <!-- eslint-enable max-len -->
     {/if}
 
     {#if data.user.accounts}
@@ -84,7 +93,7 @@
         <ul>
           {#if data.user.accounts.length < MAX_ACCOUNTS}
             <li>
-              <a href={`/app/accounts/create`}>
+              <a href={"/app/accounts/create"}>
                 <span class="badge text-secondary-700 dark:text-secondary-400">
                   <Fa fw icon={faPlus} />
                 </span>
@@ -118,8 +127,8 @@
                     account.deleted
                       ? "variant-filled-error"
                       : data.user.config.defaultAccountId === account.id
-                      ? "variant-filled-primary"
-                      : "variant-filled"
+                        ? "variant-filled-primary"
+                        : "variant-filled"
                   }`}
                 >
                   {account.chatModel.displayName}
@@ -130,7 +139,9 @@
         </ul>
       </nav>
     {:else}
-      <p class="text-slate-500 dark:text-slate-400">You don't have any accounts</p>
+      <p class="text-slate-500 dark:text-slate-400">
+        You don't have any accounts
+      </p>
     {/if}
   </div>
 </div>

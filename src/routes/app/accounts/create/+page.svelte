@@ -3,7 +3,6 @@
   import type { PageData } from "./$types";
   import FormError from "components/FormError.svelte";
   import FormSuccess from "components/FormSuccess.svelte";
-  import { writable } from "svelte/store";
   import { canGoBack } from "$lib/stores/canGoBack";
   import { CHATTER_PAGE, currentPage } from "$lib/stores/currentPage";
 
@@ -97,6 +96,7 @@
       value={$delayed ? "Creating account..." : "Create account"}
       class={`btn mt-5 w-full ${$delayed ? "variant-filled-surface" : "variant-filled"}`}
       disabled={$delayed}
+      data-umami-event="Create account button"
     />
   </form>
 </div>

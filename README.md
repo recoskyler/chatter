@@ -83,9 +83,8 @@ Please create a new issue [here](https://github.com/recoskyler/chatter/issues/ne
 - [X] Mobile layout
 - [X] Code formatting
 - [X] Themes
-- [ ] Analytics ([umami](https://umami.is))
-- [ ] Bug monitoring ([Sentry](https://sentry.io/welcome/))
-- [ ] Server monitoring ([Prometheus](https://prometheus.io/) + [Grafana](https://grafana.com/))
+- [X] Analytics ([umami](https://umami.is))
+- [ ] ~~Bug monitoring ([Sentry](https://sentry.io/welcome/))~~ (*Sentry does not support ARM64*)
 - [ ] Transparent Data Encryption
 - [ ] I18N (maybe)
 
@@ -96,6 +95,7 @@ Please create a new issue [here](https://github.com/recoskyler/chatter/issues/ne
 - [PostgreSQL](https://www.postgresql.org/)
 - [Lucia Auth v2](https://lucia-auth.com/)
 - [Skeleton](https://www.skeleton.dev/)/[Tailwind CSS](https://tailwindcss.com/)
+- [Umami](https://umami.is)
 
 ## [Contributing](https://github.com/recoskyler/chatter/blob/main/CONTRIBUTING.md)
 

@@ -3,7 +3,10 @@
   import * as zxcvbnCommonPackage from "@zxcvbn-ts/language-common";
   import * as zxcvbnEnPackage from "@zxcvbn-ts/language-en";
   import { ProgressBar } from "@skeletonlabs/skeleton";
-  import { passwordStrengthColorLevels, passwordStrengthLevels } from "./helpers";
+  import {
+    passwordStrengthColorLevels,
+    passwordStrengthLevels,
+  } from "./helpers";
 
   const options = {
     translations: zxcvbnEnPackage.translations,
@@ -22,10 +25,15 @@
   $: score = zxcvbn(password).score;
 </script>
 
-<label for="strength" class="label mb-2 mt-3 text-slate-600 dark:text-slate-400">
+<label
+  for="strength"
+  class="label mb-2 mt-3 text-slate-600 dark:text-slate-400"
+>
   Password strength:
   <strong>
-    <span class={`label ${passwordStrengthColorLevels[score]}`}> {passwordStrengthLevels[score]}</span>
+    <span class={`label ${passwordStrengthColorLevels[score]}`}>
+      {passwordStrengthLevels[score]}</span
+    >
   </strong>
 </label>
 
