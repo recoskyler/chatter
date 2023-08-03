@@ -1,7 +1,5 @@
 <script lang="ts">
   import { version } from "$app/environment";
-  import { DO_NOT_TRACK_COOKIE_NAME } from "$lib/constants";
-  import { getCookie } from "$lib/functions/helper";
   import BigLogo from "components/BigLogo.svelte";
 </script>
 

@@ -1,6 +1,9 @@
 <script lang="ts">
   import {
-    Accordion, AccordionItem, LightSwitch, SlideToggle, 
+    Accordion,
+    AccordionItem,
+    LightSwitch,
+    SlideToggle,
   } from "@skeletonlabs/skeleton";
   import { popup } from "@skeletonlabs/skeleton";
   import { passwordPopupFocusBlur } from "components/PasswordStrengthMeter/helpers.js";
@@ -78,7 +81,11 @@
       return;
     }
 
-    setCookie(DO_NOT_TRACK_COOKIE_NAME, analyticsEnabled ? "false" : "true", 365);
+    setCookie(
+      DO_NOT_TRACK_COOKIE_NAME,
+      analyticsEnabled ? "false" : "true",
+      365,
+    );
 
     console.info(`${analyticsEnabled ? "Enabled" : "Disabled"} analytics`);
   };
@@ -312,8 +319,14 @@
 
       <svelte:fragment slot="content">
         <p>
-          <span class="text-orange-600 dark:text-orange-400"><strong>WARNING: </strong></span>
-          This setting is stored in a cookie. When you sign out, clear the browser cookies, or block cookies it will be reset to its default state (<strong>Disabled</strong>)
+          <span class="text-orange-600 dark:text-orange-400"
+            ><strong>WARNING: </strong></span
+          >
+          <!-- eslint-disable-next-line max-len -->
+          This setting is stored in a cookie. When you sign out, clear the browser
+          cookies, or block cookies it will be reset to its default state (<strong
+            >Disabled</strong
+          >)
         </p>
 
         <SlideToggle
@@ -343,7 +356,9 @@
 
       <svelte:fragment slot="content">
         <p>
-          <span class="text-orange-600 dark:text-orange-400"><strong>WARNING: </strong></span>
+          <span class="text-orange-600 dark:text-orange-400"
+            ><strong>WARNING: </strong></span
+          >
           If you choose to delete your account, there is no going back! Enter your
           current password and type "<i>Delete</i>" (case sensitive) without the
           "quotes" in the <strong>Confirmation</strong> field to proceed.
@@ -412,8 +427,17 @@
     <LightSwitch bgDark="bg-surface-400" />
   </div>
 
-  <div class="flex flex-row flex-wrap items-center justify-center gap-x-3 gap-y-2 mt-10 py-2 px-5 bg-surface-200 dark:bg-surface-200 rounded-lg">
-    <a href="/privacy" target="_blank" rel="noopener noreferrer" class="anchor text-center">
+  <!-- eslint-disable max-len -->
+  <div
+    class="flex flex-row flex-wrap items-center justify-center gap-x-3 gap-y-2 mt-10 py-2 px-5 bg-surface-200 dark:bg-surface-200 rounded-lg"
+  >
+  <!-- eslint-enable max-len -->
+    <a
+      href="/privacy"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="anchor text-center"
+    >
       Privacy Policy
     </a>
 

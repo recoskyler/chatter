@@ -37,6 +37,11 @@
   const accountChanged = writable(false);
   const contentHeight = writable(0);
 
+  let chatFormElem: HTMLFormElement;
+  let ctrlPressed = false;
+  let enterPressed = false;
+  let isFocused = true;
+
   $prompts = data.user.chats[0].prompts;
 
   const {
@@ -47,8 +52,10 @@
     delayed: chatDelayed,
   } = superForm(data.chatForm, {
     onUpdated: ({ form }) => {
+      if (!form.message || typeof form.message !== "string") return;
+
       const promptArraySchema = z.array(selectPromptSchema);
-      const data = JSON.parse(form.message);
+      const data: unknown = JSON.parse(form.message ?? "");
       const res = promptArraySchema.safeParse(data);
 
       if (!res.success) {
@@ -103,14 +110,7 @@
     },
   });
 
-  const {
-    form: toggleForm,
-    errors: toggleErrors,
-    constraints: toggleConstraints,
-    message: toggleMessage,
-    enhance: toggleEnhance,
-    delayed: toggleDelayed,
-  } = superForm(data.toggleForm, {
+  const { enhance: toggleEnhance } = superForm(data.toggleForm, {
     onUpdated: ({ form }) => {
       const prompt = $prompts.find(p => p.id === form.data.promptId);
 
@@ -150,11 +150,6 @@
     enhance: restoreEnhance,
     delayed: restoreDelayed,
   } = superForm(data.restoreForm);
-
-  let chatFormElem: HTMLFormElement;
-  let ctrlPressed = false;
-  let enterPressed = false;
-  let isFocused = true;
 
   $pageTitle = data.user.chats[0].name ?? "Chatter";
   $currentPage = CHATTER_PAGE.CHATS;
@@ -465,9 +460,7 @@
           Enter a prompt below to start chatting.
         </p>
       {:else}
-        {#each $prompts
-          .filter(p => p.role !== "system")
-          .reverse() as prompt, i}
+        {#each $prompts.filter(p => p.role !== "system").reverse() as prompt}
           <div class="py-4 flex flex-row items-center gap-3">
             <div class="flex flex-col items-center gap-2">
               <Fa
@@ -549,6 +542,7 @@
       {/if}
     </div>
 
+    <!-- eslint-disable max-len -->
     <form
       id="chat-form"
       use:chatEnhance
@@ -557,6 +551,7 @@
       method="post"
       class="flex-none flex flex-row gap-2 mx-auto my-2 justify-stretch items-center w-full max-w-3xl bg-surface-200 dark:bg-surface-400 rounded-lg p-2"
     >
+      <!-- eslint-enable max-len -->
       <div class="w-full">
         <textarea
           tabindex={1}

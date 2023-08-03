@@ -81,9 +81,11 @@
 
   <div class="container mx-auto max-w-lg">
     {#if data.user.accounts.length >= MAX_ACCOUNTS}
+      <!-- eslint-disable max-len -->
       <FormError
         error={`You have reached the limit of ${MAX_ACCOUNTS} accounts. Please permanently delete unused accounts before attempting to create new accounts.`}
       />
+      <!-- eslint-enable max-len -->
     {/if}
 
     {#if data.user.accounts}

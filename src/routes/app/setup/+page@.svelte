@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { PageData } from "./$types";
   import {
-    Stepper, Step, LightSwitch, 
+    Stepper, Step, LightSwitch,
   } from "@skeletonlabs/skeleton";
   import { superForm } from "sveltekit-superforms/client";
 
@@ -9,7 +9,7 @@
 
   const { form, errors, constraints, enhance } = superForm(data.form);
 
-  const onComplete = (e: Event) => {
+  const onComplete = () => {
     const submitButton = document.getElementById("submit-btn");
 
     if (!submitButton) return;

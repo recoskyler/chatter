@@ -3,11 +3,9 @@
   import Fa from "svelte-fa";
   import {
     faMessage,
-    faPencil,
     faPlus,
     faTrash,
   } from "@fortawesome/free-solid-svg-icons";
-  import { writable } from "svelte/store";
   import FormError from "components/FormError.svelte";
   import { MAX_CHATS } from "$lib/constants";
   import { pageTitle } from "$lib/stores/pageTitle";
@@ -38,9 +36,11 @@
   <div class="h-full flex items-center p-2 flex-col gap-5">
     <div class="container mx-auto max-w-lg">
       {#if data.user.chats.length >= MAX_CHATS}
+        <!-- eslint-disable max-len -->
         <FormError
           error={`You have reached the limit of ${MAX_CHATS} chats. Please permanently delete unused chats before attempting to create new chats.`}
         />
+        <!-- eslint-enable max-len -->
       {/if}
 
       {#if data.user.chats}

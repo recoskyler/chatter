@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { MAX_EMAIL_LENGTH, MIN_EMAIL_LENGTH } from "$lib/constants";
   import FormError from "components/FormError.svelte";
   import { isEmailValid } from "$lib/functions/validators.js";
   import type { PageData } from "./$types";
@@ -32,7 +31,7 @@
       title="Email"
       placeholder="john@example.com"
       autocomplete="email"
-      disabled={!(!$message) || $delayed}
+      disabled={!!$message || $delayed}
       bind:value={$form.email}
       {...$constraints.email}
     /><br />

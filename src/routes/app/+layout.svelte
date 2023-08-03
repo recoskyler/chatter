@@ -42,9 +42,12 @@
             title="Go back"
             class="p-2 ml-2"
             data-umami-event="Back button"
-            on:click={() => {
-              goto($canGoBack ?? "");
+            on:click={async () => {
+              const url = $canGoBack;
+
               $canGoBack = null;
+
+              await goto(url ?? "");
             }}
           >
             <Fa icon={faArrowLeft} />

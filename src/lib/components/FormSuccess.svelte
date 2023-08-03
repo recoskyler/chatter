@@ -4,6 +4,8 @@
   export let message: string | string[] | undefined;
 </script>
 
+<!-- eslint-disable max-len -->
+
 {#if message && message.length > 0}
   {#if typeof message === "string"}
     <p class="text-center text-green-600 dark:text-green-400 my-3 break-words w-full max-w-xs mx-auto" transition:fade>{message}</p>
