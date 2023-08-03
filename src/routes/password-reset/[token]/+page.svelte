@@ -8,12 +8,24 @@
   import type { PageData } from "./$types";
   import { superForm } from "sveltekit-superforms/client";
   import FormSuccess from "components/FormSuccess.svelte";
+  import Fa from "svelte-fa";
+  import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
   export let data: PageData;
+
+  let passwordVisible = false;
 
   const { form, delayed, enhance, message, errors, constraints } = superForm(
     data.form,
   );
+
+  const handleInput = (e: Event) => {
+    if (!e.target) return;
+
+    const target = e.target as HTMLInputElement;
+
+    $form.password = target.value;
+  }
 </script>
 
 <svelte:head>
@@ -28,18 +40,31 @@
 
     <PasswordPopup password={$form.password} />
 
-    <input
-      id="password"
-      name="password"
-      type="password"
-      class="input mb-2"
-      title="Password"
-      placeholder="password"
-      disabled={!(!$message) || $delayed}
-      bind:value={$form.password}
-      use:popup={passwordPopupFocusBlur}
-      {...$constraints.password}
-    /><br />
+    <div class="input-group input-group-divider grid-cols-[1fr_auto] mb-2">
+      <input
+        name="password"
+        class="input"
+        type={passwordVisible ? "text" : "password"}
+        placeholder="current password"
+        disabled={!(!$message) || $delayed}
+        value={$form.password}
+        use:popup={passwordPopupFocusBlur}
+        on:input={handleInput}
+        {...$constraints.password}
+      />
+
+      <button
+        on:click={(e) => {
+          e.preventDefault();
+          passwordVisible = !passwordVisible;
+        }}
+        class="flex items-center justify-center"
+      >
+        <Fa fw icon={passwordVisible ? faEye : faEyeSlash} />
+      </button>
+    </div>
+
+    <br />
 
     <PasswordStrengthMeter password={$form.password} />
 

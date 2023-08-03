@@ -78,7 +78,7 @@
       <input
         name="key"
         class="input"
-        type="password"
+        type="text"
         placeholder="SECRET API KEY"
         disabled={$delayed || data.account.deleted}
         on:input={_ => {

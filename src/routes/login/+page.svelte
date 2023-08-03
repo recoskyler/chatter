@@ -3,10 +3,22 @@
   import { superForm } from "sveltekit-superforms/client";
   import type { PageData } from "./$types";
   import { LightSwitch } from "@skeletonlabs/skeleton";
+  import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+  import Fa from "svelte-fa";
 
   export let data: PageData;
 
+  let passwordVisible = false;
+
   const { form, errors, constraints, enhance, delayed } = superForm(data.form);
+
+  const handleInput = (e: Event) => {
+    if (!e.target) return;
+
+    const target = e.target as HTMLInputElement;
+
+    $form.password = target.value;
+  }
 </script>
 
 <svelte:head>
@@ -39,17 +51,31 @@
     <label for="password" class="label mb-5">
       <span>Password</span>
 
-      <input
-        type="password"
-        id="password"
-        name="password"
-        class="input mb-5"
-        title="Password"
-        placeholder="password"
-        disabled={$delayed}
-        bind:value={$form.password}
-        {...$constraints.password}
-      /><br />
+      <div class="input-group input-group-divider grid-cols-[1fr_auto] mb-5">
+        <input
+          id="password"
+          name="password"
+          class="input"
+          type={passwordVisible ? "text" : "password"}
+          placeholder="password"
+          disabled={$delayed}
+          value={$form.password}
+          on:input={handleInput}
+          {...$constraints.password}
+        />
+
+        <button
+          on:click={(e) => {
+            e.preventDefault();
+            passwordVisible = !passwordVisible;
+          }}
+          class="flex items-center justify-center"
+        >
+          <Fa fw icon={passwordVisible ? faEye : faEyeSlash} />
+        </button>
+      </div>
+
+      <br />
     </label>
 
     {#if $errors.password}<FormError error={$errors.password} />{/if}

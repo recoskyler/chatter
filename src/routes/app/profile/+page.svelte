@@ -16,6 +16,8 @@
   import {
     faChartSimple,
     faEnvelope,
+    faEye,
+    faEyeSlash,
     faIdBadge,
     faKey,
     faTrash,
@@ -73,6 +75,10 @@
   $canGoBack = null;
 
   let analyticsEnabled = false;
+  let daCurrentPwVisible = false;
+  let ceCurrentPwVisible = false;
+  let cpCurrentPwVisible = false;
+  let cpNewPwVisible = false;
 
   const toggleAnalytics = () => {
     if (!browser) {
@@ -88,6 +94,38 @@
     );
 
     console.info(`${analyticsEnabled ? "Enabled" : "Disabled"} analytics`);
+  };
+
+  const handleCECurrentPasswordInput = (e: Event) => {
+    if (!e.target) return;
+
+    const target = e.target as HTMLInputElement;
+
+    $ceForm.password = target.value;
+  };
+
+  const handleCPCurrentPasswordInput = (e: Event) => {
+    if (!e.target) return;
+
+    const target = e.target as HTMLInputElement;
+
+    $cpForm.currentPassword = target.value;
+  };
+
+  const handleCPNewPasswordInput = (e: Event) => {
+    if (!e.target) return;
+
+    const target = e.target as HTMLInputElement;
+
+    $cpForm.password = target.value;
+  };
+
+  const handleDACurrentPasswordInput = (e: Event) => {
+    if (!e.target) return;
+
+    const target = e.target as HTMLInputElement;
+
+    $daForm.password = target.value;
   };
 
   onMount(() => {
@@ -185,15 +223,28 @@
           <label class="label mb-3 mt-5">
             <span>Current password</span>
 
-            <input
-              name="password"
-              class="input"
-              type="password"
-              placeholder="current password"
-              disabled={$ceDelayed}
-              bind:value={$ceForm.password}
-              {...$ceConstraints.password}
-            />
+            <div class="input-group input-group-divider grid-cols-[1fr_auto]">
+              <input
+                name="password"
+                class="input"
+                type={ceCurrentPwVisible ? "text" : "password"}
+                placeholder="current password"
+                disabled={$ceDelayed}
+                value={$ceForm.password}
+                on:input={handleCECurrentPasswordInput}
+                {...$ceConstraints.password}
+              />
+
+              <button
+                on:click={(e) => {
+                  e.preventDefault();
+                  ceCurrentPwVisible = !ceCurrentPwVisible;
+                }}
+                class="flex items-center justify-center"
+              >
+                <Fa fw icon={ceCurrentPwVisible ? faEye : faEyeSlash} />
+              </button>
+            </div>
 
             {#if $ceErrors.password}
               <FormError error={$ceErrors.password} />
@@ -251,15 +302,28 @@
           <label class="label mb-3 mt-5">
             <span>Current password</span>
 
-            <input
-              name="currentPassword"
-              class="input"
-              type="password"
-              placeholder="current password"
-              disabled={$cpDelayed}
-              bind:value={$cpForm.currentPassword}
-              {...$cpConstraints.currentPassword}
-            />
+            <div class="input-group input-group-divider grid-cols-[1fr_auto]">
+              <input
+                name="currentPassword"
+                class="input"
+                type={cpCurrentPwVisible ? "text" : "password"}
+                placeholder="current password"
+                disabled={$cpDelayed}
+                value={$cpForm.currentPassword}
+                on:input={handleCPCurrentPasswordInput}
+                {...$cpConstraints.currentPassword}
+              />
+
+              <button
+                on:click={(e) => {
+                  e.preventDefault();
+                  cpCurrentPwVisible = !cpCurrentPwVisible;
+                }}
+                class="flex items-center justify-center"
+              >
+                <Fa fw icon={cpCurrentPwVisible ? faEye : faEyeSlash} />
+              </button>
+            </div>
 
             {#if $cpErrors.currentPassword}
               <FormError error={$cpErrors.currentPassword} />
@@ -271,16 +335,29 @@
           <label class="label">
             <span>New password</span>
 
-            <input
-              name="password"
-              class="input"
-              type="password"
-              placeholder="new password"
-              disabled={$cpDelayed}
-              use:popup={passwordPopupFocusBlur}
-              bind:value={$cpForm.password}
-              {...$cpConstraints.password}
-            />
+            <div class="input-group input-group-divider grid-cols-[1fr_auto]">
+              <input
+                name="password"
+                class="input"
+                type={cpNewPwVisible ? "text" : "password"}
+                placeholder="new password"
+                disabled={$cpDelayed}
+                value={$cpForm.password}
+                use:popup={passwordPopupFocusBlur}
+                on:input={handleCPNewPasswordInput}
+                {...$cpConstraints.password}
+              />
+
+              <button
+                on:click={(e) => {
+                  e.preventDefault();
+                  cpNewPwVisible = !cpNewPwVisible;
+                }}
+                class="flex items-center justify-center"
+              >
+                <Fa fw icon={cpNewPwVisible ? faEye : faEyeSlash} />
+              </button>
+            </div>
 
             {#if $cpErrors.password}
               <FormError error={$cpErrors.password} />
@@ -368,15 +445,28 @@
           <label class="label mb-3 mt-5">
             <span>Current password</span>
 
-            <input
-              name="password"
-              class="input"
-              type="password"
-              placeholder="current password"
-              disabled={$daDelayed}
-              bind:value={$daForm.password}
-              {...$daConstraints.password}
-            />
+            <div class="input-group input-group-divider grid-cols-[1fr_auto]">
+              <input
+                name="password"
+                class="input"
+                type={daCurrentPwVisible ? "text" : "password"}
+                placeholder="current password"
+                disabled={$daDelayed}
+                value={$daForm.password}
+                on:input={handleDACurrentPasswordInput}
+                {...$daConstraints.password}
+              />
+
+              <button
+                on:click={(e) => {
+                  e.preventDefault();
+                  daCurrentPwVisible = !daCurrentPwVisible;
+                }}
+                class="flex items-center justify-center"
+              >
+                <Fa fw icon={daCurrentPwVisible ? faEye : faEyeSlash} />
+              </button>
+            </div>
 
             {#if $daErrors.password}
               <FormError error={$daErrors.password} />
