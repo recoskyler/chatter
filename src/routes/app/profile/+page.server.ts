@@ -3,6 +3,8 @@ import type { PageServerLoad } from "./$types";
 import { type Actions, fail } from "@sveltejs/kit";
 import { auth } from "$lib/server/lucia";
 import {
+  DO_NOT_TRACK_COOKIE_NAME,
+  DISCLAIMER_DISMISSED_COOKIE_NAME,
   EMAIL_VERIFICATION,
   MAX_EMAIL_LENGTH,
   MAX_NAME_LENGTH,
@@ -41,8 +43,11 @@ const deleteAccountSchema = z.object({
 const changeNameSchema = z.object({ name: z.string().min(MIN_NAME_LENGTH).max(MAX_NAME_LENGTH) });
 
 export const actions: Actions = {
-  signOut: async ({ locals }) => {
+  signOut: async ({ locals, cookies }) => {
     const session = await locals.auth.validate();
+
+    cookies.delete(DO_NOT_TRACK_COOKIE_NAME);
+    cookies.delete(DISCLAIMER_DISMISSED_COOKIE_NAME);
 
     if (!session) return fail(401);
 
