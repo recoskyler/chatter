@@ -1,3 +1,7 @@
+<svelte:head>
+  <title>Chatter | Disclaimer</title>
+</svelte:head>
+
 <div class="flex flex-col gap-5 p-10 h-screen text-black bg-white">
   <h1 class="h1">DISCLAIMER</h1>
 

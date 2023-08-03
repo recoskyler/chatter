@@ -1,6 +1,5 @@
 <svelte:head>
 	<title>🐴 ❤</title>
-	<meta name="description" content="About this app" />
 </svelte:head>
 
 <a href="/">

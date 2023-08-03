@@ -3,12 +3,16 @@
   import BigLogo from "components/BigLogo.svelte";
 </script>
 
+<svelte:head>
+  <title>Chatter | Simple, free, and open-source ChatGPT client</title>
+</svelte:head>
+
 <div
   class="flex flex-col my-auto mx-auto items-center justify-center text-center gap-5"
 >
   <BigLogo />
 
-  <p>Free and open-source ChatGPT client</p>
+  <p>Simple, free, and open-source ChatGPT client</p>
 
   <div class="flex flex-row gap-5 items-center justify-center">
     <a href="/app" class="btn variant-filled">Launch Chatter</a>
