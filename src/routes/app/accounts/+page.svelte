@@ -1,7 +1,9 @@
 <script lang="ts">
   import type { PageData } from "./$types";
   import Fa from "svelte-fa";
-  import { faPencil, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
+  import {
+    faPencil, faPlus, faTrash, 
+  } from "@fortawesome/free-solid-svg-icons";
   import { superForm } from "sveltekit-superforms/client";
   import { writable } from "svelte/store";
   import FormError from "components/FormError.svelte";
@@ -24,7 +26,7 @@
     },
   });
 
-  const availableAccounts = data.user.accounts.filter((a) => !a.deleted);
+  const availableAccounts = data.user.accounts.filter(a => !a.deleted);
 </script>
 
 <svelte:head>
@@ -45,7 +47,7 @@
         class="select w-full"
         name="accountId"
         disabled={$delayed}
-        on:change={(_) => {
+        on:change={_ => {
           $changed = true;
         }}
         bind:value={$form.accountId}
@@ -89,7 +91,7 @@
         <ul>
           {#if data.user.accounts.length < MAX_ACCOUNTS}
             <li>
-              <a href={`/app/accounts/create`}>
+              <a href={"/app/accounts/create"}>
                 <span class="badge text-secondary-700 dark:text-secondary-400">
                   <Fa fw icon={faPlus} />
                 </span>
@@ -123,8 +125,8 @@
                     account.deleted
                       ? "variant-filled-error"
                       : data.user.config.defaultAccountId === account.id
-                      ? "variant-filled-primary"
-                      : "variant-filled"
+                        ? "variant-filled-primary"
+                        : "variant-filled"
                   }`}
                 >
                   {account.chatModel.displayName}

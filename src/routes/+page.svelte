@@ -1,22 +1,11 @@
 <script lang="ts">
   import { version } from "$app/environment";
+  import { DO_NOT_TRACK_COOKIE_NAME } from "$lib/constants";
   import { getCookie } from "$lib/functions/helper";
   import BigLogo from "components/BigLogo.svelte";
-
-  const doNotTrack =
-    getCookie("chatter_do_not_track") === "true" ? "true" : "false";
 </script>
 
 <svelte:head>
-  <script
-    async
-    defer
-    src="https://umami.recoskyler.com/script.js"
-    data-website-id="607f67a0-703e-42b6-8397-eb932fb71ba6"
-    data-do-not-track={doNotTrack}
-    data-cache="true"
-  ></script>
-
   <title>Chatter | Simple, free, and open-source ChatGPT client</title>
 </svelte:head>
 

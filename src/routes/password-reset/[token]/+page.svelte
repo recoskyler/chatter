@@ -12,7 +12,7 @@
   export let data: PageData;
 
   const { form, delayed, enhance, message, errors, constraints } = superForm(
-    data.form
+    data.form,
   );
 </script>
 

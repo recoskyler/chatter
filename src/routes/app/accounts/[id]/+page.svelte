@@ -38,7 +38,7 @@
       onUpdated: () => {
         $changed = false;
       },
-    }
+    },
   );
 </script>
 
@@ -60,7 +60,7 @@
         type="text"
         placeholder="John Doe"
         disabled={$delayed || data.account.deleted}
-        on:input={(_) => {
+        on:input={_ => {
           $changed = true;
         }}
         bind:value={$form.name}
@@ -81,7 +81,7 @@
         type="password"
         placeholder="SECRET API KEY"
         disabled={$delayed || data.account.deleted}
-        on:input={(_) => {
+        on:input={_ => {
           $changed = true;
         }}
         bind:value={$form.key}
@@ -100,7 +100,7 @@
         class="select"
         name="chatModelId"
         disabled={$delayed || data.account.deleted}
-        on:change={(_) => {
+        on:change={_ => {
           $changed = true;
         }}
         bind:value={$form.chatModelId}

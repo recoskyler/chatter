@@ -65,7 +65,7 @@
       const deDuplicatedRes: Prompt[] = [];
 
       for (const prompt of res.data) {
-        if (!$prompts.find((p) => p.id === prompt.id)) {
+        if (!$prompts.find(p => p.id === prompt.id)) {
           deDuplicatedRes.push(prompt);
         }
       }
@@ -112,7 +112,7 @@
     delayed: toggleDelayed,
   } = superForm(data.toggleForm, {
     onUpdated: ({ form }) => {
-      const prompt = $prompts.find((p) => p.id === form.data.promptId);
+      const prompt = $prompts.find(p => p.id === form.data.promptId);
 
       if (!prompt) return;
 
@@ -166,7 +166,7 @@
       .getBoundingClientRect().height;
   });
 
-  const availableAccounts = data.user.accounts.filter((a) => !a.deleted);
+  const availableAccounts = data.user.accounts.filter(a => !a.deleted);
 </script>
 
 <svelte:head>
@@ -206,7 +206,7 @@
   </div>
 {:else}
   <div
-    class={`flex flex-col w-full items-center`}
+    class={"flex flex-col w-full items-center"}
     style={`height: calc(100vh - ${$contentHeight}px);`}
   >
     <Accordion
@@ -231,7 +231,7 @@
                   type="text"
                   placeholder="Chat name"
                   disabled={$renameDelayed}
-                  on:input={(_) => {
+                  on:input={_ => {
                     $nameChanged = true;
                   }}
                   bind:value={$renameForm.name}
@@ -293,7 +293,7 @@
                   type="text"
                   placeholder="You are a helpful assistant"
                   disabled={$systemDelayed}
-                  on:input={(_) => {
+                  on:input={_ => {
                     $systemChanged = true;
                   }}
                   bind:value={$systemForm.prompt}
@@ -341,7 +341,7 @@
                   class="select w-full"
                   name="accountId"
                   disabled={$accountDelayed}
-                  on:change={(_) => {
+                  on:change={_ => {
                     $accountChanged = true;
                   }}
                   bind:value={$accountForm.accountId}
@@ -458,7 +458,7 @@
     </Accordion>
 
     <div
-      class={`flex flex-col-reverse flex-grow max-w-3xl w-full mx-auto py-2 overflow-y-auto`}
+      class={"flex flex-col-reverse flex-grow max-w-3xl w-full mx-auto py-2 overflow-y-auto"}
     >
       {#if $prompts.length <= 1}
         <p class="my-auto text-slate-500 dark:text-slate-400 text-center">
@@ -466,7 +466,7 @@
         </p>
       {:else}
         {#each $prompts
-          .filter((p) => p.role !== "system")
+          .filter(p => p.role !== "system")
           .reverse() as prompt, i}
           <div class="py-4 flex flex-row items-center gap-3">
             <div class="flex flex-col items-center gap-2">
@@ -476,12 +476,12 @@
                 class={prompt.busy
                   ? "text-slate-400 dark:text-slate-600"
                   : !prompt.successful
-                  ? "text-red-600 dark:text-red-400"
-                  : prompt.role === "assistant"
-                  ? "text-slate-600 dark:text-slate-300 font-mono"
-                  : $chatForm.remember && !prompt.enabled
-                  ? "text-slate-500 dark:text-slate-400"
-                  : "text-tertiary-600 dark:text-tertiary-400"}
+                    ? "text-red-600 dark:text-red-400"
+                    : prompt.role === "assistant"
+                      ? "text-slate-600 dark:text-slate-300 font-mono"
+                      : $chatForm.remember && !prompt.enabled
+                        ? "text-slate-500 dark:text-slate-400"
+                        : "text-tertiary-600 dark:text-tertiary-400"}
               />
 
               {#if !prompt.busy && prompt.successful && prompt.role === "user" && $chatForm.remember}
@@ -514,13 +514,13 @@
               {#each prompt.content.split("```") as piece, p}
                 {#if piece.length > 0}
                   {#if p % 2 === 1 && prompt.content.includes("```") && hljs
-                      .listLanguages()
-                      .includes(piece.split("\n")[0])}
+                    .listLanguages()
+                    .includes(piece.split("\n")[0])}
                     <CodeBlock
                       language={piece.split("\n")[0]}
                       code={piece
                         .substring(
-                          piece.split("").findIndex((c) => c === "\n") + 1
+                          piece.split("").findIndex(c => c === "\n") + 1,
                         )
                         .trim()}
                     />
@@ -530,12 +530,12 @@
                         prompt.busy
                           ? "text-slate-400 dark:text-slate-600"
                           : !prompt.successful
-                          ? "text-red-600 dark:text-red-400"
-                          : prompt.role === "assistant"
-                          ? "text-slate-600 dark:text-slate-300 font-mono"
-                          : $chatForm.remember && !prompt.enabled
-                          ? "text-slate-500 dark:text-slate-400"
-                          : "text-tertiary-600 dark:text-tertiary-400"
+                            ? "text-red-600 dark:text-red-400"
+                            : prompt.role === "assistant"
+                              ? "text-slate-600 dark:text-slate-300 font-mono"
+                              : $chatForm.remember && !prompt.enabled
+                                ? "text-slate-500 dark:text-slate-400"
+                                : "text-tertiary-600 dark:text-tertiary-400"
                       }`}
                     >
                       {piece}
@@ -568,7 +568,7 @@
           disabled={$chatDelayed}
           rows={2}
           use:focusTrap={isFocused}
-          on:keyup={(e) => {
+          on:keyup={e => {
             if (e.repeat) return;
 
             if (e.key === "Control") {
@@ -579,7 +579,7 @@
               enterPressed = false;
             }
           }}
-          on:keydown={(e) => {
+          on:keydown={e => {
             if (e.repeat) return;
 
             if (e.key === "Control") {

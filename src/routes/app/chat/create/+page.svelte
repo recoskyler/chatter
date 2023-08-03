@@ -21,7 +21,7 @@
     delayed,
     errors,
     constraints,
-  } = superForm(data.form, {onUpdated: () => {$changed = false;}});
+  } = superForm(data.form, { onUpdated: () => { $changed = false; } });
 </script>
 
 <svelte:head>

@@ -49,7 +49,7 @@
             {#if data.user.chats.length < MAX_CHATS}
               <li>
                 <a
-                  href={`/app/chat/create`}
+                  href={"/app/chat/create"}
                   data-umami-event="Create new chat button"
                 >
                   <span

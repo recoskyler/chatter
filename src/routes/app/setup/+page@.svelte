@@ -1,6 +1,8 @@
 <script lang="ts">
   import type { PageData } from "./$types";
-  import { Stepper, Step, LightSwitch } from "@skeletonlabs/skeleton";
+  import {
+    Stepper, Step, LightSwitch, 
+  } from "@skeletonlabs/skeleton";
   import { superForm } from "sveltekit-superforms/client";
 
   export let data: PageData;
@@ -85,7 +87,7 @@
           class="input"
           type="text"
           placeholder="YOUR SECRET API KEY"
-          aria-invalid={$errors.key ? 'true' : undefined}
+          aria-invalid={$errors.key ? "true" : undefined}
           bind:value={$form.key}
           {...$constraints.key}
         />
@@ -118,7 +120,7 @@
           class="input"
           type="text"
           placeholder="Cool name"
-          aria-invalid={$errors.name ? 'true' : undefined}
+          aria-invalid={$errors.name ? "true" : undefined}
           bind:value={$form.name}
           {...$constraints.name}
         />
