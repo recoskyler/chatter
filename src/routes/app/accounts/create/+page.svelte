@@ -52,7 +52,7 @@
       <input
         name="key"
         class="input"
-        type="password"
+        type="text"
         placeholder="SECRET API KEY"
         disabled={$delayed}
         bind:value={$form.key}
