@@ -1,17 +1,37 @@
 <!DOCTYPE html>
 <html lang="en" class="dark">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" href="%sveltekit.assets%/favicon.png" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta name="description" content="Free, open-source, simple ChatGPT client">
-        <meta name="keywords" content="gpt, chat-gpt, openai, ai, artificial intelligence, client, free, open source, chatgpt">
-        <meta name="author" content="recoskyler">
-        <meta name="application-name" content="Chatter">
-		%sveltekit.head%
-	</head>
 
-	<body data-sveltekit-preload-data="hover">
-		<div style="display: contents" class="h-full overflow-hidden">%sveltekit.body%</div>
-	</body>
+<head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%sveltekit.assets%/favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Free, open-source, simple ChatGPT client">
+    <meta name="keywords"
+        content="gpt, chat-gpt, openai, ai, artificial intelligence, client, free, open source, chatgpt">
+    <meta name="author" content="recoskyler">
+    <meta name="application-name" content="Chatter">
+    <link rel="preload" href="%sveltekit.assets%/fonts/chango-regular-webfont.woff2" as="font" type="font/woff2"
+        crossorigin />
+
+    <link rel="preload" href="%sveltekit.assets%/fonts/chango-regular-webfont.woff" as="font" type="font/woff"
+        crossorigin />
+
+    <link rel="preload" href="%sveltekit.assets%/fonts/Rubik-VariableFont_wght.woff2" as="font" type="font/woff2"
+        crossorigin />
+
+    <link rel="preload" href="%sveltekit.assets%/fonts/Rubik-Italic-VariableFont_wght.woff2" as="font" type="font/woff2"
+        crossorigin />
+
+    <link rel="preload" href="%sveltekit.assets%/fonts/Rubik-VariableFont_wght.ttf" as="font" type="font/ttf" crossorigin />
+
+    <link rel="preload" href="%sveltekit.assets%/fonts/Rubik-Italic-VariableFont_wght.ttf" as="font" type="font/ttf"
+        crossorigin />
+
+    %sveltekit.head%
+    </head>
+
+<body data-sveltekit-preload-data="hover">
+    <div style="display: contents" class="h-full overflow-hidden">%sveltekit.body%</div>
+</body>
+
 </html>

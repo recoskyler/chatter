@@ -6,7 +6,7 @@
 
 A simple, free, and open-source OpenAI ChatGPT client with multi-account support.
 
-You can either self-host it, or [start using it now](https://chatter.recoskyler.com)!
+You can either [self-host it](#deployment), or [start using it now](https://chatter.recoskyler.com)!
 
 ![Chatter screenshot](screenshot.png)
 
@@ -14,11 +14,11 @@ You can either self-host it, or [start using it now](https://chatter.recoskyler.
 
 ### Multi-chat support
 
-You can create up to 100 chats (can be configured in `.env` in case of self-deployment).
+You can create up to 100 chats (can be configured in `.env` in case of self-hosting).
 
 ### Multi-account support
 
-You can have multiple accounts (API keys) defined, and switch between accounts on the fly. Each account can use a different [ChatGPT model](#supported-models), and each chat can use a different account.
+You can have up to 25 accounts (API keys with corresponding [chat model](#supported-models)) defined, and switch between accounts on the fly. Each account can use a different [ChatGPT model](#supported-models), and each chat can use a different account.
 
 This is very useful in the case of having a personal, and a business OpenAI account, each having their distinct API keys.
 
@@ -36,9 +36,9 @@ You can also toggle each prompt on/off if the remember option is enabled. This w
 
 *Does this even need an explanation?*
 
-## Supported models
+### Supported models
 
-- ChatGPT 3.5 Turbo
+- ChatGPT 3.5 Turbo (**default**)
 - ChatGPT 3.5 Turbo (16K tokens)
 - ChatGPT 4
 - ChatGPT 4 (32K tokens)
@@ -55,9 +55,21 @@ The remember toggle allows Chatter to **remember** previous prompts and their re
 
 **Remember function only remembers the content of the current chat, not all chats**
 
+### I found a bug/issue, what should I do?
+
+Please create a new issue [here](https://github.com/recoskyler/chatter/issues/new?assignees=&labels=&projects=&template=bug_report.md&title=). Please include an explanation of the issue, a screenshot (if possible), console logs (access them by pressing <kbd>F12</kbd>, then selecting the **Console** tab), steps to reproduce the issue, your platform information (such as desktop/mobile, browser name and version, operating system and version, etc.), and other required fields in the template.
+
+*Please check out [CONTRIBUTING](#contributing) section for more information*
+
+### I have a feature request, what should I do?
+
+Please create a new issue [here](https://github.com/recoskyler/chatter/issues/new?assignees=&labels=&projects=&template=feature_request.md&title=). Please include an explanation of your feature request and fill out the required fields in the template.
+
+*Please check out [CONTRIBUTING](#contributing) section for more information*
+
 ## Status
 
-**Currently in Usable stage.** This project will receive updates if it proves itself to be useful. Please use the [main](/recoskyler/chatter/tree/main) branch for the stable version.
+**Currently in stable stage.** This project will receive updates if it proves itself to be useful. Please use the [main](/recoskyler/chatter/tree/main) branch for the stable version.
 
 - [X] Multi-chat
 - [X] Multi-account
@@ -69,23 +81,35 @@ The remember toggle allows Chatter to **remember** previous prompts and their re
 - [X] Dockerization
 - [X] Database storage
 - [X] Mobile layout
+- [X] Code formatting
 - [X] Themes
+- [ ] Analytics ([umami](https://umami.is))
+- [ ] Bug monitoring ([Sentry]([sentry.io](https://sentry.io/welcome/)))
+- [ ] Server monitoring ([Prometheus](https://prometheus.io/) + [Grafana](https://grafana.com/))
+- [ ] Transparent Data Encryption
 - [ ] I18N (maybe)
 
 ## Tech Stack
 
 - [SvelteKit 4](https://kit.svelte.dev/)
 - [Drizzle ORM](https://orm.drizzle.team/)
+- [PostgreSQL](https://www.postgresql.org/)
 - [Lucia Auth v2](https://lucia-auth.com/)
 - [Skeleton](https://www.skeleton.dev/)/[Tailwind CSS](https://tailwindcss.com/)
 
-## Requirements
+## [Contributing](https://github.com/recoskyler/chatter/blob/main/CONTRIBUTING.md)
+
+Please check out the full guide [here](https://github.com/recoskyler/chatter/blob/main/CONTRIBUTING.md).
+
+## Development
+
+### Requirements
 
 - Node ^18
 - NPM/PNPM
 - Vite
-
-## Development
+- PM2 (*for deployment*)
+- Nginx (*for deployment*)
 
 ### Setup
 
@@ -110,7 +134,9 @@ If you have the database set up already, and you would like the hot-reload to wo
 npm run dev -- --open
 ```
 
-When you run the app using the command above, you can access it through [http://127.0.0.1:5173](http://127.0.0.1:5173).
+When you run the app using the command above, it should open the app automatically on the default browser. You can also access it through [http://127.0.0.1:5173](http://127.0.0.1:5173) if it does not open.
+
+## Deployment
 
 ### Building
 
@@ -122,9 +148,77 @@ npm run build
 
 You can preview the production build with `npm run preview`.
 
+### Starting the server
+
+1. Install [PM2](https://pm2.keymetrics.io/) using `npm i -g pm2`
+2. Update the environment variables in `ecosystem.config.cjs`
+3. Start the app using the command `pm2 start ecosystem.config.cjs`
+
+### Configuring nginx
+
+You may also use any other web server such as [Apache2](https://httpd.apache.org/)
+
+1. [Install nginx](https://nginx.org/en/docs/install.html)
+2. Unlink the default site if you haven't already:
+
+    ```bash
+    unlink /etc/nginx/sites-enabled/default
+    ```
+
+3. Create a new nginx configuration file. Change the `HOSTNAME`, `USER`, and `PORT` according to your own configuration. Press <kbd>Ctrl + X</kbd> and then <kbd>Y</kbd> to save and exit.
+
+    ```bash
+    nano /etc/nginx/sites-available/chatter
+    ```
+
+    ```nginx
+    # /etc/nginx/sites-available/chatter
+
+    server {
+        server_name HOSTNAME;
+
+        add_header X-Frame-Options SAMEORIGIN always;
+
+        error_log /home/USER/logs/error.log warn;
+        access_log /home/USER/logs/access.log combined;
+
+        location / {
+            proxy_set_header X-Forwarded-For $remote_addr;
+            proxy_set_header Host $host;
+            add_header Access-Control-Allow-Origin *;
+            proxy_buffering off;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_next_upstream error timeout invalid_header http_500 http_502 http_503 http_504;
+            proxy_pass http://127.0.0.1:PORT/;
+        }
+    }
+    ```
+
+4. Test the configuration using the following command:
+
+    ```bash
+    nginx -t
+    ```
+
+5. Enable the site using the following command:
+
+    ```bash
+    link -s /etc/nginx/sites-available/chatter /etc/nginx/sites-enabled
+    ```
+
+6. Restart nginx using the following command:
+
+    ```bash
+    systemctl restart nginx.service
+    ```
+
 ## About
 
 By [recoskyler](https://github.com/recoskyler) - 2023
+
+### Why tho?
+
+This was a fun project for me to learn about SvelteKit, Drizzle, TailwindCSS, and many more dev-ops related subjects. I decided to make it simple, and release it to the public as my father and some of my friends have shown interest in it.
 
 ### Legal
 

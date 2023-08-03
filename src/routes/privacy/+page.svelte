@@ -1,3 +1,7 @@
+<svelte:head>
+  <title>Chatter | Privacy Policy</title>
+</svelte:head>
+
 <div class="text-black bg-white h-screen overflow-y-auto p-10">
   <div>
     <strong>

@@ -12,6 +12,7 @@
     margin-bottom: 2rem;
 
     > a {
+      font-family: 'changoregular', 'rubik', sans-serif;
       transition: all 200ms ease-in-out;
     }
 

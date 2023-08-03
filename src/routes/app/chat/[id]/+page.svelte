@@ -171,6 +171,23 @@
 
 <svelte:head>
   <meta name="robots" content="noindex" />
+
+  <link
+    rel="preload"
+    href="%sveltekit.assets%/fonts/firamono-regular-webfont.woff2"
+    as="font"
+    type="font/woff2"
+    crossorigin="anonymous"
+  />
+
+  <link
+    rel="preload"
+    href="%sveltekit.assets%/fonts/firamono-regular-webfont.woff"
+    as="font"
+    type="font/woff"
+    crossorigin="anonymous"
+  />
+
   <title>Chatter | {data.user.chats[0]?.name}</title>
 </svelte:head>
 

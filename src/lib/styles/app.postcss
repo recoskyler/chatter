@@ -1,3 +1,29 @@
 /* Write your global styles here, in PostCSS syntax */
 
+@font-face {
+    font-family: 'rubik';
+    src: url('/fonts/Rubik-VariableFont_wght.woff2') format('woff2 supports variations'),
+        url('/fonts/Rubik-VariableFont_wght.woff2') format('woff2-variations'),
+        url('/fonts/Rubik-VariableFont_wght.ttf') format('ttf');
+    font-weight: 300 900;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'rubik_italic';
+    src: url('/fonts/Rubik-Italic-VariableFont_wght.woff2') format('woff2 supports variations'),
+        url('/fonts/Rubik-Italic-VariableFont_wght.woff2') format('woff2-variations'),
+        url('/fonts/Rubik-Italic-VariableFont_wght.ttf') format('ttf');
+    font-weight: 300 900;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'changoregular';
+    src: url('/fonts/chango-regular-webfont.woff2') format('woff2'),
+         url('/fonts/chango-regular-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
 html, body { @apply h-full overflow-hidden; }

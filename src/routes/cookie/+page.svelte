@@ -1,3 +1,7 @@
+<svelte:head>
+  <title>Chatter | Cookie Policy</title>
+</svelte:head>
+
 <div class="text-black bg-white flex flex-col p-10 gap-5 h-screen overflow-y-auto">
   <h1 class="h1">Cookie Policy for Chatter</h1>
 

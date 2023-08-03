@@ -10,7 +10,8 @@
         "lint": "eslint --ext .js,.svelte,.ts src",
         "fix-lint": "eslint --fix --ext .js,.svelte,.ts src",
         "generate": "drizzle-kit generate:pg --config=drizzle.config.ts",
-        "studio": "drizzle-kit studio"
+        "studio": "drizzle-kit studio",
+        "start": "node build"
     },
     "devDependencies": {
         "@skeletonlabs/skeleton": "^1.10.0",
