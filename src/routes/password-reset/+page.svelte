@@ -17,8 +17,8 @@
   <title>Chatter | Reset password</title>
 </svelte:head>
 
-<div class="login-cont mx-auto flex-col my-auto">
-  <h1 class="h2 text-center mb-5 p-5">Reset password</h1>
+<div class="login-cont mx-auto flex-col my-auto w-full px-5 py-10 max-w-sm">
+  <h1 class="h2 text-center mb-5">Reset password</h1>
 
   <form method="POST" use:enhance>
     <label for="email" class="label mb-2">Email</label>

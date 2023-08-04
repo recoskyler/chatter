@@ -129,7 +129,7 @@
     </Step>
   </Stepper>
 
-  <form action="?/signOut" method="post" class="w-full my-5">
+  <form action="?/signOut" method="post" class="w-full my-5 max-w-md">
     <input
       type="submit"
       class="btn variant-filled-primary w-full"

@@ -2,8 +2,8 @@
 	<title>🐴 ❤</title>
 </svelte:head>
 
-<a href="/">
-  <div class="center">
+<a href="/" class="w-full py-10 px-5 bg-white flex items-center justify-center min-h-screen">
+  <div class="center text-black text-center">
     <p>
       <i>
         In loving memory of Deniz, my childhood and best friend.
@@ -13,19 +13,3 @@
     </p>
   </div>
 </a>
-
-<style>
-  p {
-    color: black !important;
-    text-align: center;
-  }
-
-  .center {
-    background-color: white !important;
-    display: flex;
-    height: 100vh;
-    width: 100%;
-    justify-content: center;
-    align-items: center;
-  }
-</style>

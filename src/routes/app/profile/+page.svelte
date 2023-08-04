@@ -90,7 +90,7 @@
     setCookie(
       DO_NOT_TRACK_COOKIE_NAME,
       analyticsEnabled ? "false" : "true",
-      365,
+      365
     );
 
     console.info(`${analyticsEnabled ? "Enabled" : "Disabled"} analytics`);
@@ -240,6 +240,7 @@
                   e.preventDefault();
                   ceCurrentPwVisible = !ceCurrentPwVisible;
                 }}
+                type="button"
                 class="flex items-center justify-center"
               >
                 <Fa fw icon={ceCurrentPwVisible ? faEye : faEyeSlash} />
@@ -319,6 +320,7 @@
                   e.preventDefault();
                   cpCurrentPwVisible = !cpCurrentPwVisible;
                 }}
+                type="button"
                 class="flex items-center justify-center"
               >
                 <Fa fw icon={cpCurrentPwVisible ? faEye : faEyeSlash} />
@@ -353,6 +355,7 @@
                   e.preventDefault();
                   cpNewPwVisible = !cpNewPwVisible;
                 }}
+                type="button"
                 class="flex items-center justify-center"
               >
                 <Fa fw icon={cpNewPwVisible ? faEye : faEyeSlash} />
@@ -462,6 +465,7 @@
                   e.preventDefault();
                   daCurrentPwVisible = !daCurrentPwVisible;
                 }}
+                type="button"
                 class="flex items-center justify-center"
               >
                 <Fa fw icon={daCurrentPwVisible ? faEye : faEyeSlash} />
@@ -513,7 +517,7 @@
     </AccordionItem>
   </Accordion>
 
-  <div class="w-full flex items-center justify-center md:hidden">
+  <div class="w-full flex items-center justify-center md:hidden mt-5">
     <LightSwitch bgDark="bg-surface-400" />
   </div>
 
@@ -521,7 +525,7 @@
   <div
     class="flex flex-row flex-wrap items-center justify-center gap-x-3 gap-y-2 mt-10 py-2 px-5 bg-surface-200 dark:bg-surface-200 rounded-lg"
   >
-  <!-- eslint-enable max-len -->
+    <!-- eslint-enable max-len -->
     <a
       href="/privacy"
       target="_blank"

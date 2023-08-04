@@ -25,8 +25,8 @@
   <title>Chatter | Sign in</title>
 </svelte:head>
 
-<div class="login-cont mx-auto flex-col my-auto">
-  <h1 class="h2 text-center mb-5 p-5">Sign in</h1>
+<div class="login-cont mx-auto flex-col my-auto py-10 px-5 w-full max-w-sm">
+  <h1 class="h2 text-center mb-5">Sign in</h1>
 
   <form method="POST" use:enhance>
     <label for="email" class="label mb-5">
@@ -70,6 +70,7 @@
             passwordVisible = !passwordVisible;
           }}
           class="flex items-center justify-center"
+          type="button"
         >
           <Fa fw icon={passwordVisible ? faEye : faEyeSlash} />
         </button>

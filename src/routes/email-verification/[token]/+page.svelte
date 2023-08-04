@@ -7,7 +7,7 @@
 </svelte:head>
 
 <div
-  class="flex text-center mx-auto my-auto flex-col items-center justify-center gap-2"
+  class="flex text-center mx-auto my-auto flex-col items-center justify-center gap-2 w-full px-5 py-10 max-w-md"
 >
   <img class="max-w-xs mb-5" src={mail} alt="Email verified" />
   <h1 class="h1">Email verified</h1>

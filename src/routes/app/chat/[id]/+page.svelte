@@ -159,6 +159,14 @@
     $contentHeight = document
       .getElementsByClassName("app-bar")[0]
       .getBoundingClientRect().height;
+
+    const footer = document.getElementById("shell-footer");
+
+    if (window.innerWidth <= 768 && footer) {
+      console.log("Mobile mode");
+
+      $contentHeight = $contentHeight + footer.getBoundingClientRect().height;
+    }
   });
 
   const availableAccounts = data.user.accounts.filter(a => !a.deleted);
@@ -188,7 +196,7 @@
 
 {#if data.user.config.defaultAccountId === null}
   <div
-    class="flex flex-col gap-5 w-full items-center justify-center"
+    class="flex flex-col gap-5 w-full items-center justify-center py-10 px-5"
     style={`height: calc(100vh - ${$contentHeight}px);`}
   >
     <p class="text-slate-400">
@@ -201,7 +209,7 @@
   </div>
 {:else}
   <div
-    class={"flex flex-col w-full items-center"}
+    class="flex flex-col w-full items-center px-2"
     style={`height: calc(100vh - ${$contentHeight}px);`}
   >
     <Accordion
@@ -453,7 +461,7 @@
     </Accordion>
 
     <div
-      class={"flex flex-col-reverse flex-grow max-w-3xl w-full mx-auto py-2 overflow-y-auto"}
+      class={"flex flex-col-reverse flex-grow max-w-3xl w-full mx-auto py-2 overflow-y-auto px-5"}
     >
       {#if $prompts.length <= 1}
         <p class="my-auto text-slate-500 dark:text-slate-400 text-center">
@@ -549,7 +557,7 @@
       bind:this={chatFormElem}
       action="?/submit"
       method="post"
-      class="flex-none flex flex-row gap-2 mx-auto my-2 justify-stretch items-center w-full max-w-3xl bg-surface-200 dark:bg-surface-400 rounded-lg p-2"
+      class="flex-none flex flex-row gap-2 my-2 justify-stretch items-center w-full max-w-3xl bg-surface-200 dark:bg-surface-400 rounded-lg p-2"
     >
       <!-- eslint-enable max-len -->
       <div class="w-full">
@@ -593,8 +601,8 @@
           {...$chatConstraints.content}
         />
 
-        <div class="flex flex-row items-center justify-between mt-2">
-          <p>
+        <div class="flex flex-row items-center justify-between mt-2 flex-wrap gap-3">
+          <p class="hidden md:block">
             Press <kbd class="kbd">Ctrl + Enter</kbd> to submit
           </p>
 
