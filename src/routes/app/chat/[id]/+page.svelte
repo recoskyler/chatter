@@ -174,23 +174,6 @@
 
 <svelte:head>
   <meta name="robots" content="noindex" />
-
-  <link
-    rel="preload"
-    href="%sveltekit.assets%/fonts/firamono-regular-webfont.woff2"
-    as="font"
-    type="font/woff2"
-    crossorigin="anonymous"
-  />
-
-  <link
-    rel="preload"
-    href="%sveltekit.assets%/fonts/firamono-regular-webfont.woff"
-    as="font"
-    type="font/woff"
-    crossorigin="anonymous"
-  />
-
   <title>Chatter | {data.user.chats[0]?.name}</title>
 </svelte:head>
 
@@ -461,7 +444,7 @@
     </Accordion>
 
     <div
-      class={"flex flex-col-reverse flex-grow max-w-3xl w-full mx-auto py-2 overflow-y-auto px-5"}
+      class={"flex flex-col-reverse flex-grow max-w-3xl w-full mx-auto py-2 overflow-y-auto pr-5 pl-2"}
     >
       {#if $prompts.length <= 1}
         <p class="my-auto text-slate-500 dark:text-slate-400 text-center">
