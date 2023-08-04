@@ -18,7 +18,7 @@
   };
 </script>
 
-<div class="flex flex-col justify-center items-center w-full h-screen overflow-y-auto">
+<div class="flex flex-col justify-center items-center w-full px-5 py-10 my-auto">
   <Stepper
     class="container max-w-md border-solid border-slate-700 border-2 p-5 rounded-lg"
     on:complete={onComplete}
@@ -129,12 +129,20 @@
     </Step>
   </Stepper>
 
-  <div class="flex items-center justify-center w-full mt-5">
+  <form action="?/signOut" method="post" class="w-full my-5">
+    <input
+      type="submit"
+      class="btn variant-filled-primary w-full"
+      value="Sign out"
+    />
+  </form>
+
+  <div class="flex items-center justify-center w-full">
     <LightSwitch bgDark="bg-surface-400" />
   </div>
 </div>
 
-<form use:enhance method="post" id="submit-form" class="invisible">
+<form use:enhance method="post" id="submit-form" class="hidden" action="?/submit">
   <input type="hidden" bind:value={$form.name} name="name" required />
   <input type="hidden" bind:value={$form.key} name="key" required />
   <input type="hidden" bind:value={$form.chatModelId} name="chatModelId" required />

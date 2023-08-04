@@ -7,12 +7,15 @@ import {
   account, chatModel, user, userConfig,
 } from "$lib/db/schema";
 import { eq } from "drizzle-orm";
-import { EMAIL_VERIFICATION } from "$lib/constants";
+import {
+  DISCLAIMER_DISMISSED_COOKIE_NAME, DO_NOT_TRACK_COOKIE_NAME, EMAIL_VERIFICATION,
+} from "$lib/constants";
 import { setError, superValidate } from "sveltekit-superforms/server";
 import {
   insertAccountSchema, type NewAccount, type NewUserConfig,
 } from "$lib/db/types";
 import { seed } from "$lib/db/seed";
+import { auth } from "$lib/server/lucia";
 
 export const load: PageServerLoad = async ({ locals }) => {
   const session = await locals.auth.validate();
@@ -53,7 +56,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 };
 
 export const actions: Actions = {
-  default: async ({ request, locals }) => {
+  submit: async ({ request, locals }) => {
     const session = await locals.auth.validate();
 
     if (!session || (EMAIL_VERIFICATION && !session.user.verified)) {
@@ -107,5 +110,17 @@ export const actions: Actions = {
     }
 
     throw redirect(302, "/app");
+  },
+  signOut: async ({ locals, cookies }) => {
+    const session = await locals.auth.validate();
+
+    cookies.delete(DO_NOT_TRACK_COOKIE_NAME);
+    cookies.delete(DISCLAIMER_DISMISSED_COOKIE_NAME);
+
+    if (!session) return fail(401);
+
+    await auth.invalidateSession(session.sessionId); // invalidate session
+
+    locals.auth.setSession(null); // remove cookie
   },
 };
