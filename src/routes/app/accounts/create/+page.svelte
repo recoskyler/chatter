@@ -26,7 +26,7 @@
   <title>Chatter | Create account</title>
 </svelte:head>
 
-<div class="flex h-screen mx-auto my-auto max-w-sm items-center flex-col justify-center">
+<div class="flex mx-auto my-auto max-w-sm items-center flex-col justify-center py-10 px-5 w-full">
   <form use:enhance method="post" class="w-full">
     <label class="label mb-5">
       <span>Account name</span>

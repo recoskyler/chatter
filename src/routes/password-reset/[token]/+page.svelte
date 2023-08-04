@@ -16,7 +16,7 @@
   let passwordVisible = false;
 
   const { form, delayed, enhance, message, errors, constraints } = superForm(
-    data.form,
+    data.form
   );
 
   const handleInput = (e: Event) => {
@@ -25,15 +25,15 @@
     const target = e.target as HTMLInputElement;
 
     $form.password = target.value;
-  }
+  };
 </script>
 
 <svelte:head>
   <title>Chatter | Reset password</title>
 </svelte:head>
 
-<div class="login-cont mx-auto flex-col my-auto">
-  <h1 class="h2 text-center mb-5 p-5">Reset password</h1>
+<div class="login-cont mx-auto flex-col my-auto w-full px-5 py-10 max-w-sm">
+  <h1 class="h2 text-center mb-5">Reset password</h1>
 
   <form method="POST" use:enhance>
     <label for="password" class="label mb-5">New password</label>
@@ -46,7 +46,7 @@
         class="input"
         type={passwordVisible ? "text" : "password"}
         placeholder="current password"
-        disabled={!(!$message) || $delayed}
+        disabled={!!$message || $delayed}
         value={$form.password}
         use:popup={passwordPopupFocusBlur}
         on:input={handleInput}
@@ -58,6 +58,7 @@
           e.preventDefault();
           passwordVisible = !passwordVisible;
         }}
+        type="button"
         class="flex items-center justify-center"
       >
         <Fa fw icon={passwordVisible ? faEye : faEyeSlash} />

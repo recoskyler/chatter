@@ -28,8 +28,8 @@
   <title>Chatter | Create an account</title>
 </svelte:head>
 
-<div class="login-cont mx-auto flex-col my-auto">
-  <h1 class="h2 text-center mb-5 p-5">Create an account</h1>
+<div class="login-cont mx-auto flex-col my-auto w-full py-10 px-5  max-w-sm">
+  <h1 class="h2 text-center mb-5">Create an account</h1>
 
   <form method="POST" use:enhance>
     <label for="name" class="label mb-2">
@@ -93,6 +93,7 @@
             e.preventDefault();
             passwordVisible = !passwordVisible;
           }}
+          type="button"
           class="flex items-center justify-center"
         >
           <Fa fw icon={passwordVisible ? faEye : faEyeSlash} />

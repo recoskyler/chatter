@@ -2,7 +2,7 @@
   import type { PageData } from "./$types";
   import Fa from "svelte-fa";
   import {
-    faPencil, faPlus, faTrash, 
+    faPencil, faPlus, faTrash,
   } from "@fortawesome/free-solid-svg-icons";
   import { superForm } from "sveltekit-superforms/client";
   import { writable } from "svelte/store";
