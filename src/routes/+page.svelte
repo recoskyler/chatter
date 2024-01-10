@@ -20,9 +20,11 @@
     </a>
 
     <a
-      href="/app"
+      href="https://github.com/recoskyler/chatter"
       class="btn variant-ghost-tertiary"
       data-umami-event="View source code button"
+      target="_blank"
+      rel="noopener noreferrer"
     >
       View source code
     </a>
