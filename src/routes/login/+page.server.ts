@@ -5,6 +5,10 @@ import { setError, superValidate } from "sveltekit-superforms/server";
 import { z } from "zod";
 import { MIN_PASSWORD_LENGTH } from "$lib/constants";
 import { signInLimiter } from "$lib/server/limiter";
+import { WIZARD_TOWER_DEFAULT_EMAIL } from "$env/static/private";
+import { db } from "$lib/server/drizzle";
+import { user, userConfig } from "../../lib/db/schema";
+import { eq } from "drizzle-orm";
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -49,6 +53,27 @@ export const actions: Actions = {
       const session = await auth.createSession({ userId: key.userId, attributes: {} });
 
       locals.auth.setSession(session);
+
+      const userCfg = await db.query.userConfig.findFirst({
+        where: eq(user.id, key.userId),
+        columns: { userRole: true },
+      });
+
+      if (!userCfg) {
+        console.warn("User config not found");
+
+        return;
+      }
+
+      if (form.data.email === WIZARD_TOWER_DEFAULT_EMAIL && userCfg.userRole !== "admin") {
+        await db.update(userConfig)
+          .set({ userRole: "admin" })
+          .where(eq(user.id, key.userId));
+      }
+
+      if (form.data.email === WIZARD_TOWER_DEFAULT_EMAIL || userCfg.userRole === "admin") {
+        throw redirect(302, "/tower");
+      }
     } catch {
       return setError(form, "", "Invalid email or password");
     }
