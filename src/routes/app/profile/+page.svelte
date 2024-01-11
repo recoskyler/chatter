@@ -392,7 +392,7 @@
       </svelte:fragment>
     </AccordionItem>
 
-    <AnalyticsAccordion data={data} />
+    <AnalyticsAccordion />
 
     <AccordionItem>
       <svelte:fragment slot="lead">

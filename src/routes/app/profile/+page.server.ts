@@ -1,6 +1,7 @@
-import { error, redirect } from "@sveltejs/kit";
+import {
+  error, redirect, type Actions, fail,
+} from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types";
-import { type Actions, fail } from "@sveltejs/kit";
 import { auth } from "$lib/server/lucia";
 import {
   DO_NOT_TRACK_COOKIE_NAME,
