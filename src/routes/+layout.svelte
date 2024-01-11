@@ -47,14 +47,15 @@
 
 <svelte:head>
   {#if doNotTrack !== ""}
-    <script
+    <!-- <script
       async
       defer
       src="https://umami.recoskyler.com/script.js"
       data-website-id="607f67a0-703e-42b6-8397-eb932fb71ba6"
       data-do-not-track={doNotTrack}
       data-cache="true"
-    ></script>
+    ></script> -->
+    <!-- TODO: Enable analytics once there is a good open source option -->
   {/if}
 </svelte:head>
 

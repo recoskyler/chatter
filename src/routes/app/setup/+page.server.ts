@@ -16,6 +16,7 @@ import {
 } from "$lib/db/types";
 import { seed } from "$lib/db/seed";
 import { auth } from "$lib/server/lucia";
+import { WIZARD_TOWER_DEFAULT_EMAIL } from "$env/static/private";
 
 export const load: PageServerLoad = async ({ locals }) => {
   const session = await locals.auth.validate();
@@ -102,6 +103,7 @@ export const actions: Actions = {
       const config: NewUserConfig = {
         userId: session.user.userId,
         defaultAccountId: dbAccount.id,
+        userRole: session.user.email === WIZARD_TOWER_DEFAULT_EMAIL ? "admin" : "user",
       };
 
       await db.insert(userConfig).values(config);

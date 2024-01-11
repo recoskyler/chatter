@@ -1,4 +1,6 @@
 <script lang="ts">
+  import AnalyticsAccordion from '../../../lib/components/AnalyticsAccordion.svelte';
+
   import {
     Accordion,
     AccordionItem,
@@ -390,40 +392,7 @@
       </svelte:fragment>
     </AccordionItem>
 
-    <AccordionItem>
-      <svelte:fragment slot="lead">
-        <Fa fw icon={faChartSimple} />
-      </svelte:fragment>
-
-      <svelte:fragment slot="summary">Analytics</svelte:fragment>
-
-      <svelte:fragment slot="content">
-        <p>
-          <span class="text-orange-600 dark:text-orange-400"
-            ><strong>WARNING: </strong></span
-          >
-          <!-- eslint-disable-next-line max-len -->
-          This setting is stored in a cookie. When you sign out, clear the browser
-          cookies, or block cookies it will be reset to its default state (<strong
-            >Disabled</strong
-          >)
-        </p>
-
-        <SlideToggle
-          name="enabled"
-          bind:checked={analyticsEnabled}
-          on:change={toggleAnalytics}
-          bgDark="bg-surface-400"
-          class="my-3"
-        >
-          Enable analytics?
-        </SlideToggle>
-
-        <p>
-          <strong>Please refresh the page after changing this option</strong>
-        </p>
-      </svelte:fragment>
-    </AccordionItem>
+    <AnalyticsAccordion />
 
     <AccordionItem>
       <svelte:fragment slot="lead">

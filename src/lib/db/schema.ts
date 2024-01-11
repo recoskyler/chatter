@@ -64,6 +64,14 @@ export const account = pgTable("account", {
   deleted: boolean("deleted").notNull().default(false),
 });
 
+export const userRoleEnum = pgEnum(
+  "user_role",
+  [
+    "user",
+    "admin",
+  ],
+);
+
 export const userConfig = pgTable("user_config", {
   id: uuid("id").primaryKey().defaultRandom(),
   userId: text("user_id")
@@ -72,6 +80,7 @@ export const userConfig = pgTable("user_config", {
     .references(() => user.id),
   defaultAccountId: uuid("default_account_id")
     .references(() => account.id),
+  userRole: userRoleEnum("user_role").notNull().default("user"),
 });
 
 export const chat = pgTable("chat", {

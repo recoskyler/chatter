@@ -4,6 +4,7 @@ export const CHATTER_PAGE = {
   CHATS: "CHATS",
   ACCOUNTS: "ACCOUNTS",
   PROFILE: "PROFILE",
+  TOWER: "TOWER",
 } as const;
 
 type ObjectValues<T> = T[keyof T];
