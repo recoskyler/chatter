@@ -119,10 +119,10 @@ export const actions: Actions = {
     cookies.delete(DO_NOT_TRACK_COOKIE_NAME);
     cookies.delete(DISCLAIMER_DISMISSED_COOKIE_NAME);
 
+    locals.auth.setSession(null); // remove cookie
+
     if (!session) return fail(401);
 
     await auth.invalidateSession(session.sessionId); // invalidate session
-
-    locals.auth.setSession(null); // remove cookie
   },
 };

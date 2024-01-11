@@ -55,13 +55,14 @@ export const actions: Actions = {
 
     const session = await locals.auth.validate();
 
-    if (!session) return fail(401);
+    locals.auth.setSession(null);
 
     cookies.delete(DO_NOT_TRACK_COOKIE_NAME);
     cookies.delete(DISCLAIMER_DISMISSED_COOKIE_NAME);
 
+    if (!session) return fail(401);
+
     await auth.invalidateSession(session.sessionId);
 
-    locals.auth.setSession(null);
   },
 };

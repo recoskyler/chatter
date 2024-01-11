@@ -66,15 +66,22 @@ export const actions: Actions = {
       }
 
       if (form.data.email === WIZARD_TOWER_DEFAULT_EMAIL && userCfg.userRole !== "admin") {
+        console.log("Promoting user to admin");
+
         await db.update(userConfig)
           .set({ userRole: "admin" })
           .where(eq(user.id, key.userId));
       }
 
       if (form.data.email === WIZARD_TOWER_DEFAULT_EMAIL || userCfg.userRole === "admin") {
+        console.log("Redirecting to tower");
+
         throw redirect(302, "/tower");
       }
-    } catch {
+    } catch (e) {
+      console.error(e);
+      console.error("Invalid email or password");
+
       return setError(form, "", "Invalid email or password");
     }
   },
