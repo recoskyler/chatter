@@ -80,7 +80,7 @@ export const userConfig = pgTable("user_config", {
     .references(() => user.id),
   defaultAccountId: uuid("default_account_id")
     .references(() => account.id),
-  userRole: userRoleEnum("user_role").notNull().default("user"),
+  userRole: userRoleEnum("user_role").default("user"),
 });
 
 export const chat = pgTable("chat", {
