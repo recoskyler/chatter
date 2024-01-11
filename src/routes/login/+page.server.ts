@@ -55,7 +55,7 @@ export const actions: Actions = {
       locals.auth.setSession(session);
 
       const userCfg = await db.query.userConfig.findFirst({
-        where: eq(user.id, key.userId),
+        where: eq(userConfig.userId, session.user.userId),
         columns: { userRole: true },
       });
 
@@ -70,13 +70,7 @@ export const actions: Actions = {
 
         await db.update(userConfig)
           .set({ userRole: "admin" })
-          .where(eq(user.id, key.userId));
-      }
-
-      if (form.data.email === WIZARD_TOWER_DEFAULT_EMAIL || userCfg.userRole === "admin") {
-        console.log("Redirecting to tower");
-
-        throw redirect(302, "/tower");
+          .where(eq(userConfig.userId, session.user.userId));
       }
     } catch (e) {
       console.error(e);
