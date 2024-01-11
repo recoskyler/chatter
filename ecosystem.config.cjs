@@ -5,7 +5,7 @@ module.exports = {
     args: "start",
     autorestart: true,
     restart_delay: 1000,
-    instances: -2,
+    instances: 1,
     combine_logs: true,
     max_restarts: 10,
     env: {
